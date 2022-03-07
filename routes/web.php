@@ -19,4 +19,21 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+// Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+Route::group(['middleware' => ['auth:web']], function () {
+    Route::get('/home', 'HomeController@index')->name('home');
+    // Permissions
+    // Route::delete('permissions/destroy', 'PermissionsController@massDestroy')->name('permissions.massDestroy');
+    // Route::resource('permissions', 'PermissionsController');
+
+    // Roles
+    // Route::delete('roles/destroy', 'RolesController@massDestroy')->name('roles.massDestroy');
+    // Route::resource('roles', 'RolesController');
+
+    // Users
+    Route::delete('users/destroy', 'UsersController@massDestroy')->name('users.massDestroy');
+    Route::resource('users', 'UsersController');
+
+
+});
