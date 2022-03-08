@@ -56,7 +56,7 @@
                 </li>
             @endcan
             <li class="nav-item">
-                <a class="nav-link text-white " href="../pages/notifications.html">
+                <a class="nav-link text-white " href="{{route('categories.index')}}">
                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="material-icons opacity-10">assessment</i>
                     </div>

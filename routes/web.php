@@ -37,4 +37,10 @@ Route::group(['middleware' => ['auth:web']], function () {
     Route::get('delete/user/{user}','UsersController@destroyUser')->name('users.destroyUser');
 
 
+    // Categories
+    Route::delete('categories/destroy', 'CategoriesController@massDestroy')->name('categories.massDestroy');
+    Route::resource('categories', 'CategoriesController');
+    Route::get('delete/category/{category}','CategoriesController@destroyCategory')->name('categories.destroyCategory');
+
+
 });
