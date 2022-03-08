@@ -2,9 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
+use App\Models\Client;
+use App\Models\Product;
 use Illuminate\Http\Request;
+use App\Models\User;
 
-class ProductController extends Controller
+class ProductsController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -13,7 +17,9 @@ class ProductController extends Controller
      */
     public function index()
     {
-        //
+        $products = Product::all();
+
+        return view('products.index', compact('products'));
     }
 
     /**
@@ -23,7 +29,12 @@ class ProductController extends Controller
      */
     public function create()
     {
-        //
+        $teamleaders = User::where('role_id', 3)->get();
+        $clients = Client::all();
+
+        $categories = Category::all();
+
+        return view('products.create',compact('teamleaders','categories','clients'));
     }
 
     /**
