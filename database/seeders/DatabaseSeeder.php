@@ -15,12 +15,11 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
         $this->call([
-                CountiesTableSeeder::class,
-                RolesTableSeeder::class,
-                CategoriesTableSeeder::class,
-                UsersTableSeeder::class,
-            ]);
-
-
+            CountiesTableSeeder::class,
+            RolesTableSeeder::class,
+            CategoriesTableSeeder::class,
+            UsersTableSeeder::class,
+            ClientsTableSeeder::class,
+        ]);
     }
 }

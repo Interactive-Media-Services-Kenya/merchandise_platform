@@ -42,5 +42,10 @@ Route::group(['middleware' => ['auth:web']], function () {
     Route::resource('categories', 'CategoriesController');
     Route::get('delete/category/{category}','CategoriesController@destroyCategory')->name('categories.destroyCategory');
 
+    // Categories
+    Route::delete('clients/destroy', 'ClientsController@massDestroy')->name('clients.massDestroy');
+    Route::resource('clients', 'ClientsController');
+    Route::get('delete/client/{client}','ClientsController@destroyClient')->name('clients.destroyClient');
+
 
 });
