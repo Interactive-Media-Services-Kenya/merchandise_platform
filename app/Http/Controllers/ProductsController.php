@@ -50,10 +50,19 @@ class ProductsController extends Controller
         if ($request->quantity != 0) {
             $quantity = $request->quantity;
             $request->validate([
-
+                'county_id'=> 'required|integer',
+                'category_id' => 'required|integer',
+                'assign_to' => 'required|integer',
             ]);
+            //Generate ProductCode
+
+            //Generate BatchCode
+
+            //Save Batch Code
+
+            //loop through creating products with the same batch code using quantity
         } else {
-            # code...
+            # Save Single  Product with no Batch
         }
 
     }
