@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+@extends('layouts.backend')
 @section('content')
 @can('user_create')
     <div style="margin-bottom: 10px;" class="row">
@@ -32,13 +32,13 @@
                             Email
                         </th>
                         <th>
-                            Phoen
+                            Phone
                         </th>
                         <th>
                             Role
                         </th>
                         <th>
-                            &nbsp;
+                            Actions
                         </th>
                     </tr>
                 </thead>
@@ -61,11 +61,11 @@
                                 {{ $user->phone ?? '' }}
                             </td>
                             <td>
-                                {{ $user->roles->pluck('title')}}
+                                {{ strtoupper(\DB::table('roles')->where('id',$user->id)->value('title'))}}
                             </td>
                             <td>
-                            hdhs
-
+                                <a href="#" class="btn btn-primary btn-sm">Edit</a>
+                                <a href="#" class="btn btn-danger btn-sm">Delete</a>
                             </td>
 
                         </tr>
