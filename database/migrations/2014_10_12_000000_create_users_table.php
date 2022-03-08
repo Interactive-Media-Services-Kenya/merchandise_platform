@@ -21,6 +21,8 @@ class CreateUsersTable extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->unsignedBigInteger('role_id')->default(5);
             $table->foreign('role_id', 'role_fk_5358227')->references('id')->on('roles');
+            $table->unsignedBigInteger('county_id')->default(1);
+            $table->foreign('county_id', 'county_fk_5358227')->references('id')->on('counties');
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();

@@ -1,17 +1,17 @@
 @extends('layouts.backend')
 @section('content')
-@can('user_create')
+@can('admin_access')
     <div style="margin-bottom: 10px;" class="row">
         <div class="col-lg-12">
-            <a class="btn btn-success" href="{{ route('admin.users.create') }}">
-                {{ trans('global.add') }} {{ trans('cruds.user.title_singular') }}
+            <a class="btn btn-success" href="{{ route('users.create') }}">
+                Add User
             </a>
         </div>
     </div>
 @endcan
 <div class="card">
     <div class="card-header">
-        {{ trans('cruds.user.title_singular') }} {{ trans('global.list') }}
+        Users
     </div>
 
     <div class="card-body">
