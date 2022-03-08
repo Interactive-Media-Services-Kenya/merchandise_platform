@@ -12,17 +12,18 @@
     <div class="row">
         <div class="col-sm-8 offset-2">
             <div class="card">
-                <div class="card-header"><h4 class="text-center">Add User</h4></div>
+                <div class="card-header"><h4 class="text-center">Edit User: {{$user->name}}</h4></div>
 
                 <div class="card-body">
-                    <form method="POST" action="{{ route('users.store') }}">
+                    <form method="POST" action="{{ route('users.update',[$user->id]) }}">
+                        @method('put')
                         @csrf
 
                         <div class="row mb-3">
                             <label for="name" class="col-md-4 col-form-label text-md-end">{{ __('Name') }}</label>
 
                             <div class="col-md-6">
-                                <input id="name" type="text" class="form-control @error('name') is-invalid @enderror  input" style="border: 1px solid; border-radius:10px;" name="name" value="{{ old('name') }}" required autocomplete="name" autofocus>
+                                <input id="name" type="text" class="form-control @error('name') is-invalid @enderror  input" style="border: 1px solid; border-radius:10px;" name="name" value="{{ $user->name }}" required autocomplete="name" autofocus>
 
                                 @error('name')
                                     <span class="invalid-feedback" role="alert">
@@ -36,7 +37,7 @@
                             <label for="email" class="col-md-4 col-form-label text-md-end">{{ __('Email Address') }}</label>
 
                             <div class="col-md-6">
-                                <input id="email" type="email" class="form-control @error('email') is-invalid @enderror input" style="border: 1px solid; border-radius:10px;" name="email" value="{{ old('email') }}" required autocomplete="email" placeholder="somebody@example.com">
+                                <input id="email" type="email" class="form-control @error('email') is-invalid @enderror input" style="border: 1px solid; border-radius:10px;" name="email" value="{{ $user->email }}" required autocomplete="email" placeholder="somebody@example.com">
 
                                 @error('email')
                                     <span class="invalid-feedback" role="alert">
@@ -50,7 +51,7 @@
                             <label for="phone" class="col-md-4 col-form-label text-md-end">Phone Number</label>
 
                             <div class="col-md-6">
-                                <input id="phone" type="text" class="form-control @error('phone') is-invalid @enderror input" style="border: 1px solid; border-radius:10px;" name="phone" value="{{ old('phone') }}" required autocomplete="phone" placeholder="2547XXXXXXXX">
+                                <input id="phone" type="text" class="form-control @error('phone') is-invalid @enderror input" style="border: 1px solid; border-radius:10px;" name="phone" value="{{ $user->phone }}" required autocomplete="phone" placeholder="2547XXXXXXXX">
 
                                 @error('phone')
                                     <span class="invalid-feedback" role="alert">
@@ -102,32 +103,10 @@
                             </div>
                         </div>
 
-                        <div class="row mb-3">
-                            <label for="password" class="col-md-4 col-form-label text-md-end">{{ __('Password') }}</label>
-
-                            <div class="col-md-6">
-                                <input id="password" type="password" class="form-control @error('password') is-invalid @enderror input" style="border: 1px solid; border-radius:10px;" name="password" required autocomplete="new-password">
-
-                                @error('password')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <div class="row mb-3">
-                            <label for="password-confirm" class="col-md-4 col-form-label text-md-end">{{ __('Confirm Password') }}</label>
-
-                            <div class="col-md-6">
-                                <input id="password-confirm" type="password" class="form-control input" style="border: 1px solid; border-radius:10px;" name="password_confirmation" required autocomplete="new-password">
-                            </div>
-                        </div>
-
                         <div class="row mb-0">
                             <div class="col-md-6 offset-md-4">
                                 <button type="submit" class="btn btn-success">
-                                    Submit
+                                    Update
                                 </button>
                             </div>
                         </div>

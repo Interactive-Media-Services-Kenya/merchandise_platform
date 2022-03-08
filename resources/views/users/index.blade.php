@@ -8,7 +8,7 @@
             </a>
         </div>
     </div>
-@endcan
+
 <div class="card">
     <div class="card-header">
         Users
@@ -33,6 +33,9 @@
                         </th>
                         <th>
                             Phone
+                        </th>
+                        <th>
+                            County
                         </th>
                         <th>
                             Role
@@ -61,11 +64,14 @@
                                 {{ $user->phone ?? '' }}
                             </td>
                             <td>
-                                {{ strtoupper(\DB::table('roles')->where('id',$user->id)->value('title'))}}
+                                {{ $user->county->name ?? '' }}
                             </td>
                             <td>
-                                <a href="#" class="btn btn-primary btn-sm">Edit</a>
-                                <a href="#" class="btn btn-danger btn-sm">Delete</a>
+                                {{ strtoupper($user->roles->title)}}
+                            </td>
+                            <td>
+                                <a href="{{route('users.edit', [$user->id])}}" class="btn btn-primary btn-sm">Edit</a>
+                                @if(Auth::id() != $user->id)<a href="{{route('users.destroyUser',[$user->id])}}" class="btn btn-danger btn-sm" onclick="return confirm('Are you Sure?')">Delete</a>@endif
                             </td>
 
                         </tr>
@@ -75,5 +81,7 @@
         </div>
     </div>
 </div>
+
+@endcan
 
 @endsection

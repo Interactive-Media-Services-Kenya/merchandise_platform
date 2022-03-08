@@ -17,7 +17,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password', 'role_id', 'phone',
+        'name', 'email', 'password', 'role_id', 'county_id', 'phone',
     ];
 
     /**
@@ -39,6 +39,10 @@ class User extends Authenticatable
     ];
     public function roles()
     {
-        return $this->belongsToMany(Role::class);
+        return $this->belongsTo(Role::class, 'role_id');
+    }
+    public function county()
+    {
+        return $this->belongsTo(County::class, 'county_id');
     }
 }

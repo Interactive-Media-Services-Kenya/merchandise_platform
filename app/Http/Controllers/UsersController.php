@@ -2,9 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\County;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rules\Password;
+use Session;
+use RealRashid\SweetAlert\Facades\Alert;
 
 class UsersController extends Controller
 {
@@ -15,7 +19,8 @@ class UsersController extends Controller
      */
     public function index()
     {
-        $users = User::all();
+        $users = User::with(['roles','county'])->get();
+        // dd($users);
 
         return view('users.index', compact('users'));
     }
@@ -27,9 +32,10 @@ class UsersController extends Controller
      */
     public function create()
     {
-        $roles = Role::all();
+        $roles = Role::pluck('title','id');
+        $counties = County::pluck('name','id');
 
-        return view('users.create', compact('roles'));
+        return view('users.create', compact('roles', 'counties'));
     }
 
     /**
@@ -40,7 +46,31 @@ class UsersController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => ['required','string','max:255'],
+            'email' => ['required','email','max:255','unique:users'],
+            'phone' => ['required','numeric','digits:12'],
+            'county_id' => ['required','integer'],
+            'role_id' => ['required','integer'],
+            'password' => ['required',Password::min(8)->mixedCase()->symbols()->uncompromised(),'confirmed'],
+        ]);
+
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'phone' => $request->phone,
+            'county_id' => $request->county_id,
+            'role_id' => $request->role_id,
+            'password' => bcrypt($request->password),
+        ]);
+        if ($user) {
+            Alert::success('Success', 'User Successfully Added');
+            return back();
+        }
+        else {
+            Alert::error('Failed', 'Registration failed');
+            return back();
+        }
     }
 
     /**
@@ -62,7 +92,11 @@ class UsersController extends Controller
      */
     public function edit($id)
     {
-        //
+        $user = User::findOrFail($id);
+        $roles = Role::pluck('title','id');
+        $counties = County::pluck('name','id');
+
+        return view('users.edit', compact('roles','user','counties'));
     }
 
     /**
@@ -74,7 +108,24 @@ class UsersController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+
+        $request->validate([
+            'name' => ['required','string','max:255'],
+            'email' => ['required','email','max:255'],
+            'phone' => ['required','numeric','digits:12'],
+            'county_id' => ['required','integer'],
+            'role_id' => ['required','integer'],
+        ]);
+        $user = User::findOrFail($id);
+
+       if ($user->update($request->all())) {
+        Alert::success('Success', 'User Details Successfully Edited');
+        return back();
+       }else {
+        Alert::error('Failed', 'Details Not Edited');
+        return back();
+       }
+
     }
 
     /**
@@ -86,5 +137,18 @@ class UsersController extends Controller
     public function destroy($id)
     {
         //
+    }
+    public function destroyUser($id)
+    {
+        $user = User::findOrFail($id);
+
+        if($user->delete()){
+            Alert::success('Success', 'User Removed Successfully');
+            return back();
+        }else{
+            Alert::error('Failed', 'User Not Deleted');
+            return back();
+        }
+
     }
 }
