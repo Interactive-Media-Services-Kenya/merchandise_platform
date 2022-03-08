@@ -48,7 +48,7 @@
                                 Client</label>
 
                             <div class="col-md-6">
-                                <select name="county_id" id="" class="form-control"
+                                <select name="client_id" id="" class="form-control"
                                     style="border: 1px solid; border-radius:10px;">
                                     <option selected disabled>--- Select Client ---</option>
                                     @forelse ($clients as  $client)
@@ -70,7 +70,7 @@
                                 Team Leader</label>
 
                             <div class="col-md-6">
-                                <select name="county_id" id="" class="form-control"
+                                <select name="user_id" id="" class="form-control"
                                     style="border: 1px solid; border-radius:10px;">
                                     <option selected disabled>--- Select Team Leader ---</option>
                                     @forelse ($teamleaders as  $leader)
@@ -113,8 +113,7 @@
                             <div class="col-md-6">
                                 <input id="quantity" type="number"
                                     class="form-control @error('quantity') is-invalid @enderror input"
-                                    style="border: 1px solid; border-radius:10px;" name="quantity"
-                                    required autocomplete="number" placeholder="200">
+                                    style="border: 1px solid; border-radius:10px;" name="quantity" autocomplete="number" placeholder="200">
 
                                 @error('quantity')
                                     <span class="invalid-feedback" role="alert">

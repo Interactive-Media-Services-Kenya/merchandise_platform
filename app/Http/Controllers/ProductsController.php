@@ -45,7 +45,17 @@ class ProductsController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $productname = substr(\DB::table('categories')->where('id',$request->category_id)->value('title'),0,1);
+        strtoupper($productname);
+        if ($request->quantity != 0) {
+            $quantity = $request->quantity;
+            $request->validate([
+
+            ]);
+        } else {
+            # code...
+        }
+
     }
 
     /**
