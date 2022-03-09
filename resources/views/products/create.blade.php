@@ -9,133 +9,226 @@
 
     </style>
 @section('content')
-    <div class="row">
-        <div class="col-sm-8 offset-2">
-            <div class="card">
-                <div class="card-header">
-                    <h4 class="text-center">Add Merchandise</h4>
-                </div>
+    @can('tb_access')
+        <div class="row">
+            <div class="col-sm-8 offset-2">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="text-center">Add Merchandise</h4>
+                    </div>
 
-                <div class="card-body">
-                    <form method="POST" action="{{ route('products.store') }}">
-                        @csrf
+                    <div class="card-body">
+                        <form method="POST" action="{{ route('products.store') }}">
+                            @csrf
 
 
-                        <div class="row mb-3">
-                            <label for="county_id" class="col-md-4 col-form-label text-md-end">Select
-                                Type</label>
+                            <div class="row mb-3">
+                                <label for="county_id" class="col-md-4 col-form-label text-md-end">Select
+                                    Type</label>
 
-                            <div class="col-md-6">
-                                <select name="category_id" id="" class="form-control"
-                                    style="border: 1px solid; border-radius:10px;">
-                                    <option selected disabled>--- Select Merchandise Type ---</option>
-                                    @forelse ($categories as $category)
-                                        <option value="{{ $category->id }}">{{ strtoupper($category->title) }}</option>
-                                    @empty
-                                        <option disabled> No Merchandise To Select Yet</option>
-                                    @endforelse
-                                </select>
+                                <div class="col-md-6">
+                                    <select name="category_id" id="" class="form-control"
+                                        style="border: 1px solid; border-radius:10px;">
+                                        <option selected disabled>--- Select Merchandise Type ---</option>
+                                        @forelse ($categories as $category)
+                                            <option value="{{ $category->id }}">{{ strtoupper($category->title) }}</option>
+                                        @empty
+                                            <option disabled> No Merchandise To Select Yet</option>
+                                        @endforelse
+                                    </select>
 
-                                @error('category_id')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
-                        <div class="row mb-3">
-                            <label for="county_id" class="col-md-4 col-form-label text-md-end">Select
-                                Client</label>
-
-                            <div class="col-md-6">
-                                <select name="client_id" id="" class="form-control"
-                                    style="border: 1px solid; border-radius:10px;">
-                                    <option selected disabled>--- Select Client ---</option>
-                                    @forelse ($clients as  $client)
-                                        <option value="{{ $client->id }}">{{ strtoupper($client->name) }}</option>
-                                    @empty
-                                        <option disabled> No Client Added Yet</option>
-                                    @endforelse
-                                </select>
-
-                                @error('county_id')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
-                        <div class="row mb-3">
-                            <label for="county_id" class="col-md-4 col-form-label text-md-end">Select
-                                Team Leader</label>
-
-                            <div class="col-md-6">
-                                <select name="user_id" id="" class="form-control"
-                                    style="border: 1px solid; border-radius:10px;">
-                                    <option selected disabled>--- Select Team Leader ---</option>
-                                    @forelse ($teamleaders as  $leader)
-                                        <option value="{{ $leader->id }}">{{ strtoupper($leader->name) }}</option>
-                                    @empty
-                                        <option disabled> No Ambassadors Added Yet</option>
-                                    @endforelse
-                                </select>
-
-                                @error('county_id')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
-                        <div class="row mb-3">
-                            <div class="col-md-4 mx-auto">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="flexRadioDefault"
-                                        id="flexRadioDefault2" checked>
-                                    <label class="form-check-label" for="flexRadioDefault2">
-                                        Single Merchandise
-                                    </label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="flexRadioDefault"
-                                        id="flexRadioDefault1" value="2">
-                                    <label class="form-check-label" for="flexRadioDefault1">
-                                        Batch Merchandise
-                                    </label>
+                                    @error('category_id')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
                                 </div>
                             </div>
+                            <div class="row mb-3">
+                                <label for="county_id" class="col-md-4 col-form-label text-md-end">Select
+                                    Client</label>
 
-                        </div>
+                                <div class="col-md-6">
+                                    <select name="client_id" id="" class="form-control"
+                                        style="border: 1px solid; border-radius:10px;">
+                                        <option selected disabled>--- Select Client ---</option>
+                                        @forelse ($clients as  $client)
+                                            <option value="{{ $client->id }}">{{ strtoupper($client->name) }}</option>
+                                        @empty
+                                            <option disabled> No Client Added Yet</option>
+                                        @endforelse
+                                    </select>
 
-                        <div class="row mb-3" id="batch">
-                            <label for="phone" class="col-md-4 col-form-label text-md-end">Quantity</label>
-
-                            <div class="col-md-6">
-                                <input id="quantity" type="number"
-                                    class="form-control @error('quantity') is-invalid @enderror input"
-                                    style="border: 1px solid; border-radius:10px;" name="quantity" autocomplete="number" placeholder="200">
-
-                                @error('quantity')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
+                                    @error('county_id')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
                             </div>
-                        </div>
+                            <div class="row mb-3">
+                                <label for="county_id" class="col-md-4 col-form-label text-md-end">Select
+                                    Team Leader</label>
 
-                        <div class="row mb-0">
-                            <div class="col-md-6 offset-md-4">
-                                <button type="submit" class="btn btn-success">
-                                    Submit
-                                </button>
+                                <div class="col-md-6">
+                                    <select name="assigned_to" id="" class="form-control"
+                                        style="border: 1px solid; border-radius:10px;">
+                                        <option selected disabled>--- Select Team Leader ---</option>
+                                        @forelse ($teamleaders as  $leader)
+                                            <option value="{{ $leader->id }}">{{ strtoupper($leader->name) }}</option>
+                                        @empty
+                                            <option disabled> No Ambassadors Added Yet</option>
+                                        @endforelse
+                                    </select>
+
+                                    @error('assigned_to')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
                             </div>
-                        </div>
-                    </form>
+                            <div class="row mb-3">
+                                <div class="col-md-4 mx-auto">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="flexRadioDefault"
+                                            id="flexRadioDefault2" checked>
+                                        <label class="form-check-label" for="flexRadioDefault2">
+                                            Single Merchandise
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="flexRadioDefault"
+                                            id="flexRadioDefault1" value="2">
+                                        <label class="form-check-label" for="flexRadioDefault1">
+                                            Batch Merchandise
+                                        </label>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="row mb-3" id="batch">
+                                <label for="quantity" class="col-md-4 col-form-label text-md-end">Quantity</label>
+
+                                <div class="col-md-6">
+                                    <input id="quantity" type="number"
+                                        class="form-control @error('quantity') is-invalid @enderror input"
+                                        style="border: 1px solid; border-radius:10px;" name="quantity" autocomplete="number"
+                                        placeholder="200">
+
+                                    @error('quantity')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+                            </div>
+
+                            <div class="row mb-0">
+                                <div class="col-md-6 offset-md-4">
+                                    <button type="submit" class="btn btn-success">
+                                        Submit
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
+            {{-- End of registered Users --}}
         </div>
-        {{-- End of registered Users --}}
-    </div>
+    @endcan
+    @can('team_leader_access')
+        <div class="row">
+            <div class="col-sm-8 offset-2">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="text-center">Assign Merchandise To Brand Ambassador</h4>
+                    </div>
+
+                    <div class="card-body">
+                        <form method="POST" action="{{ route('products.storebas') }}">
+                            @csrf
+
+
+                            <div class="row mb-3">
+                                <label for="batch_id" class="col-md-4 col-form-label text-md-end">Select
+                                    Merchandise Batch</label>
+
+                                <div class="col-md-6">
+                                    <select name="batch_id" id="" class="form-control"
+                                        style="border: 1px solid; border-radius:10px;">
+                                        <option selected disabled>--- Select Merchandise Batch ---</option>
+                                        @forelse ($batches as $batch)
+                                            <option value="{{ $batch->batch_id }}">{{ strtoupper($batch->batch_code) }}
+                                            </option>
+                                        @empty
+                                            <option disabled> No Merchandise To Select Yet</option>
+                                        @endforelse
+                                    </select>
+
+                                    @error('batch_id')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <label for="assigned_to" class="col-md-4 col-form-label text-md-end">Select Brand Ambassador</label>
+
+                                <div class="col-md-6">
+                                    <select name="assigned_to" id="" class="form-control"
+                                        style="border: 1px solid; border-radius:10px;">
+                                        <option selected disabled>--- Select Brand Ambassador ---</option>
+                                        @forelse ($brandAmbassadors as  $ba)
+                                            <option value="{{ $ba->id }}">{{ strtoupper($ba->name) }}</option>
+                                        @empty
+                                            <option disabled> No Brand Ambassadors Added Yet</option>
+                                        @endforelse
+                                    </select>
+
+                                    @error('assigned_to')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+                            </div>
+
+
+                            <div class="row mb-3">
+                                <label for="quantity" class="col-md-4 col-form-label text-md-end">Quantity</label>
+
+                                <div class="col-md-6">
+                                    <input id="quantity" type="number"
+                                        class="form-control @error('quantity') is-invalid @enderror input"
+                                        style="border: 1px solid; border-radius:10px;" name="quantity" autocomplete="number"
+                                        placeholder="200" required>
+
+                                    @error('quantity')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+                            </div>
+
+                            <div class="row mb-0">
+                                <div class="col-md-6 offset-md-4">
+                                    <button type="submit" class="btn btn-success">
+                                        Submit
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {{-- End of registered Users --}}
+        </div>
+    @endcan
 @endsection
 @section('scripts')
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" referrerpolicy="no-referrer"></script>
