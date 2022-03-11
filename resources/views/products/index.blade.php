@@ -142,11 +142,9 @@
                                 <th>
                                     Serial Number
                                 </th>
-                                @can('tb_access')
-                                    <th>
-                                        Team Leader
-                                    </th>
-                                @endcan
+                                <th>
+                                    Asigned To
+                                </th>
                                 <th>
                                     Batch Code
                                 </th>
@@ -158,7 +156,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($productsUsers as $key => $product)
+                            @foreach ($productsTls as $key => $product)
                                 <tr data-entry-id="{{ $product->id }}">
                                     <td>
 
@@ -175,11 +173,13 @@
                                     <td>
                                         {{ $product->product_code ?? '' }}
                                     </td>
-                                    @can('tb_access')
                                     <td>
-                                        {{ $product->assign->email ?? '' }}
+                                        {{ \DB::table('users')->where('id',$product->productBa->assigned_to)->value('email') ?? '' }}
                                     </td>
-                                    @endcan
+                                    {{-- <td>
+                                        {{ \DB::table('productbas')->where('product_id',$product->id)->value('assigned_to') ?
+                                        \DB::table('users')->where('id',\DB::table('productbas')->where('product_id',$product->id)->value('assigned_to'))->value('email'): 'Not Assigned' }}
+                                    </td> --}}
                                     <td>
                                         {{ $product->batch->batch_code ?? 'Single Product' }}
                                     </td>
@@ -203,88 +203,88 @@
 
     {{-- Brand Ambassador --}}
     @can('brand_ambassador_access')
-    <div class="card">
-        <div class="card-header">
-            Merchandise
-        </div>
+        <div class="card">
+            <div class="card-header">
+                Merchandise
+            </div>
 
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class=" table table-bordered table-striped table-hover datatable" id="ProductTable">
-                    <thead>
-                        <tr>
-                            <th width="10">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class=" table table-bordered table-striped table-hover datatable" id="ProductTable">
+                        <thead>
+                            <tr>
+                                <th width="10">
 
-                            </th>
-                            <th>
-                                ID
-                            </th>
-                            <th>
-                                Merchandise Type
-                            </th>
-                            <th>
-                                Client
-                            </th>
-                            <th>
-                                Serial Number
-                            </th>
-                            @can('tb_access')
-                                <th>
-                                    Team Leader
                                 </th>
-                            @endcan
-                            <th>
-                                Batch Code
-                            </th>
-                            @can('admin_access')
                                 <th>
-                                    Actions
+                                    ID
                                 </th>
-                            @endcan
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($products as $key => $product)
-                            <tr data-entry-id="{{ $product->id }}">
-                                <td>
-
-                                </td>
-                                <td>
-                                    {{ $product->id ?? '' }}
-                                </td>
-                                <td>
-                                    {{ $product->category->title ?? '' }}
-                                </td>
-                                <td>
-                                    {{ $product->client->name ?? '' }}
-                                </td>
-                                <td>
-                                    {{ $product->product_code ?? '' }}
-                                </td>
+                                <th>
+                                    Merchandise Type
+                                </th>
+                                <th>
+                                    Client
+                                </th>
+                                <th>
+                                    Serial Number
+                                </th>
                                 @can('tb_access')
-                                <td>
-                                    {{ $product->assign->email ?? '' }}
-                                </td>
+                                    <th>
+                                        Team Leader
+                                    </th>
                                 @endcan
-                                <td>
-                                    {{ $product->batch->batch_code ?? 'Single Product' }}
-                                </td>
+                                <th>
+                                    Batch Code
+                                </th>
                                 @can('admin_access')
-                                    <td>
-                                        <a href="{{ route('products.edit', [$product->id]) }}"
-                                            class="btn btn-primary btn-sm">Edit</a>
-                                        <a href="{{ route('products.destroyProduct', [$product->id]) }}"
-                                            class="btn btn-danger btn-sm" onclick="return confirm('Are you Sure?')">Delete</a>
-                                    </td>
+                                    <th>
+                                        Actions
+                                    </th>
                                 @endcan
-
                             </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            @foreach ($productsBas as $key => $product)
+                                <tr data-entry-id="{{ $product->id }}">
+                                    <td>
+
+                                    </td>
+                                    <td>
+                                        {{ $product->id ?? '' }}
+                                    </td>
+                                    <td>
+                                        {{ $product->category->title ?? '' }}
+                                    </td>
+                                    <td>
+                                        {{ $product->client->name ?? '' }}
+                                    </td>
+                                    <td>
+                                        {{ $product->product_code ?? '' }}
+                                    </td>
+                                    @can('tb_access')
+                                        <td>
+                                            {{ $product->assign->email ?? '' }}
+                                        </td>
+                                    @endcan
+                                    <td>
+                                        {{ $product->batch->batch_code ?? 'Single Product' }}
+                                    </td>
+                                    @can('admin_access')
+                                        <td>
+                                            <a href="{{ route('products.edit', [$product->id]) }}"
+                                                class="btn btn-primary btn-sm">Edit</a>
+                                            <a href="{{ route('products.destroyProduct', [$product->id]) }}"
+                                                class="btn btn-danger btn-sm" onclick="return confirm('Are you Sure?')">Delete</a>
+                                        </td>
+                                    @endcan
+
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
-    </div>
     @endcan
 
 @endsection

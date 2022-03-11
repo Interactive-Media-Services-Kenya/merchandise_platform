@@ -26,9 +26,11 @@ class ProductsController extends Controller
     {
         $products = Product::where('user_id',Auth::id())->get();
 
-        $productsUsers = Product::where('assigned_to',Auth::id())->get();
+        $productsTls = Product::where('assigned_to',Auth::id())->get();
 
-        return view('products.index', compact('products', 'productsUsers'));
+        $productsBas = Product::join('productbas','products.id','productbas.product_id')->where('productbas.assigned_to',Auth::id())->get();
+
+        return view('products.index', compact('products', 'productsTls','productsBas'));
     }
 
     /**

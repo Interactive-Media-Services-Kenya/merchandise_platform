@@ -31,4 +31,8 @@ class Product extends Model
     public function assign(){
         return $this->belongsTo(User::class, 'assigned_to');
     }
+
+    public function productBa(){
+        return $this->hasOne(Productbas::class, 'product_id');
+    }
 }
