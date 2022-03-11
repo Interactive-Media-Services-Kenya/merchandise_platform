@@ -1,6 +1,6 @@
 @extends('layouts.backend')
 @section('content')
-    @can('admin_access')
+    @can('tb_access')
         <div style="margin-bottom: 10px;" class="row">
             <div class="col-lg-12">
                 <a class="btn btn-success" href="{{ route('categories.create') }}">
@@ -28,7 +28,7 @@
                                 <th>
                                     Merchandise Category Name
                                 </th>
-                                @can('admin_access')
+                                @can('tb_access')
                                     <th>
                                         Actions
                                     </th>
@@ -48,7 +48,7 @@
                                         {{ $category->title ?? '' }}
                                     </td>
 
-                                    @can('admin_access')
+                                    @can('tb_access')
                                         <td>
                                             <a href="{{ route('categories.edit', [$category->id]) }}"
                                                 class="btn btn-primary btn-sm">Edit</a>

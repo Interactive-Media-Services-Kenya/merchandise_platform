@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rules\Password;
 use Session;
 use RealRashid\SweetAlert\Facades\Alert;
+use Illuminate\Support\Facades\Auth;
 
 class UsersController extends Controller
 {
@@ -24,6 +25,28 @@ class UsersController extends Controller
 
         return view('users.index', compact('users'));
     }
+
+    //get Team leaders all regions
+
+    public function teamleaders()
+    {
+        $teamleaders = User::with(['roles','county'])->where('role_id',3)->get();
+
+
+        return view('teamleaders.index', compact('teamleaders'));
+    }
+
+    //Get Brand Ambassadors for each team leader
+
+    public function brandambassadors()
+    {
+        $county_id = Auth::user()->county_id;
+        $brandambassadors = User::with(['roles','county'])->where('role_id',4)->where('county_id',$county_id)->get();
+
+
+        return view('brandambassadors.index', compact('brandambassadors'));
+    }
+
 
     /**
      * Show the form for creating a new resource.

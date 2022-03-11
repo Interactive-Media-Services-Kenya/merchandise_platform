@@ -24,9 +24,11 @@ class ProductsController extends Controller
      */
     public function index()
     {
-        $products = Product::all();
+        $products = Product::where('user_id',Auth::id())->get();
 
-        return view('products.index', compact('products'));
+        $productsUsers = Product::where('assigned_to',Auth::id())->get();
+
+        return view('products.index', compact('products', 'productsUsers'));
     }
 
     /**
@@ -208,9 +210,11 @@ class ProductsController extends Controller
             'assigned_to' => 'required|numeric',
         ]);
         $quantity = $request->quantity;
+
+        //Get all product with the request batch id
         $productBas = Productbas::select('product_id')->where('batch_id',$request->batch_id)->get();
         $productsCount = Product::where('batch_id', $request->batch_id)->whereNotIn('id',$productBas)->get();
-       // dd($productsCount);
+        //dd($productBas);
         if ($quantity > 0 && $quantity <= count($productsCount)) {
             $dataProducts = [];
             $products = Product::where('batch_id', $request->batch_id)->whereNotIn('id',$productBas)->take($quantity)->get();
@@ -234,7 +238,8 @@ class ProductsController extends Controller
                 return back();
             }
         } else {
-            dd($quantity);
+            Alert::error('Error', 'Merchndises Quantity exceeds maximum: '.count($productsCount));
+            return back();
         }
     }
 }

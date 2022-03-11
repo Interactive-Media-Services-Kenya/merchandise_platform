@@ -1,6 +1,6 @@
 @extends('layouts.backend')
 @section('content')
-@can('admin_access')
+@can('tb_access')
     <div style="margin-bottom: 10px;" class="row">
         <div class="col-lg-12">
             <a class="btn btn-success" href="{{ route('clients.create') }}">
@@ -63,7 +63,7 @@
                             <td>
                                 {{$client->address ?? '' }}
                             </td>
-                            @can('admin_access')
+                            @can('tb_access')
                             <td>
                                 <a href="{{route('clients.edit', [$client->id])}}" class="btn btn-primary btn-sm">Edit</a>
                                 <a href="{{route('clients.destroyClient',[$client->id])}}" class="btn btn-danger btn-sm" onclick="return confirm('Are you Sure?')">Delete</a>

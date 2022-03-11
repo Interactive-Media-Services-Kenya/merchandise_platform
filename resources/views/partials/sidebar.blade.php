@@ -30,31 +30,36 @@
                         <span class="nav-link-text ms-1">Users</span>
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link text-white " href="{{route('clients.index')}}">
-                        <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                            <i class="material-icons opacity-10">person</i>
-                        </div>
-                        <span class="nav-link-text ms-1">Clients</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-white " href="../pages/virtual-reality.html">
-                        <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                            <i class="material-icons opacity-10">view_in_ar</i>
-                        </div>
-                        <span class="nav-link-text ms-1">Brand Ambassadors</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-white " href="../pages/rtl.html">
-                        <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                            <i class="material-icons opacity-10">format_textdirection_r_to_l</i>
-                        </div>
-                        <span class="nav-link-text ms-1">Team Leaders</span>
-                    </a>
-                </li>
             @endcan
+            @can('tb_access')
+            <li class="nav-item">
+                <a class="nav-link text-white " href="{{route('clients.index')}}">
+                    <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="material-icons opacity-10">person</i>
+                    </div>
+                    <span class="nav-link-text ms-1">Clients</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-white " href="{{ route('teamleaders')}}">
+                    <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="material-icons opacity-10">format_textdirection_r_to_l</i>
+                    </div>
+                    <span class="nav-link-text ms-1">Team Leaders</span>
+                </a>
+            </li>
+            @endcan
+            @can('team_leader_access')
+            <li class="nav-item">
+                <a class="nav-link text-white " href="{{route('brandambassadors')}}">
+                    <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="material-icons opacity-10">view_in_ar</i>
+                    </div>
+                    <span class="nav-link-text ms-1">Brand Ambassadors</span>
+                </a>
+            </li>
+            @endcan
+            @can('tb_access')
             <li class="nav-item">
                 <a class="nav-link text-white " href="{{route('categories.index')}}">
                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
@@ -63,6 +68,8 @@
                     <span class="nav-link-text ms-1">Merchandise Categories</span>
                 </a>
             </li>
+            @endcan
+
             <li class="nav-item">
                 <a class="nav-link text-white " href="{{route('products.index')}}">
                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">

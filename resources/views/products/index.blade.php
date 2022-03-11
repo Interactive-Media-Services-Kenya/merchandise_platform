@@ -6,6 +6,7 @@
         integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn" crossorigin="anonymous"> --}}
 @endsection
 @section('content')
+    {{-- Admin and TB Access --}}
     @can('tb_access')
         <div style="margin-bottom: 10px;" class="row">
             <div class="col-lg-12">
@@ -40,9 +41,11 @@
                                 <th>
                                     Serial Number
                                 </th>
-                                <th>
-                                    Team Leader
-                                </th>
+                                @can('tb_access')
+                                    <th>
+                                        Team Leader
+                                    </th>
+                                @endcan
                                 <th>
                                     Batch Code
                                 </th>
@@ -50,9 +53,9 @@
                                     Date Added
                                 </th>
                                 @can('admin_access')
-                                <th>
-                                    Actions
-                                </th>
+                                    <th>
+                                        Actions
+                                    </th>
                                 @endcan
 
                             </tr>
@@ -75,9 +78,11 @@
                                     <td>
                                         {{ $product->product_code ?? '' }}
                                     </td>
-                                    <td>
-                                        {{ $product->assign->email ?? '' }}
-                                    </td>
+                                    @can('tb_access')
+                                        <td>
+                                            {{ $product->assign->email ?? '' }}
+                                        </td>
+                                    @endcan
                                     <td>
                                         {{ $product->batch->batch_code ?? 'Single Product' }}
                                     </td>
@@ -85,12 +90,12 @@
                                         {{ $product->created_at ?? '' }}
                                     </td>
                                     @can('admin_access')
-                                    <td>
-                                        <a href="{{ route('products.edit', [$product->id]) }}"
-                                            class="btn btn-primary btn-sm">Edit</a>
-                                        <a href="{{ route('products.destroyProduct', [$product->id]) }}"
-                                            class="btn btn-danger btn-sm" onclick="return confirm('Are you Sure?')">Delete</a>
-                                    </td>
+                                        <td>
+                                            <a href="{{ route('products.edit', [$product->id]) }}"
+                                                class="btn btn-primary btn-sm">Edit</a>
+                                            <a href="{{ route('products.destroyProduct', [$product->id]) }}"
+                                                class="btn btn-danger btn-sm" onclick="return confirm('Are you Sure?')">Delete</a>
+                                        </td>
                                     @endcan
 
                                 </tr>
@@ -101,15 +106,103 @@
             </div>
         </div>
     @endcan
-    @can('team_leader_access')
-    <div style="margin-bottom: 10px;" class="row">
-        <div class="col-lg-12">
-            <a class="btn btn-success" href="{{ route('products.create') }}">
-                Add Merchandise
-            </a>
-        </div>
-    </div>
 
+    {{-- Team Leader Access --}}
+    @can('team_leader_access')
+        <div style="margin-bottom: 10px;" class="row">
+            <div class="col-lg-12">
+                <a class="btn btn-success" href="{{ route('products.create') }}">
+                    Assign Merchandise
+                </a>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                Merchandise
+            </div>
+
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class=" table table-bordered table-striped table-hover datatable" id="ProductTable">
+                        <thead>
+                            <tr>
+                                <th width="10">
+
+                                </th>
+                                <th>
+                                    ID
+                                </th>
+                                <th>
+                                    Merchandise Type
+                                </th>
+                                <th>
+                                    Client
+                                </th>
+                                <th>
+                                    Serial Number
+                                </th>
+                                @can('tb_access')
+                                    <th>
+                                        Team Leader
+                                    </th>
+                                @endcan
+                                <th>
+                                    Batch Code
+                                </th>
+                                @can('admin_access')
+                                    <th>
+                                        Actions
+                                    </th>
+                                @endcan
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($productsUsers as $key => $product)
+                                <tr data-entry-id="{{ $product->id }}">
+                                    <td>
+
+                                    </td>
+                                    <td>
+                                        {{ $product->id ?? '' }}
+                                    </td>
+                                    <td>
+                                        {{ $product->category->title ?? '' }}
+                                    </td>
+                                    <td>
+                                        {{ $product->client->name ?? '' }}
+                                    </td>
+                                    <td>
+                                        {{ $product->product_code ?? '' }}
+                                    </td>
+                                    @can('tb_access')
+                                    <td>
+                                        {{ $product->assign->email ?? '' }}
+                                    </td>
+                                    @endcan
+                                    <td>
+                                        {{ $product->batch->batch_code ?? 'Single Product' }}
+                                    </td>
+                                    @can('admin_access')
+                                        <td>
+                                            <a href="{{ route('products.edit', [$product->id]) }}"
+                                                class="btn btn-primary btn-sm">Edit</a>
+                                            <a href="{{ route('products.destroyProduct', [$product->id]) }}"
+                                                class="btn btn-danger btn-sm" onclick="return confirm('Are you Sure?')">Delete</a>
+                                        </td>
+                                    @endcan
+
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    @endcan
+
+    {{-- Brand Ambassador --}}
+    @can('brand_ambassador_access')
     <div class="card">
         <div class="card-header">
             Merchandise
@@ -135,15 +228,19 @@
                             <th>
                                 Serial Number
                             </th>
-                            <th>
-                                Team Leader
-                            </th>
+                            @can('tb_access')
+                                <th>
+                                    Team Leader
+                                </th>
+                            @endcan
                             <th>
                                 Batch Code
                             </th>
-                            <th>
-                                Actions
-                            </th>
+                            @can('admin_access')
+                                <th>
+                                    Actions
+                                </th>
+                            @endcan
                         </tr>
                     </thead>
                     <tbody>
@@ -164,18 +261,22 @@
                                 <td>
                                     {{ $product->product_code ?? '' }}
                                 </td>
+                                @can('tb_access')
                                 <td>
                                     {{ $product->assign->email ?? '' }}
                                 </td>
+                                @endcan
                                 <td>
                                     {{ $product->batch->batch_code ?? 'Single Product' }}
                                 </td>
-                                <td>
-                                    <a href="{{ route('products.edit', [$product->id]) }}"
-                                        class="btn btn-primary btn-sm">Edit</a>
-                                    <a href="{{ route('products.destroyProduct', [$product->id]) }}"
-                                        class="btn btn-danger btn-sm" onclick="return confirm('Are you Sure?')">Delete</a>
-                                </td>
+                                @can('admin_access')
+                                    <td>
+                                        <a href="{{ route('products.edit', [$product->id]) }}"
+                                            class="btn btn-primary btn-sm">Edit</a>
+                                        <a href="{{ route('products.destroyProduct', [$product->id]) }}"
+                                            class="btn btn-danger btn-sm" onclick="return confirm('Are you Sure?')">Delete</a>
+                                    </td>
+                                @endcan
 
                             </tr>
                         @endforeach
