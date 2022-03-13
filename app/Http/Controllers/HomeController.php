@@ -2,6 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Batch;
+use App\Models\Client;
+use App\Models\Product;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -23,6 +27,13 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+        //Admin data
+
+        //All products
+        $products = Product::all();
+        $batches = Batch::all();
+        $clients = Client::all();
+        $bas = User::where('role_id', 4)->get();
+        return view('home', compact('products','batches','clients','bas'));
     }
 }

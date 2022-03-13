@@ -10,14 +10,14 @@
                         <i class="material-icons opacity-10">weekend</i>
                     </div>
                     <div class="text-end pt-1">
-                        <p class="text-sm mb-0 text-capitalize">Today's Money</p>
-                        <h4 class="mb-0">$53k</h4>
+                        <p class="text-sm mb-0 text-capitalize">Total Merchandise</p>
+                        <h4 class="mb-0">{{count($products)}}</h4>
                     </div>
                 </div>
                 <hr class="dark horizontal my-0">
                 <div class="card-footer p-3">
-                    <p class="mb-0"><span class="text-success text-sm font-weight-bolder">+55% </span>than lask
-                        week</p>
+                    {{-- <p class="mb-0"><span class="text-success text-sm font-weight-bolder">+55% </span>than lask
+                        week</p> --}}
                 </div>
             </div>
         </div>
@@ -29,14 +29,14 @@
                         <i class="material-icons opacity-10">person</i>
                     </div>
                     <div class="text-end pt-1">
-                        <p class="text-sm mb-0 text-capitalize">Today's Users</p>
-                        <h4 class="mb-0">2,300</h4>
+                        <p class="text-sm mb-0 text-capitalize">Registered Brand Ambassadors</p>
+                        <h4 class="mb-0">{{count($bas)}}</h4>
                     </div>
                 </div>
                 <hr class="dark horizontal my-0">
                 <div class="card-footer p-3">
-                    <p class="mb-0"><span class="text-success text-sm font-weight-bolder">+3% </span>than lask
-                        month</p>
+                    {{-- <p class="mb-0"><span class="text-success text-sm font-weight-bolder">+3% </span>than lask
+                        month</p> --}}
                 </div>
             </div>
         </div>
@@ -48,14 +48,14 @@
                         <i class="material-icons opacity-10">person</i>
                     </div>
                     <div class="text-end pt-1">
-                        <p class="text-sm mb-0 text-capitalize">New Clients</p>
-                        <h4 class="mb-0">3,462</h4>
+                        <p class="text-sm mb-0 text-capitalize">Total Clients</p>
+                        <h4 class="mb-0">{{count($clients)}}</h4>
                     </div>
                 </div>
                 <hr class="dark horizontal my-0">
                 <div class="card-footer p-3">
-                    <p class="mb-0"><span class="text-danger text-sm font-weight-bolder">-2%</span> than yesterday
-                    </p>
+                    {{-- <p class="mb-0"><span class="text-danger text-sm font-weight-bolder">-2%</span> than yesterday
+                    </p> --}}
                 </div>
             </div>
         </div>
@@ -67,14 +67,14 @@
                         <i class="material-icons opacity-10">weekend</i>
                     </div>
                     <div class="text-end pt-1">
-                        <p class="text-sm mb-0 text-capitalize">Sales</p>
-                        <h4 class="mb-0">$103,430</h4>
+                        <p class="text-sm mb-0 text-capitalize">Total Merchandise Batches</p>
+                        <h4 class="mb-0">{{ count($batches)}}</h4>
                     </div>
                 </div>
                 <hr class="dark horizontal my-0">
                 <div class="card-footer p-3">
-                    <p class="mb-0"><span class="text-success text-sm font-weight-bolder">+5% </span>than
-                        yesterday</p>
+                    {{-- <p class="mb-0"><span class="text-success text-sm font-weight-bolder">+5% </span>than
+                        yesterday</p> --}}
                 </div>
             </div>
         </div>
