@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\County;
+use App\Models\Productbas;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -173,5 +174,14 @@ class UsersController extends Controller
             return back();
         }
 
+    }
+    public function showBa($id){
+        $ba = User::findOrFail($id);
+        //Get all products assigned to this one ba
+        $products = Productbas::where('assigned_to',$id)->get();
+
+        $batches = Productbas::select('batch_id')->where('assigned_to',$id)->groupBy('batch_id')->take(5)->get();
+
+        return view('brandambassadors.show', compact('ba','products','batches'));
     }
 }

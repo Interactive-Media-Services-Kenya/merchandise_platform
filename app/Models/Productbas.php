@@ -18,4 +18,7 @@ class Productbas extends Pivot
     public function product(){
         return $this->belongsTo(Product::class, 'product_id');
     }
+    public function batch(){
+        return $this->belongsTo(Batch::class, 'batch_id');
+    }
 }

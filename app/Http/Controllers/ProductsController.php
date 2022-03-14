@@ -253,7 +253,7 @@ class ProductsController extends Controller
         ]);
         $quantity = $request->quantity;
         $url_login = URL::to('/login');
-        //Get all product with the request batch id
+        //Get all product with the request batch id & Filter unassigned Product
         $productBas = Productbas::select('product_id')->where('batch_id', $request->batch_id)->get();
         $productsCount = Product::where('batch_id', $request->batch_id)->whereNotIn('id', $productBas)->get();
         //dd($productBas);

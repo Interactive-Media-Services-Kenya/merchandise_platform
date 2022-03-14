@@ -42,6 +42,8 @@ Route::group(['middleware' => ['auth:web']], function () {
 
     // Brand Ambassadors
     Route::get('brandambassadors', 'UsersController@brandambassadors')->name('brandambassadors');
+    Route::get('brandambassador/{ba}', 'UsersController@showBa')->name('brandambassador.show');
+
 
 
     // Categories

@@ -31,9 +31,9 @@
                         <th>
                             County
                         </th>
-                        {{-- <th>
+                        <th>
                             Actions
-                        </th> --}}
+                        </th>
                     </tr>
                 </thead>
                 <tbody>
@@ -57,10 +57,9 @@
                             <td>
                                 {{ $brandambassador->county->name ?? '' }}
                             </td>
-                            {{-- <td>
-                                <a href="{{route('brandambassadors.edit', [$brandambassador->id])}}" class="btn btn-primary btn-sm">Edit</a>
-                                @if(Auth::id() != $brandambassador->id)<a href="{{route('brandambassadors.destroybrandambassador',[$brandambassador->id])}}" class="btn btn-danger btn-sm" onclick="return confirm('Are you Sure?')">Delete</a>@endif
-                            </td> --}}
+                            <td>
+                                <a href="{{route('brandambassador.show', [$brandambassador->id])}}" class="btn btn-primary btn-sm">View</a>
+                            </td>
 
                         </tr>
                     @endforeach
