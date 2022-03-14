@@ -31,6 +31,7 @@ class ProductsController extends Controller
 
         $productsTls = Product::where('assigned_to', Auth::id())->get();
 
+
         $productsBas = Product::join('productbas', 'products.id', 'productbas.product_id')->where('productbas.assigned_to', Auth::id())->get();
 
         return view('products.index', compact('products', 'productsTls', 'productsBas'));
@@ -119,7 +120,7 @@ class ProductsController extends Controller
                 ];
                 // dd($details);
                 Mail::to($receiver_email)->send(new AssignMerchandise($details));
-                Alert::success('Success', $quantity . ' Merchandises Added Successfully of Batch Code: ' . $batchcode);
+                Alert::success('Success', $quantity . 'Merchandises Added Successfully of Batch Code:'. $batchcode);
                 return back();
             } else {
                 Alert::error('Failed', 'Merchandises Not Added');
@@ -251,7 +252,7 @@ class ProductsController extends Controller
             'assigned_to' => 'required|numeric',
         ]);
         $quantity = $request->quantity;
-
+        $url_login = URL::to('/login');
         //Get all product with the request batch id
         $productBas = Productbas::select('product_id')->where('batch_id', $request->batch_id)->get();
         $productsCount = Product::where('batch_id', $request->batch_id)->whereNotIn('id', $productBas)->get();
@@ -259,28 +260,35 @@ class ProductsController extends Controller
         if ($quantity > 0 && $quantity <= count($productsCount)) {
             $dataProducts = [];
             $products = Product::where('batch_id', $request->batch_id)->whereNotIn('id', $productBas)->take($quantity)->get();
+
             foreach ($products as $product) {
-                $data = [
+                $data =Productbas::create([
                     'batch_id' => $request->batch_id,
                     'assigned_to' => $request->assigned_to,
                     'product_id' => $product->id,
                     'created_at' => \Carbon\Carbon::now(),
-                ];
+                ]);
                 array_push($dataProducts, $data);
             }
 
-            $finaldata = DB::table('productbas')->insert($dataProducts);
 
-            if ($finaldata) {
+            if (count($dataProducts)>0) {
                 $receiver_email = User::where('id', $request->assigned_to)->value('email');
+
+                $sender_email = Auth::user()->email;
+                //Add Message for assigning merchandises : includes merchandise type, batch_code quantity
+                $merchandise = array_pop($dataProducts);
+                    //Get the item type in batch
+                $merchandise_type = $merchandise->product->category->title;
+                $batchcode = Batch::where('id',$request->batch_id)->value('batch_code');
+                $message = "Hello, You have been assigned $quantity Merchandises ($merchandise_type) from Batch-Code $batchcode. Kindly Confirm through the portal: $url_login";
                 $details = [
-                    'title' => 'Mail from {{Auth::user()->email}}',
-                    'body' => 'This is for testing email using smtp'
+                    'title' => 'Mail from ' . $sender_email,
+                    'body' => $message,
                 ];
-                // dd($details);
 
                 Mail::to($receiver_email)->send(new AssignMerchandise($details));
-                Alert::success('Success', 'You have Successfully assigned ' . $quantity . ' Merchandise');
+                Alert::success('Success', 'Merchandises Assigned Successfully to: '.$receiver_email);
                 return back();
             } else {
                 Alert::error('Error', 'Merchandise not Succesfully Assigned');

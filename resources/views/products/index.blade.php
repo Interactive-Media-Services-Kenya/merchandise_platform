@@ -173,13 +173,13 @@
                                     <td>
                                         {{ $product->product_code ?? '' }}
                                     </td>
-                                    <td>
-                                        {{ \DB::table('users')->where('id',$product->productBa->assigned_to)->value('email') ?? '' }}
-                                    </td>
                                     {{-- <td>
+                                        {{ \DB::table('users')->where('id',$product->productBa->assigned_to)->value('email') ?? '' }}
+                                    </td> --}}
+                                    <td>
                                         {{ \DB::table('productbas')->where('product_id',$product->id)->value('assigned_to') ?
                                         \DB::table('users')->where('id',\DB::table('productbas')->where('product_id',$product->id)->value('assigned_to'))->value('email'): 'Not Assigned' }}
-                                    </td> --}}
+                                    </td>
                                     <td>
                                         {{ $product->batch->batch_code ?? 'Single Product' }}
                                     </td>
