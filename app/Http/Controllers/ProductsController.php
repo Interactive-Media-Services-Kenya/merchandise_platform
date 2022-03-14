@@ -14,6 +14,9 @@ use Gate;
 use Illuminate\Support\Facades\Auth;
 use RealRashid\SweetAlert\Facades\Alert;
 use DB;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\AssignMerchandise;
+use Illuminate\Support\Facades\URL;
 
 class ProductsController extends Controller
 {
@@ -24,13 +27,13 @@ class ProductsController extends Controller
      */
     public function index()
     {
-        $products = Product::where('user_id',Auth::id())->get();
+        $products = Product::where('user_id', Auth::id())->get();
 
-        $productsTls = Product::where('assigned_to',Auth::id())->get();
+        $productsTls = Product::where('assigned_to', Auth::id())->get();
 
-        $productsBas = Product::join('productbas','products.id','productbas.product_id')->where('productbas.assigned_to',Auth::id())->get();
+        $productsBas = Product::join('productbas', 'products.id', 'productbas.product_id')->where('productbas.assigned_to', Auth::id())->get();
 
-        return view('products.index', compact('products', 'productsTls','productsBas'));
+        return view('products.index', compact('products', 'productsTls', 'productsBas'));
     }
 
     /**
@@ -69,11 +72,12 @@ class ProductsController extends Controller
         ]);
         $productname = substr(\DB::table('categories')->where('id', $request->category_id)->value('title'), 0, 1);
         $productname = strtoupper($productname);
+        $url_login = URL::to('/login');
         if ($request->quantity != null) {
             $quantity = $request->quantity;
 
             //Generate BatchCode
-            $batchcode = $this->generateBatchCode().$productname;
+            $batchcode = $this->generateBatchCode() . $productname;
 
             //Save Batch Code
             $batch = Batch::create([
@@ -102,6 +106,19 @@ class ProductsController extends Controller
                 array_push($merchandises, $data);
             }
             if (count($merchandises) == $quantity) {
+                $receiver_email = User::where('id', $request->assigned_to)->value('email');
+                $sender_email = Auth::user()->email;
+                //Add Message for assigning merchandises : includes merchandise type, batch_code quantity
+                $merchandise = array_pop($merchandises);
+                $merchandise_type = $merchandise->category->title;
+                // dd($merchandise_type);
+                $message = "Hello, You have been assigned $quantity Merchandises ($merchandise_type) from Batch-Code $batchcode. Kindly Confirm through the portal: $url_login";
+                $details = [
+                    'title' => 'Mail from ' . $sender_email,
+                    'body' => $message,
+                ];
+                // dd($details);
+                Mail::to($receiver_email)->send(new AssignMerchandise($details));
                 Alert::success('Success', $quantity . ' Merchandises Added Successfully of Batch Code: ' . $batchcode);
                 return back();
             } else {
@@ -120,6 +137,19 @@ class ProductsController extends Controller
                 'assigned_to' => $request->assigned_to,
             ]);
             if ($data) {
+                $receiver_email = User::where('id', $request->assigned_to)->value('email');
+                $sender_email = Auth::user()->email;
+                //Add Message for assigning merchandises : includes merchandise type, batch_code quantity
+
+                $merchandise_type = $data->category->title;
+
+                $message = "Hello, You have been assigned Merchandise ($merchandise_type) of product-code $product_code. Kindly Confirm through the portal: $url_login";
+                $details = [
+                    'title' => 'Mail from ' . $sender_email,
+                    'body' => $message,
+                ];
+
+                Mail::to($receiver_email)->send(new AssignMerchandise($details));
                 Alert::success('Success', 'Merchandises: ' . $product_code . ' Added Successfully');
                 return back();
             } else {
@@ -210,7 +240,7 @@ class ProductsController extends Controller
     {
         $permitted_chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
-        $batchcode = 'BAT-'.mt_rand(1000, 9999).substr(str_shuffle($permitted_chars), 0, 4);
+        $batchcode = 'BAT-' . mt_rand(1000, 9999) . substr(str_shuffle($permitted_chars), 0, 4);
 
         return $batchcode;
     }
@@ -223,12 +253,12 @@ class ProductsController extends Controller
         $quantity = $request->quantity;
 
         //Get all product with the request batch id
-        $productBas = Productbas::select('product_id')->where('batch_id',$request->batch_id)->get();
-        $productsCount = Product::where('batch_id', $request->batch_id)->whereNotIn('id',$productBas)->get();
+        $productBas = Productbas::select('product_id')->where('batch_id', $request->batch_id)->get();
+        $productsCount = Product::where('batch_id', $request->batch_id)->whereNotIn('id', $productBas)->get();
         //dd($productBas);
         if ($quantity > 0 && $quantity <= count($productsCount)) {
             $dataProducts = [];
-            $products = Product::where('batch_id', $request->batch_id)->whereNotIn('id',$productBas)->take($quantity)->get();
+            $products = Product::where('batch_id', $request->batch_id)->whereNotIn('id', $productBas)->take($quantity)->get();
             foreach ($products as $product) {
                 $data = [
                     'batch_id' => $request->batch_id,
@@ -242,6 +272,14 @@ class ProductsController extends Controller
             $finaldata = DB::table('productbas')->insert($dataProducts);
 
             if ($finaldata) {
+                $receiver_email = User::where('id', $request->assigned_to)->value('email');
+                $details = [
+                    'title' => 'Mail from {{Auth::user()->email}}',
+                    'body' => 'This is for testing email using smtp'
+                ];
+                // dd($details);
+
+                Mail::to($receiver_email)->send(new AssignMerchandise($details));
                 Alert::success('Success', 'You have Successfully assigned ' . $quantity . ' Merchandise');
                 return back();
             } else {
@@ -249,7 +287,7 @@ class ProductsController extends Controller
                 return back();
             }
         } else {
-            Alert::error('Error', 'Merchndises Quantity exceeds maximum: '.count($productsCount));
+            Alert::error('Error', 'Merchndises Quantity exceeds maximum: ' . count($productsCount));
             return back();
         }
     }
