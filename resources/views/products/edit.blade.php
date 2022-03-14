@@ -35,7 +35,7 @@
                                         <option disabled> No Merchandise To Select Yet</option>
                                     @endforelse
                                 </select>
-
+                                <input type="hidden" name="owner_id" value="{{Auth::id()}}">
                                 @error('category_id')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>

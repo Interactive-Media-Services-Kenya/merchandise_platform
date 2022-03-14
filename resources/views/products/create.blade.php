@@ -36,7 +36,7 @@
                                             <option disabled> No Merchandise To Select Yet</option>
                                         @endforelse
                                     </select>
-
+                                    <input type="hidden" name="owner_id" value="{{Auth::id()}}">
                                     @error('category_id')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>
@@ -167,6 +167,7 @@
                                             <option disabled> No Merchandise To Select Yet</option>
                                         @endforelse
                                     </select>
+                                    <input type="hidden" name="owner_id" value="{{Auth::id()}}">
 
                                     @error('batch_id')
                                         <span class="invalid-feedback" role="alert">
@@ -206,7 +207,6 @@
                                         class="form-control @error('quantity') is-invalid @enderror input"
                                         style="border: 1px solid; border-radius:10px;" name="quantity" autocomplete="number"
                                         placeholder="200" required>
-
                                     @error('quantity')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>

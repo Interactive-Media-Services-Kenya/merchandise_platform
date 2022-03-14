@@ -89,11 +89,16 @@ class ProductsController extends Controller
                 $data = Product::create([
                     'product_code' => $product_code,
                     'user_id' => Auth::id(),
+                    'owner_id' => $request->owner_id,
                     'category_id' => $request->category_id,
                     'client_id' => $request->client_id,
                     'batch_id' => $batch->id,
                     'assigned_to' => $request->assigned_to,
                 ]);
+                if (!$data) {
+                    Alert::error('Failed', 'Merchandises Not Added');
+                    return back();
+                }
                 array_push($merchandises, $data);
             }
             if (count($merchandises) == $quantity) {
@@ -109,6 +114,7 @@ class ProductsController extends Controller
             $data = Product::create([
                 'product_code' => $product_code,
                 'user_id' => Auth::id(),
+                'owner_id' => $request->owner_id,
                 'category_id' => $request->category_id,
                 'client_id' => $request->client_id,
                 'assigned_to' => $request->assigned_to,
@@ -142,7 +148,7 @@ class ProductsController extends Controller
      */
     public function edit($id)
     {
-        abort_if(Gate::denies('user_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        abort_if(Gate::denies('admin_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         $product = Product::findOrFail($id);
         $teamleaders = User::where('role_id', 3)->get();
         $clients = Client::all();
@@ -169,6 +175,9 @@ class ProductsController extends Controller
             'assigned_to' => 'required|integer',
         ]);
         if ($product->update($request->all())) {
+            // $product->update([
+            //     'user_id' => Auth::id(),
+            // ]);
             Alert::success('Success', 'Merchandise Updated Successfully');
             return back();
         } else {
