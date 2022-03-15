@@ -16,6 +16,7 @@ use RealRashid\SweetAlert\Facades\Alert;
 use DB;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\AssignMerchandise;
+use App\Models\Reject;
 use Illuminate\Support\Facades\URL;
 
 class ProductsController extends Controller
@@ -31,8 +32,7 @@ class ProductsController extends Controller
 
         $productsTls = Product::where('assigned_to', Auth::id())->get();
 
-
-        $productsBas = Product::join('productbas', 'products.id', 'productbas.product_id')->where('productbas.assigned_to', Auth::id())->get();
+        $productsBas = Product::join('productbas', 'products.id', 'productbas.product_id')->where('products.accept_status',0)->where('productbas.assigned_to', Auth::id())->get();
 
         return view('products.index', compact('products', 'productsTls', 'productsBas'));
     }
@@ -296,6 +296,46 @@ class ProductsController extends Controller
             }
         } else {
             Alert::error('Error', 'Merchndises Quantity exceeds maximum: ' . count($productsCount));
+            return back();
+        }
+    }
+    public function reject(Request $request,$id){
+        $product = Product::findOrFail($id);
+        $product->update([
+            'accept_status'=> 0,
+        ]);
+
+        $reason = Reject::create([
+            'reason_id' => $request->reason_id,
+            'user_id' => Auth::id(),
+            'description'=> $request->description,
+        ]);
+        $merchandise_type = $product->category->title;
+        $batchcode = $product->batch->batch_code;
+        $product_code = $product->product_code;
+        $sender_email = Auth::user()->email;
+        $receiver_email = $product->assign->email;
+        $url_login = URL::to('/login');
+        $message = "Hello, Merchandise ($merchandise_type), $product_code from Batch-Code $batchcode, has been rejected by $sender_email. Kindly Confirm through the portal: $url_login.";
+        $details = [
+            'title' => 'Mail From ' . $sender_email,
+            'body' => $message,
+        ];
+
+        Mail::to($receiver_email)->send(new AssignMerchandise($details));
+        Alert::success('Success', 'Operation Successfull An Email has been sent to '.$receiver_email);
+        return back();
+
+    }
+    public function confirm($id){
+        $product = Product::findOrFail($id);
+
+        $product->update([
+            'accept_status'=>1,
+        ]);
+
+        if ($product) {
+            Alert::success('Success', 'Operation Successfull.');
             return back();
         }
     }

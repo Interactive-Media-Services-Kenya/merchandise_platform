@@ -65,6 +65,8 @@ Route::group(['middleware' => ['auth:web']], function () {
     // Categories
     Route::delete('products/destroy', 'ProductsController@massDestroy')->name('products.massDestroy');
     Route::resource('products', 'ProductsController');
+    Route::post('product/reject/{product}','ProductsController@reject')->name('product.reject');
+    Route::get('product/confirm/{product}','ProductsController@confirm')->name('product.confirm');
     Route::get('delete/product/{product}','ProductsController@destroyProduct')->name('products.destroyProduct');
     Route::post('products/store/bas', 'ProductsController@storeBas')->name('products.storebas');
 
