@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\Batch;
 use App\Models\Client;
 use App\Models\Product;
+use App\Models\Productbas;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
 {
@@ -34,6 +36,13 @@ class HomeController extends Controller
         $batches = Batch::all();
         $clients = Client::all();
         $bas = User::where('role_id', 4)->get();
-        return view('home', compact('products','batches','clients','bas'));
+
+        //Products Ba
+        $productsbas = Productbas::where('assigned_to',Auth::id())->get();
+        // Batches ba
+
+        $batchesbas = Productbas::select('*')->where('assigned_to',Auth::id())->groupBy('batch_id')->get();
+
+        return view('home', compact('products','batches','clients','bas','productsbas','batchesbas'));
     }
 }

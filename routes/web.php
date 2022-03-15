@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\URL;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,7 +15,11 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    if (!\Auth::check()) {
+       return view('auth.login');
+    }else{
+        return redirect()->route('home');
+    }
 });
 
 Auth::routes();
@@ -44,7 +49,8 @@ Route::group(['middleware' => ['auth:web']], function () {
     Route::get('brandambassadors', 'UsersController@brandambassadors')->name('brandambassadors');
     Route::get('brandambassador/{ba}', 'UsersController@showBa')->name('brandambassador.show');
 
-
+    //Show Batch with associated products route
+    Route::get('batch/show/{batch}','BatchController@show')->name('batch.show');
 
     // Categories
     Route::delete('categories/destroy', 'CategoriesController@massDestroy')->name('categories.massDestroy');

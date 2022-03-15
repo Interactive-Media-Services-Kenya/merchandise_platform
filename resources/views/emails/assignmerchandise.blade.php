@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>{{env('APP_NAME')}}</title>
+    <title>{{config('settings.app_name')}}</title>
 </head>
 <body>
-    <h1>{{ $details['title'] }}</h1>
+    <h4>{{ $details['title'] }}</h4>
     <p>{{ $details['body'] }}</p>
 
     <p>Thank you</p>

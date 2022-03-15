@@ -16,6 +16,12 @@ class CreateBatchesTable extends Migration
         Schema::create('batches', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('batch_code');
+            $table->unsignedBigInteger('ba_id_accept')->nullable();
+            $table->foreign('ba_id_accept', 'ba_id_accept_52760127')->references('id')->on('users')->constrained()
+            ->onUpdate('cascade');
+            $table->unsignedBigInteger('tl_id_accept')->nullable();
+            $table->foreign('tl_id_accept', 'tl_id_accept_52760127')->references('id')->on('users')->constrained()
+            ->onUpdate('cascade');
             $table->timestamps();
         });
     }
