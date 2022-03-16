@@ -69,6 +69,7 @@ Route::group(['middleware' => ['auth:web']], function () {
     Route::get('product/confirm/{product}','ProductsController@confirm')->name('product.confirm');
     Route::get('products/confirm/batch/{batch_code}','ProductsController@confirmBatch')->name('products.confirm.batch');
     Route::post('products/reject/batch/{batch_code}','ProductsController@rejectBatch')->name('products.reject.batch');
+    Route::get('products/issue/product/{product}/{batch}','ProductsController@issueProduct')->name('products.issue.product');
     Route::post('products/issue/batch','ProductsController@issueBatch')->name('products.issue.batch');
     Route::get('delete/product/{product}','ProductsController@destroyProduct')->name('products.destroyProduct');
     Route::post('products/store/bas', 'ProductsController@storeBas')->name('products.storebas');

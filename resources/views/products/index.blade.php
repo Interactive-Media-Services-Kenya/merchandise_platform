@@ -222,32 +222,32 @@
                             <div class="modal-dialog">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <h5 class="modal-title" id="staticBackdropLabel">
+                                        <h5 class="modal-title" id="staticBackdropLabel">Batch Issue Merchandise
                                         </h5>
                                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                             <span aria-hidden="true">&times;</span>
                                         </button>
                                     </div>
-                                    {{-- <form action="{{ route('products.issue.batch') }}" method="post">
+                                    <form action="{{ route('products.issue.batch') }}" method="post">
                                         @csrf
                                         <div class="modal-body">
                                             <div class="form-group mt-4">
                                                 <label for="reason">
-                                                    <h6>Select Reason</h6>
+                                                    <h6>Select Batch</h6>
                                                 </label>
-                                                <select name="reason_id" class="form-control" style="border:solid 1px;">
-                                                    <option selected disabled>Select Reason</option>
-                                                    @foreach ($reasons as $reason)
-                                                        <option value="{{ $reason->id }}">
-                                                            {{ strtoupper($reason->title) }}</option>
+                                                <select name="batch_id" class="form-control" style="border:solid 1px;" required>
+                                                    <option selected disabled value="">Select Batch</option>
+                                                    @foreach ($batchesBa as $batch)
+                                                        <option value="{{ $batch->id }}">
+                                                            {{ strtoupper($batch->batch_code) }}</option>
                                                     @endforeach
                                                 </select>
                                             </div>
                                             <div class="form-group mt-4">
-                                                <label for="description">
-                                                    <h6>Reason Description</h6>
+                                                <label for="quantity">
+                                                    Quantity
                                                 </label>
-                                                <textarea class="form-control" name="description" id="" cols="20" rows="5" style="border:solid 1px;"></textarea>
+                                                <input type="number" name="quantity" class="form-control" style="border:solid 1px;" required>
                                             </div>
                                         </div>
                                         <div class="modal-footer">
@@ -255,7 +255,7 @@
                                                 data-dismiss="modal">Close</button>
                                             <button type="submit" class="btn btn-primary">Submit</button>
                                         </div>
-                                    </form> --}}
+                                    </form>
                                 </div>
                             </div>
 
@@ -315,7 +315,7 @@
                                     <td>
                                         {{ $product->batch->batch_code ?? 'Single Product' }}
                                     </td>
-                                    <td><a href="#" class="btn btn-sm btn-warning">Issue Out</a></td>
+                                    <td><a href="/products/issue/product/{{$product->id}}/{{$product->batch->id}}" class="btn btn-sm btn-warning">Issue Out</a></td>
 
                                 </tr>
                             @endforeach

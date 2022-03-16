@@ -16,6 +16,7 @@ use RealRashid\SweetAlert\Facades\Alert;
 use DB;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\AssignMerchandise;
+use App\Models\IssueProduct;
 use App\Models\Reject;
 use Illuminate\Support\Facades\URL;
 
@@ -31,10 +32,10 @@ class ProductsController extends Controller
         $products = Product::where('user_id', Auth::id())->get();
 
         $productsTls = Product::where('assigned_to', Auth::id())->get();
-
-        $productsBas = Product::join('productbas', 'products.id', 'productbas.product_id')->where('products.accept_status', 1)->where('productbas.assigned_to', Auth::id())->get();
-
-        return view('products.index', compact('products', 'productsTls', 'productsBas'));
+        $issuedProducts = IssueProduct::select('product_id')->where('ba_id', Auth::id())->get();
+        $productsBas = Product::select('*')->whereNotIn('products.id', $issuedProducts)->join('productbas', 'products.id', 'productbas.product_id')->where('products.accept_status', 1)->where('productbas.assigned_to', Auth::id())->get();
+        $batchesBa = Batch::select('*')->whereIn('id', $productsBas)->get();
+        return view('products.index', compact('products', 'productsTls', 'productsBas', 'batchesBa'));
     }
 
     /**
@@ -386,7 +387,7 @@ class ProductsController extends Controller
             $batchcode = $product->batch->batch_code;
             $sender_email = Auth::user()->email;
             $receiver_email = $product->product->assign->email;
-            // dd($receiver_email);
+
             $url_login = URL::to('/login');
             $message = "Hello, Merchandise ($merchandise_type), $productsCount from Batch-Code $batchcode, has been rejected by $sender_email. Kindly Confirm through the portal: $url_login.";
             $details = [
@@ -397,14 +398,55 @@ class ProductsController extends Controller
             Mail::to($receiver_email)->send(new AssignMerchandise($details));
             Alert::success('Success', 'Operation Successfull. An Email has been sent to ' . $receiver_email);
             return back();
-        }else{
+        } else {
             Alert::error('Failed', 'No products in Batch');
             return back();
         }
     }
-    public function issueBatch(Request $request){
+    public function issueBatch(Request $request)
+    {
         $validated = $request->validate([
-
+            'batch_id' => 'required|integer',
+            'quantity' => 'required|integer',
         ]);
+        $issuedProducts = IssueProduct::select('product_id')->where('ba_id', Auth::id())->get();
+        $productsBas = Product::select('*')->whereNotIn('products.id', $issuedProducts)->join('productbas', 'products.id', 'productbas.product_id')->where('products.accept_status', 1)->where('productbas.assigned_to', Auth::id())->get();
+        //dd($productsBas);
+        //Check if Batch issue doesn't exceed the expected amount
+        if ($request->quantity <= count($productsBas)) {
+            $issuedProducts = IssueProduct::select('product_id')->where('ba_id', Auth::id())->get();
+            $productsBas = Product::select('*')->whereNotIn('products.id', $issuedProducts)
+                ->join('productbas', 'products.id', 'productbas.product_id')
+                ->where('products.accept_status', 1)
+                ->where('productbas.assigned_to', Auth::id())
+                ->take($request->quantity)->get();
+
+            foreach ($productsBas as $product) {
+                IssueProduct::create([
+                    'batch_id' => $request->batch_id,
+                    'ba_id' => Auth::id(),
+                    'product_id' => $product->id,
+                ]);
+            }
+            Alert::success('Success', 'Operation Successfull');
+            return back();
+        } else {
+            Alert::error('Failed', 'Quantity Entered Exceeds Merchandise in Stock. Maximum: ' . count($productsBas));
+            return back();
+        }
+    }
+
+    public function issueProduct($product_id, $batch_id)
+    {
+        $product = Product::findOrFail($product_id);
+        $batch = Batch::findOrFail($batch_id);
+        IssueProduct::create([
+            'ba_id' => Auth::id(),
+            'batch_id' => $batch->id,
+            'product_id' => $product->id,
+        ]);
+
+        Alert::success('Success', 'Operation Successfull');
+        return back();
     }
 }
