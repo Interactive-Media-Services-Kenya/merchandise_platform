@@ -22,6 +22,9 @@ class CreateRejectsTable extends Migration
             $table->unsignedBigInteger('user_id')->nullable();
             $table->foreign('user_id', 'user_id_fk_52fx2327')->references('id')->on('users')->constrained()
                 ->onUpdate('cascade');
+            $table->unsignedBigInteger('product_id')->nullable();
+            $table->foreign('product_id', 'product_id_fk_5223027')->references('id')->on('products')->constrained()
+                ->onUpdate('cascade');
             $table->timestamps();
         });
     }
