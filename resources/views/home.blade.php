@@ -1626,11 +1626,11 @@
                     <div class="card-header p-3 pt-2">
                         <div
                             class="icon icon-lg icon-shape bg-gradient-success shadow-success text-center border-radius-xl mt-n4 position-absolute">
-                            <i class="material-icons opacity-10">person</i>
+                            <i class="material-icons opacity-10">star</i>
                         </div>
                         <div class="text-end pt-1">
-                            <p class="text-sm mb-0 text-capitalize">Total Clients</p>
-                            <h4 class="mb-0">{{ count($clients) }}</h4>
+                            <p class="text-sm mb-0 text-capitalize">Merchandise Given Out</p>
+                            <h4 class="mb-0">{{ count(\DB::table('issue_products')->where('ba_id',Auth::id())->get()) }}</h4>
                         </div>
                     </div>
                     <hr class="dark horizontal my-0">
@@ -1802,7 +1802,7 @@
                                             <td class="align-middle text-center text-sm">
                                                 <span class="text-xs font-weight-bold">
                                                     {{ count(
-                                                        \DB::table('products')->where('products.batch_id', $batch->batch->id)->where('products.accept_status', 1)->join('productbas', 'productbas.product_id', 'products.id')->where('productbas.assigned_to', Auth::id())->get(),
+                                                        \DB::table('issue_products')->where('batch_id',$batch->batch->id)->where('ba_id',Auth::id())->get()
                                                     ) }}</span>
                                             </td>
                                             <td class="align-middle text-center text-sm"><a

@@ -85,8 +85,8 @@
                                         <td class="align-middle text-center text-sm">
                                             <span class="text-xs font-weight-bold">
                                                 {{ count(
-                                                    \DB::table('products')->where('products.batch_id', $batch->batch->id)->where('products.accept_status', 1)->join('productbas', 'productbas.product_id', 'products.id')->where('productbas.assigned_to', Auth::id())->get(),
-                                                ) }}</span>
+                                                    \DB::table('issue_products')->where('batch_id',$batch->batch->id)->where('ba_id',Auth::id())->get()
+                                                    ) }}</span>
                                         </td>
                                         <td class="align-middle text-center text-sm"><a
                                                 href="{{ route('batch.show', [$batch->batch_id]) }}"
