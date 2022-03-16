@@ -33,7 +33,7 @@ class AuthServiceProvider extends ServiceProvider
             return in_array($user->role_id, [1]);
         });
         Gate::define('tb_access', function ($user) {
-            return in_array($user->role_id, [1,2]);
+            return in_array($user->role_id, [2]);
         });
 
         Gate::define('team_leader_access', function ($user) {

@@ -1,5 +1,10 @@
 @extends('layouts.backend')
-
+@section('css')
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.4/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.2.2/css/buttons.dataTables.min.css">
+    {{-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css"
+        integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn" crossorigin="anonymous"> --}}
+@endsection
 @section('content')
     @can('admin_access')
         <div class="row">
@@ -1575,23 +1580,27 @@
     @can('brand_ambassador_access')
         <div class="row">
             <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
-                <div class="card">
-                    <div class="card-header p-3 pt-2">
-                        <div
-                            class="icon icon-lg icon-shape bg-gradient-dark shadow-dark text-center border-radius-xl mt-n4 position-absolute">
-                            <i class="material-icons opacity-10">weekend</i>
+                <a href="{{ route('products.index') }}">
+                    <div class="card">
+                        <div class="card-header p-3 pt-2">
+                            <div
+                                class="icon icon-lg icon-shape bg-gradient-dark shadow-dark text-center border-radius-xl mt-n4 position-absolute">
+                                <i class="material-icons opacity-10">weekend</i>
+                            </div>
+
+                            <div class="text-end pt-1">
+                                <p class="text-sm mb-0 text-capitalize">Total Merchandise</p>
+                                <h4 class="mb-0">{{ count($productsbas) }}</h4>
+                            </div>
+
                         </div>
-                        <div class="text-end pt-1">
-                            <p class="text-sm mb-0 text-capitalize">Total Merchandise</p>
-                            <h4 class="mb-0">{{ count($productsbas) }}</h4>
-                        </div>
-                    </div>
-                    <hr class="dark horizontal my-0">
-                    <div class="card-footer p-3">
-                        {{-- <p class="mb-0"><span class="text-success text-sm font-weight-bolder">+55% </span>than lask
+                        <hr class="dark horizontal my-0">
+                        <div class="card-footer p-3">
+                            {{-- <p class="mb-0"><span class="text-success text-sm font-weight-bolder">+55% </span>than lask
                         week</p> --}}
+                        </div>
                     </div>
-                </div>
+                </a>
             </div>
             <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
                 <div class="card">
@@ -1721,7 +1730,7 @@
                         <div class="row">
                             <div class="col-lg-6 col-7">
                                 <h6>Batches</h6>
-                                <p class="text-sm mb-0">
+                                {{-- <p class="text-sm mb-0">
                                     <i class="fa fa-check text-info" aria-hidden="true"></i>
                                     <span class="font-weight-bold ms-1">{{ count($batchesbas) }}</span> Assigned and
                                     Confirmed
@@ -1730,10 +1739,10 @@
                                     <i class="fa fa-times text-danger" aria-hidden="true"></i>
                                     <span class="font-weight-bold ms-1">{{ count($batchesbas) }}</span> Assigned and
                                     Rejected
-                                </p>
+                                </p> --}}
                             </div>
                             <div class="col-lg-6 col-5 my-auto text-end">
-                                <div class="dropdown float-lg-end pe-4">
+                                {{-- <div class="dropdown float-lg-end pe-4">
                                     <a class="cursor-pointer" id="dropdownTable" data-bs-toggle="dropdown"
                                         aria-expanded="false">
                                         <i class="fa fa-ellipsis-v text-secondary"></i>
@@ -1745,13 +1754,13 @@
                                         <li><a class="dropdown-item border-radius-md" href="javascript:;">Something else
                                                 here</a></li>
                                     </ul>
-                                </div>
+                                </div> --}}
                             </div>
                         </div>
                     </div>
-                    <div class="card-body px-0 pb-2">
-                        <div class="table-responsive">
-                            <table class="table align-items-center mb-0">
+                    <div class="card-body px-2 pb-2">
+                        <div class="table-responsive mt-3">
+                            <table class="table align-items-center mb-3 datatable" id="batchTable">
                                 <thead>
                                     <tr>
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
@@ -1771,36 +1780,40 @@
                                 </thead>
                                 <tbody>
                                     @forelse ($batchesbas as $batch)
-                                    <tr>
-                                        <td>
-                                            <div class="d-flex px-2 py-1">
-                                                <div class="d-flex flex-column justify-content-center">
-                                                    <h6 class="mb-0 text-sm">{{$batch->batch->batch_code}}</h6>
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex px-2 py-1">
+                                                    <div class="d-flex flex-column justify-content-center">
+                                                        <h6 class="mb-0 text-sm">{{ $batch->batch->batch_code }}</h6>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div class="avatar-group mt-2">
-                                                <h6>{{$batch->product->category->title}}</h6>
-                                            </div>
-                                        </td>
-                                        <td class="align-middle text-center text-sm">
-                                            <span class="text-xs font-weight-bold"> {{count(\DB::table('products')->where('products.batch_id',$batch->batch->id)
-                                                                                            ->join('productbas','productbas.product_id','products.id')->where('productbas.assigned_to',Auth::id())
-                                                                                            ->get())}}</span>
-                                        </td>
-                                        <td class="align-middle text-center text-sm">
-                                            <span class="text-xs font-weight-bold"> {{count(\DB::table('products')->where('products.batch_id',$batch->batch->id)->where('products.accept_status',1)
-                                                ->join('productbas','productbas.product_id','products.id')->where('productbas.assigned_to',Auth::id())
-                                                ->get())}}</span>
-                                        </td>
-                                        <td class="align-middle text-center text-sm"><a href="{{route('batch.show',[$batch->batch_id])}}"
-                                            class="btn btn-sm btn-info">View</a> <a href="#"
+                                            </td>
+                                            <td>
+                                                <div class="avatar-group mt-2">
+                                                    <h6>{{ $batch->product->category->title }}</h6>
+                                                </div>
+                                            </td>
+                                            <td class="align-middle text-center text-sm">
+                                                <span class="text-xs font-weight-bold">
+                                                    {{ count(
+                                                        \DB::table('products')->where('products.batch_id', $batch->batch->id)->join('productbas', 'productbas.product_id', 'products.id')->where('productbas.assigned_to', Auth::id())->get(),
+                                                    ) }}</span>
+                                            </td>
+                                            <td class="align-middle text-center text-sm">
+                                                <span class="text-xs font-weight-bold">
+                                                    {{ count(
+                                                        \DB::table('products')->where('products.batch_id', $batch->batch->id)->where('products.accept_status', 1)->join('productbas', 'productbas.product_id', 'products.id')->where('productbas.assigned_to', Auth::id())->get(),
+                                                    ) }}</span>
+                                            </td>
+                                            <td class="align-middle text-center text-sm"><a
+                                                    href="{{ route('batch.show', [$batch->batch_id]) }}"
+                                                    class="btn btn-sm btn-info">View</a>
+                                                {{-- <a href="#"
                                                 class="btn btn-sm btn-success">Confirm</a> &nbsp;
                                                 <a href="#"
-                                                class="btn btn-sm btn-danger">Reject</a>
-                                        </td>
-                                    </tr>
+                                                class="btn btn-sm btn-danger">Reject</a> --}}
+                                            </td>
+                                        </tr>
                                     @empty
                                         <tr>
                                             <td colspan="5">No Assigned Batches</td>
@@ -1815,72 +1828,94 @@
             <div class="col-lg-4 col-md-6">
                 <div class="card h-100">
                     <div class="card-header pb-0">
-                        <h6>Orders overview</h6>
-                        <p class="text-sm">
+                        <h6>Merchandise Type Data</h6>
+                        {{-- <p class="text-sm">
                             <i class="fa fa-arrow-up text-success" aria-hidden="true"></i>
                             <span class="font-weight-bold">24%</span> this month
-                        </p>
+                        </p> --}}
                     </div>
                     <div class="card-body p-3">
-                        <div class="timeline timeline-one-side">
-                            <div class="timeline-block mb-3">
-                                <span class="timeline-step">
-                                    <i class="material-icons text-success text-gradient">notifications</i>
-                                </span>
-                                <div class="timeline-content">
-                                    <h6 class="text-dark text-sm font-weight-bold mb-0">$2400, Design changes</h6>
-                                    <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">22 DEC 7:20 PM</p>
+                        <div class="timeline timeline-two-side">
+                            @forelse ($categories as $category)
+                                <div class="timeline-block mb-3">
+                                    <span class="timeline-step">
+                                        <i class="material-icons text-success text-gradient"></i>
+                                    </span>
+                                    <div class="timeline-content">
+                                        <h6 class="text-dark text-sm font-weight-bold mb-0">{{ $category->title }}</h6>
+                                        <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">Total:
+                                            {{ count(
+                                                \DB::table('products')->select('*')->where('products.category_id', $category->id)->join('productbas', 'productbas.product_id', 'products.id')->where('productbas.assigned_to', Auth::id())->get(),
+                                            ) }}
+                                        </p>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="timeline-block mb-3">
-                                <span class="timeline-step">
-                                    <i class="material-icons text-danger text-gradient">code</i>
-                                </span>
-                                <div class="timeline-content">
-                                    <h6 class="text-dark text-sm font-weight-bold mb-0">New order #1832412</h6>
-                                    <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">21 DEC 11 PM</p>
+                            @empty
+                                <div class="timeline-block mb-3">
+                                    <span class="timeline-step">
+                                        <i class="material-icons text-success text-gradient"></i>
+                                    </span>
+                                    <div class="timeline-content">
+                                        <h6 class="text-dark text-sm font-weight-bold mb-0">No Merchandise Types Assigned Yet
+                                        </h6>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="timeline-block mb-3">
-                                <span class="timeline-step">
-                                    <i class="material-icons text-info text-gradient">shopping_cart</i>
-                                </span>
-                                <div class="timeline-content">
-                                    <h6 class="text-dark text-sm font-weight-bold mb-0">Server payments for April</h6>
-                                    <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">21 DEC 9:34 PM</p>
-                                </div>
-                            </div>
-                            <div class="timeline-block mb-3">
-                                <span class="timeline-step">
-                                    <i class="material-icons text-warning text-gradient">credit_card</i>
-                                </span>
-                                <div class="timeline-content">
-                                    <h6 class="text-dark text-sm font-weight-bold mb-0">New card added for order #4395133</h6>
-                                    <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">20 DEC 2:20 AM</p>
-                                </div>
-                            </div>
-                            <div class="timeline-block mb-3">
-                                <span class="timeline-step">
-                                    <i class="material-icons text-primary text-gradient">key</i>
-                                </span>
-                                <div class="timeline-content">
-                                    <h6 class="text-dark text-sm font-weight-bold mb-0">Unlock packages for development</h6>
-                                    <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">18 DEC 4:54 AM</p>
-                                </div>
-                            </div>
-                            <div class="timeline-block">
-                                <span class="timeline-step">
-                                    <i class="material-icons text-dark text-gradient">payments</i>
-                                </span>
-                                <div class="timeline-content">
-                                    <h6 class="text-dark text-sm font-weight-bold mb-0">New order #9583120</h6>
-                                    <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">17 DEC</p>
-                                </div>
-                            </div>
+                            @endforelse
+
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     @endcan
+@endsection
+@section('scripts')
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous">
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+        integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous">
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js"
+        integrity="sha384-w1Q4orYjBQndcko6MimVbzY0tgp4pWB4lZ7lr30WKz0vr/aWKhXdBNmNb5D92v7s" crossorigin="anonymous">
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/js/jquery.dataTables.min.js"
+        integrity="sha512-BkpSL20WETFylMrcirBahHfSnY++H2O1W+UnEEO4yNIl+jI2+zowyoGJpbtk6bx97fBXf++WJHSSK2MV4ghPcg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script src="https://cdn.datatables.net/1.11.4/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.2.2/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.print.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.colVis.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#batchTable').DataTable({
+                dom: 'lBfrtip',
+                buttons: [
+                    'copy',
+                    {
+                        extend: 'excelHtml5',
+                        title: 'Batches_list',
+                        exportOptions: {
+                            exportOptions: {
+                                columns: [0, 1, 2, 3, ':visible']
+                            }
+                        }
+                    },
+                    {
+                        extend: 'pdfHtml5',
+                        title: 'Batches_list',
+                        exportOptions: {
+                            columns: [0, 1, 2, 3]
+                        }
+                    },
+                    'colvis'
+                ]
+            });
+        });
+    </script>
 @endsection

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Batch;
+use App\Models\IssueProduct;
 use App\Models\Product;
 use App\Models\Productbas;
 use App\Models\Reason;
@@ -12,8 +13,13 @@ use Illuminate\Support\Facades\Auth;
 class BatchController extends Controller
 {
     public function index(){
-        #
+
+        $batchesbas = Productbas::select('*')->where('assigned_to',Auth::id())->groupBy('batch_id')->get();
+
+        return view('batches.index',compact('batchesbas'));
     }
+
+
     public function show($id){
         $batch = Batch::findOrFail($id);
         $productaccepted = Product::select('id')->where('batch_id',$id)->where('accept_status',0)->get();

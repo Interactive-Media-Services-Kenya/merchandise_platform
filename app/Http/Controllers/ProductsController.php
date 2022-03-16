@@ -350,7 +350,8 @@ class ProductsController extends Controller
         //Get List of products to be confirmed
         $productaccepted = Product::select('id')->where('batch_id', $id)->where('accept_status', 0)->get();
         $products = Productbas::select('*')->whereIn('product_id', $productaccepted)->where('assigned_to', Auth::id())->get();
-        //Confirm and update individual products in the Batch
+       if (count($products)>0) {
+           //Confirm and update individual products in the Batch
         foreach ($products as $product) {
             $product = Product::findOrFail($product->product_id);
 
@@ -360,6 +361,10 @@ class ProductsController extends Controller
         }
         Alert::success('Success', 'Operation Successfull.');
         return back();
+       }else{
+        Alert::error('Failed', 'No products in Batch');
+        return back();
+       }
     }
     //Brand Ambassador rejects Merrchandise in batch
     public function rejectBatch(Request $request, $id)

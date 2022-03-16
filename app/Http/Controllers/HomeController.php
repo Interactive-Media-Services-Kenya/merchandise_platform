@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Batch;
+use App\Models\Category;
 use App\Models\Client;
 use App\Models\Product;
 use App\Models\Productbas;
@@ -36,6 +37,7 @@ class HomeController extends Controller
         $batches = Batch::all();
         $clients = Client::all();
         $bas = User::where('role_id', 4)->get();
+        $categories = Category::all();
 
         //Products Ba
         $productsbas = Productbas::where('assigned_to',Auth::id())->get();
@@ -43,6 +45,6 @@ class HomeController extends Controller
 
         $batchesbas = Productbas::select('*')->where('assigned_to',Auth::id())->groupBy('batch_id')->get();
 
-        return view('home', compact('products','batches','clients','bas','productsbas','batchesbas'));
+        return view('home', compact('products','batches','clients','bas','productsbas','batchesbas','categories'));
     }
 }

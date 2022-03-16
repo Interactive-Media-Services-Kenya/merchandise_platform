@@ -51,7 +51,7 @@ Route::group(['middleware' => ['auth:web']], function () {
 
     //Show Batch with associated products route
     Route::get('batch/show/{batch}','BatchController@show')->name('batch.show');
-
+    Route::get('batches','BatchController@index')->name('batches.index');
     // Categories
     Route::delete('categories/destroy', 'CategoriesController@massDestroy')->name('categories.massDestroy');
     Route::resource('categories', 'CategoriesController');

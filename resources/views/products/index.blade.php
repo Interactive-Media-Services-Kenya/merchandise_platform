@@ -7,6 +7,109 @@
 @endsection
 @section('content')
     {{-- Admin and TB Access --}}
+    @can('admin_access')
+        @can('tb_access')
+            <div style="margin-bottom: 10px;" class="row">
+                <div class="col-lg-12">
+                    <a class="btn btn-success" href="{{ route('products.create') }}">
+                        Add Merchandise
+                    </a>
+                </div>
+            </div>
+        @endcan
+
+        <div class="card">
+            <div class="card-header">
+                Merchandise
+            </div>
+
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class=" table table-bordered table-striped table-hover datatable" id="ProductTable">
+                        <thead>
+                            <tr>
+                                <th width="10">
+
+                                </th>
+                                <th>
+                                    ID
+                                </th>
+                                <th>
+                                    Merchandise Type
+                                </th>
+                                <th>
+                                    Client
+                                </th>
+                                <th>
+                                    Serial Number
+                                </th>
+                                @can('tb_access')
+                                    <th>
+                                        Team Leader
+                                    </th>
+                                @endcan
+                                <th>
+                                    Batch Code
+                                </th>
+                                <th>
+                                    Date Added
+                                </th>
+                                @can('admin_access')
+                                    <th>
+                                        Actions
+                                    </th>
+                                @endcan
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($products as $key => $product)
+                                <tr data-entry-id="{{ $product->id }}">
+                                    <td>
+
+                                    </td>
+                                    <td>
+                                        {{ $product->id ?? '' }}
+                                    </td>
+                                    <td>
+                                        {{ $product->category->title ?? '' }}
+                                    </td>
+                                    <td>
+                                        {{ $product->client->name ?? '' }}
+                                    </td>
+                                    <td>
+                                        {{ $product->product_code ?? '' }}
+                                    </td>
+                                    @can('tb_access')
+                                        <td>
+                                            {{ $product->assign->email ?? '' }}
+                                        </td>
+                                    @endcan
+                                    <td>
+                                        {{ $product->batch->batch_code ?? 'Single Product' }}
+                                    </td>
+                                    <td>
+                                        {{ $product->created_at ?? '' }}
+                                    </td>
+                                    @can('admin_access')
+                                        <td>
+                                            {{-- <a href="{{ route('products.edit', [$product->id]) }}"
+                                                class="btn btn-primary btn-sm">Edit</a> --}}
+                                            <a href="{{ route('products.destroyProduct', [$product->id]) }}"
+                                                class="btn btn-danger btn-sm" onclick="return confirm('Are you Sure?')">Delete</a>
+                                        </td>
+                                    @endcan
+
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    @endcan
+
+    {{-- Admin and TB Access --}}
     @can('tb_access')
         <div style="margin-bottom: 10px;" class="row">
             <div class="col-lg-12">
@@ -235,7 +338,8 @@
                                                 <label for="reason">
                                                     <h6>Select Batch</h6>
                                                 </label>
-                                                <select name="batch_id" class="form-control" style="border:solid 1px;" required>
+                                                <select name="batch_id" class="form-control" style="border:solid 1px;"
+                                                    required>
                                                     <option selected disabled value="">Select Batch</option>
                                                     @foreach ($batchesBa as $batch)
                                                         <option value="{{ $batch->id }}">
@@ -247,12 +351,12 @@
                                                 <label for="quantity">
                                                     Quantity
                                                 </label>
-                                                <input type="number" name="quantity" class="form-control" style="border:solid 1px;" required>
+                                                <input type="number" name="quantity" class="form-control"
+                                                    style="border:solid 1px;" required>
                                             </div>
                                         </div>
                                         <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary"
-                                                data-dismiss="modal">Close</button>
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                                             <button type="submit" class="btn btn-primary">Submit</button>
                                         </div>
                                     </form>
@@ -315,7 +419,8 @@
                                     <td>
                                         {{ $product->batch->batch_code ?? 'Single Product' }}
                                     </td>
-                                    <td><a href="/products/issue/product/{{$product->id}}/{{$product->batch->id}}" class="btn btn-sm btn-warning">Issue Out</a></td>
+                                    <td><a href="/products/issue/product/{{ $product->id }}/{{ $product->batch->id }}"
+                                            class="btn btn-sm btn-warning">Issue Out</a></td>
 
                                 </tr>
                             @endforeach
