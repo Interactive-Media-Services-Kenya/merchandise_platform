@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rules\Password;
 
 class RegisterController extends Controller
 {
@@ -52,7 +53,15 @@ class RegisterController extends Controller
         return Validator::make($data, [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'phone' => ['required', 'numeric', 'digits:12', 'unique:users'],
+            'county_id'=>['required','integer'],
+            'password' => ['required', 'string', 'confirmed',
+                Password::min(8)
+                ->mixedCase()
+                ->letters()
+                ->numbers()
+                ->symbols()
+                ->uncompromised()],
         ]);
     }
 
@@ -67,6 +76,8 @@ class RegisterController extends Controller
         return User::create([
             'name' => $data['name'],
             'email' => $data['email'],
+            'phone'=> $data['phone'],
+            'county_id'=>$data['county_id'],
             'password' => Hash::make($data['password']),
         ]);
     }

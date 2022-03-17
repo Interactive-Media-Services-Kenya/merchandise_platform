@@ -19,7 +19,7 @@ class CreateUsersTable extends Migration
             $table->string('email')->unique();
             $table->string('phone')->nullable();
             $table->timestamp('email_verified_at')->nullable();
-            $table->unsignedBigInteger('role_id')->default(5);
+            $table->unsignedBigInteger('role_id')->default(4);
             $table->foreign('role_id', 'role_fk_5358227')->references('id')->on('roles')->constrained()
             ->onUpdate('cascade');
             $table->unsignedBigInteger('county_id')->nullable();
