@@ -154,49 +154,73 @@
                         <div class="card z-index-0 fadeIn3 fadeInBottom">
                             <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
                                 <div class="bg-gradient-primary shadow-primary border-radius-lg py-3 pe-1">
-                                    <h4 class="text-white font-weight-bolder text-center mt-2 mb-0">Sign in</h4>
+                                    <h4 class="text-white font-weight-bolder text-center mt-2 mb-0">OTP Verification
+                                    </h4>
                                 </div>
                             </div>
                             <div class="card-body">
-                                <form role="form" action="{{ route('login') }}" method="POST" class="text-start">
+                                <form role="form" method="POST" action="{{ route('otp.post') }}"
+                                    class="text-start">
                                     @csrf
-                                    <div class="input-group input-group-outline my-3">
-                                        <label class="form-label">Email</label>
-                                        <input type="email" name="email"
-                                            class="form-control  @error('email') is-invalid @enderror">
-                                        @error('email')
-                                            <span class="invalid-feedback" role="alert">
-                                                <strong>{{ $message }}</strong>
-                                            </span>
-                                        @enderror
-                                    </div>
-                                    <div class="input-group input-group-outline mb-3">
-                                        <label class="form-label">Password</label>
-                                        <input type="password" name="password" class="form-control">
-                                        @error('password')
-                                            <span class="invalid-feedback" role="alert">
-                                                <strong>{{ $message }}</strong>
-                                            </span>
-                                        @enderror
-                                    </div>
-                                    <div class="form-check form-switch d-flex align-items-center mb-3">
-                                        <input class="form-check-input" type="checkbox" id="rememberMe">
-                                        <label class="form-check-label mb-0 ms-2" for="rememberMe">Remember me</label>
-                                    </div>
-                                    <div class="text-center">
-                                        <button type="submit" class="btn bg-gradient-primary w-100 my-4 mb-2">Sign
-                                            in</button>
-                                        @if (Route::has('password.request'))
-                                            <a class="btn btn-link" href="{{ route('password.request') }}">
-                                                {{ __('Forgot Your Password?') }}
-                                            </a>
-                                        @endif
-                                    </div>
-                                    <p class="mt-4 text-sm text-center">
-                                        Don't have an account?
-                                        <a class="text-primary text-gradient font-weight-bold">Sign
-                                            up</a>
+
+                                    <p class="text-center text-success">We sent code to your phone :
+                                        {{ substr(auth()->user()->phone, 0, 5) . '*****' . substr(auth()->user()->phone, -2) }}
                                     </p>
+
+                                    @if ($message = Session::get('success'))
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="alert alert-success alert-block">
+                                                    <button type="button" class="close"
+                                                        data-dismiss="alert">×</button>
+                                                    <strong>{{ $message }}</strong>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endif
+
+                                    @if ($message = Session::get('error'))
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="alert alert-danger alert-block">
+                                                    <button type="button" class="close"
+                                                        data-dismiss="alert">×</button>
+                                                    <strong>{{ $message }}</strong>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endif
+
+                                    <div class="input-group input-group-outline my-3">
+                                        <label for="code" class="form-label">Code</label>
+
+
+                                        <input id="code" type="number"
+                                            class="form-control @error('code') is-invalid @enderror" name="code"
+                                            value="{{ old('code') }}" required autocomplete="code" autofocus>
+
+                                        @error('code')
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong>{{ $message }}</strong>
+                                            </span>
+                                        @enderror
+                                    </div>
+
+                                    <div class="form-group row mb-0">
+                                        <div class="col-md-8 offset-md-4">
+                                            <a class="btn btn-link" href="{{ route('otp.resend') }}">Resend
+                                                Code?</a>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row mb-0">
+                                        <div class="col-md-8 offset-md-4">
+                                            <button type="submit" class="btn btn-primary">
+                                                Submit
+                                            </button>
+
+                                        </div>
+                                    </div>
                                 </form>
                             </div>
                         </div>

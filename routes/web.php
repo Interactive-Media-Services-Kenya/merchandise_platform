@@ -24,9 +24,13 @@ Route::get('/', function () {
 
 Auth::routes();
 
+Route::get('otp', 'OTPController@index')->name('otp.index');
+Route::post('otp', 'OTPController@store')->name('otp.post');
+Route::get('otp/reset', 'OTPController@resend')->name('otp.resend');
+
 // Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
-Route::group(['middleware' => ['auth:web']], function () {
+Route::group(['middleware' => ['auth:web','otp']], function () {
     Route::get('/home', 'HomeController@index')->name('home');
     // Permissions
     // Route::delete('permissions/destroy', 'PermissionsController@massDestroy')->name('permissions.massDestroy');

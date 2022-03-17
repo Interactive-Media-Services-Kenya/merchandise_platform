@@ -29,8 +29,8 @@ class ProductsController extends Controller
      */
     public function index()
     {
-        $products = Product::where('user_id', Auth::id())->get();
-
+       //$products = Product::where('user_id', Auth::id())->get();
+       $products = Product::all();
         $productsTls = Product::where('assigned_to', Auth::id())->get();
         $issuedProducts = IssueProduct::select('product_id')->where('ba_id', Auth::id())->get();
         $productsBas = Product::select('*')->whereNotIn('products.id', $issuedProducts)->join('productbas', 'products.id', 'productbas.product_id')->where('products.accept_status', 1)->where('productbas.assigned_to', Auth::id())->get();
