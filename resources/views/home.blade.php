@@ -1207,8 +1207,8 @@
                         </div>
                     </div>
                     <div class="card-body px-0 pb-2">
-                        <div class="table-responsive">
-                            <table class="table align-items-center mb-0">
+                        <div class="col-md-10 mx-auto table-responsive">
+                            <table class="table align-items-center mb-0" id="batchTable">
                                 <thead>
                                     <tr>
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
@@ -1235,7 +1235,9 @@
                                         </td>
                                     </tr>
                                     @empty
-
+                                    <tr>
+                                        <td class="text-center" colspan="4">No Batches Assigned Yet</td>
+                                    </tr>
                                     @endforelse
                                 </tbody>
                             </table>
@@ -1246,68 +1248,35 @@
             <div class="col-lg-4 col-md-6">
                 <div class="card h-100">
                     <div class="card-header pb-0">
-                        <h6>Orders overview</h6>
-                        <p class="text-sm">
+                        <h6>My Recent Activities</h6>
+                        {{-- <p class="text-sm">
                             <i class="fa fa-arrow-up text-success" aria-hidden="true"></i>
                             <span class="font-weight-bold">24%</span> this month
-                        </p>
+                        </p> --}}
                     </div>
                     <div class="card-body p-3">
                         <div class="timeline timeline-one-side">
+                            @forelse ($activities as $activity)
                             <div class="timeline-block mb-3">
                                 <span class="timeline-step">
                                     <i class="material-icons text-success text-gradient">notifications</i>
                                 </span>
                                 <div class="timeline-content">
-                                    <h6 class="text-dark text-sm font-weight-bold mb-0">$2400, Design changes</h6>
-                                    <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">22 DEC 7:20 PM</p>
+                                    <h6 class="text-dark text-sm font-weight-bold mb-0">{{$activity->description}}</h6>
+                                    <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">{{\Carbon\Carbon::parse( $activity->created_at)->diffForHumans()}}</p>
                                 </div>
                             </div>
+                            @empty
                             <div class="timeline-block mb-3">
                                 <span class="timeline-step">
-                                    <i class="material-icons text-danger text-gradient">code</i>
+                                    <i class="material-icons text-success text-gradient">notifications</i>
                                 </span>
                                 <div class="timeline-content">
-                                    <h6 class="text-dark text-sm font-weight-bold mb-0">New order #1832412</h6>
-                                    <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">21 DEC 11 PM</p>
+                                    <h6 class="text-dark text-sm font-weight-bold mb-0">No Activity Yet</h6>
+                                    {{-- <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">{{$activity->created_at->diffForhums}}</p> --}}
                                 </div>
                             </div>
-                            <div class="timeline-block mb-3">
-                                <span class="timeline-step">
-                                    <i class="material-icons text-info text-gradient">shopping_cart</i>
-                                </span>
-                                <div class="timeline-content">
-                                    <h6 class="text-dark text-sm font-weight-bold mb-0">Server payments for April</h6>
-                                    <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">21 DEC 9:34 PM</p>
-                                </div>
-                            </div>
-                            <div class="timeline-block mb-3">
-                                <span class="timeline-step">
-                                    <i class="material-icons text-warning text-gradient">credit_card</i>
-                                </span>
-                                <div class="timeline-content">
-                                    <h6 class="text-dark text-sm font-weight-bold mb-0">New card added for order #4395133</h6>
-                                    <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">20 DEC 2:20 AM</p>
-                                </div>
-                            </div>
-                            <div class="timeline-block mb-3">
-                                <span class="timeline-step">
-                                    <i class="material-icons text-primary text-gradient">key</i>
-                                </span>
-                                <div class="timeline-content">
-                                    <h6 class="text-dark text-sm font-weight-bold mb-0">Unlock packages for development</h6>
-                                    <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">18 DEC 4:54 AM</p>
-                                </div>
-                            </div>
-                            <div class="timeline-block">
-                                <span class="timeline-step">
-                                    <i class="material-icons text-dark text-gradient">payments</i>
-                                </span>
-                                <div class="timeline-content">
-                                    <h6 class="text-dark text-sm font-weight-bold mb-0">New order #9583120</h6>
-                                    <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">17 DEC</p>
-                                </div>
-                            </div>
+                            @endforelse
                         </div>
                     </div>
                 </div>

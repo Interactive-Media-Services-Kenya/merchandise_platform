@@ -56,6 +56,9 @@ Route::group(['middleware' => ['auth:web','otp']], function () {
     //Show Batch with associated products route
     Route::get('batch/show/{batch}','BatchController@show')->name('batch.show');
     Route::get('batches','BatchController@index')->name('batches.index');
+    Route::get('batches/confirm/batch/{batch_code}','BatchController@confirmBatch')->name('batch.confirm');
+    Route::post('batch/reject/{batch}','BatchController@rejectBatch')->name('reject.batch');
+
     // Categories
     Route::delete('categories/destroy', 'CategoriesController@massDestroy')->name('categories.massDestroy');
     Route::resource('categories', 'CategoriesController');

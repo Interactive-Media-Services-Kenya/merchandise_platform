@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Activity;
 use App\Models\Batch;
 use App\Models\Category;
 use App\Models\Client;
@@ -56,8 +57,13 @@ class HomeController extends Controller
 
         $batchesbas = Productbas::select('*')->where('assigned_to',Auth::id())->groupBy('batch_id')->get();
 
+        //user activity data
+
+        $activities = Activity::orderBy('created_at', 'DESC')->where('user_id',Auth::id())->take(5)->get();
+        // dd($activities);
+
         return view('home', compact('products','batches','clients','bas',
                                     'productsbas','batchesbas','categories',
-                                    'productsTls', 'brandAmbassadors','batchesTl'));
+                                    'productsTls', 'brandAmbassadors','batchesTl','activities'));
     }
 }

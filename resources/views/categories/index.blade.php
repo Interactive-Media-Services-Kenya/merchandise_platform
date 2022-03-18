@@ -22,11 +22,11 @@
 
             <div class="card-body">
                 <div class="table-responsive">
-                   able class=" table table-bordered table-striped table-hover datatable datatable-category" id="CategoryTable">
+                   <table class=" table table-bordered table-striped table-hover datatable datatable-category" id="CategoryTable">
                         <thead>
                             <tr>
                                 <th width="10">
- <t
+
                                 </th>
                                 <th>
                                     ID

@@ -16,6 +16,7 @@ use RealRashid\SweetAlert\Facades\Alert;
 use DB;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\AssignMerchandise;
+use App\Models\Activity;
 use App\Models\IssueProduct;
 use App\Models\Reject;
 use Illuminate\Support\Facades\URL;
@@ -85,6 +86,8 @@ class ProductsController extends Controller
             //Save Batch Code
             $batch = Batch::create([
                 'batch_code' => $batchcode,
+                'tl_id_accept'=> $request->assigned_to,
+                'accept_status'=> 0,
             ]);
             //dd($batch->batch_code);
             $merchandises = [];
@@ -102,6 +105,11 @@ class ProductsController extends Controller
                     'batch_id' => $batch->id,
                     'assigned_to' => $request->assigned_to,
                 ]);
+                Activity::create([
+                    'title'=> 'Merchandise Created',
+                    'user_id' => Auth::id(),
+                    'description' => Auth::user()->name.'Added Merchandise:' .$product_code,
+                ]);
                 if (!$data) {
                     Alert::error('Failed', 'Merchandises Not Added');
                     return back();
@@ -117,7 +125,7 @@ class ProductsController extends Controller
                 // dd($merchandise_type);
                 $message = "Hello, You have been assigned $quantity Merchandises ($merchandise_type) from Batch-Code $batchcode. Kindly Confirm through the portal: $url_login";
                 $details = [
-                    'title' => 'Mail from ' . $sender_email,
+                    'title' => 'Mail from '.$sender_email,
                     'body' => $message,
                 ];
                 // dd($details);
@@ -138,6 +146,11 @@ class ProductsController extends Controller
                 'category_id' => $request->category_id,
                 'client_id' => $request->client_id,
                 'assigned_to' => $request->assigned_to,
+            ]);
+            Activity::create([
+                'title'=> 'Merchandise Created',
+                'user_id' => Auth::id(),
+                'description' => Auth::user()->name.'Added Merchandise:' .$product_code,
             ]);
             if ($data) {
                 $receiver_email = User::where('id', $request->assigned_to)->value('email');
@@ -211,6 +224,11 @@ class ProductsController extends Controller
             // $product->update([
             //     'user_id' => Auth::id(),
             // ]);
+            Activity::create([
+                'title'=> 'Merchandise Updated',
+                'user_id' => Auth::id(),
+                'description' => Auth::user()->name.'Added Merchandise:' .$product->product_code,
+            ]);
             Alert::success('Success', 'Merchandise Updated Successfully');
             return back();
         } else {
@@ -270,6 +288,11 @@ class ProductsController extends Controller
                     'product_id' => $product->id,
                     'created_at' => \Carbon\Carbon::now(),
                 ]);
+                Activity::create([
+                    'title'=> 'Assign Merchandise',
+                    'user_id' => Auth::id(),
+                    'description' => Auth::user()->name.' Assigned Merchandise '.$data->product->product_code.' to ' . $data->user->email,
+                ]);
                 array_push($dataProducts, $data);
             }
 
@@ -314,6 +337,11 @@ class ProductsController extends Controller
             'description' => $request->description,
             'product_id' => $product->id,
         ]);
+        Activity::create([
+            'title'=> 'Reject Merchandise',
+            'user_id' => Auth::id(),
+            'description' => Auth::user()->name.' Have rejected Merchandise'. $product->product_code ,
+        ]);
         $merchandise_type = $product->category->title;
         $batchcode = $product->batch->batch_code;
         $product_code = $product->product_code;
@@ -339,6 +367,11 @@ class ProductsController extends Controller
         ]);
 
         if ($product) {
+            Activity::create([
+                'title'=> 'Merchandise Comfirmed',
+                'user_id' => Auth::id(),
+                'description' => Auth::user()->name.' have confirm '. $product->product_code ,
+            ]);
             Alert::success('Success', 'Operation Successfull.');
             return back();
         }
@@ -358,6 +391,11 @@ class ProductsController extends Controller
 
             $product->update([
                 'accept_status' => 1,
+            ]);
+            Activity::create([
+                'title'=> 'Merchandise Comfirmed',
+                'user_id' => Auth::id(),
+                'description' => Auth::user()->name.' have confirm '. $product->product_code ,
             ]);
         }
         Alert::success('Success', 'Operation Successfull.');
@@ -384,6 +422,11 @@ class ProductsController extends Controller
                     'user_id' => Auth::id(),
                     'description' => $request->description,
                     'product_id' => $product->id,
+                ]);
+                Activity::create([
+                    'title'=> 'Merchandise Rejected',
+                    'user_id' => Auth::id(),
+                    'description' => Auth::user()->name.' have rejected '. $product->product_code ,
                 ]);
             }
 
@@ -435,6 +478,11 @@ class ProductsController extends Controller
                     'ba_id' => Auth::id(),
                     'product_id' => $product->id,
                 ]);
+                Activity::create([
+                    'title'=> 'Merchandise Issued',
+                    'user_id' => Auth::id(),
+                    'description' => Auth::user()->name.' have issued out '. $product->product_code ,
+                ]);
             }
             Alert::success('Success', 'Operation Successfull');
             return back();
@@ -453,7 +501,11 @@ class ProductsController extends Controller
             'batch_id' => $batch->id,
             'product_id' => $product->id,
         ]);
-
+        Activity::create([
+            'title'=> 'Merchandise Issued',
+            'user_id' => Auth::id(),
+            'description' => Auth::user()->name.' have issued out '. $product->product_code ,
+        ]);
         Alert::success('Success', 'Operation Successfull');
         return back();
     }
