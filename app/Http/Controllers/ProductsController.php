@@ -448,7 +448,7 @@ class ProductsController extends Controller
             Alert::success('Success', 'Operation Successfull. An Email has been sent to ' . $receiver_email);
             return back();
         } else {
-            Alert::error('Failed', 'No products in Batch');
+            Alert::error('Failed', 'Batch is Aready Confirmed');
             return back();
         }
     }
