@@ -558,8 +558,8 @@
                             <i class="material-icons opacity-10">person</i>
                         </div>
                         <div class="text-end pt-1">
-                            <p class="text-sm mb-0 text-capitalize">Registered Brand Ambassadors</p>
-                            <h4 class="mb-0">{{ count($bas) }}</h4>
+                            <p class="text-sm mb-0 text-capitalize">Registered Team Leaders</p>
+                            <h4 class="mb-0">{{ count($tls) }}</h4>
                         </div>
                     </div>
                     <hr class="dark horizontal my-0">
@@ -614,17 +614,17 @@
                     <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 bg-transparent">
                         <div class="bg-gradient-default shadow-primary border-radius-lg py-3 pe-1">
                             <div class="chart">
-                                <canvas id="myChart-bar" class="chart-canvas" height="170"></canvas>
+                                <canvas id="myChart-bar" class="chart-canvas" height="450"></canvas>
                             </div>
                         </div>
                     </div>
                     <div class="card-body">
                         <h6 class="mb-0 ">Merchandise Issued</h6>
-                        <p class="text-sm ">Last Campaign Performance</p>
+                        <p class="text-sm ">Total Count form all Brand Ambassadors</p>
                         <hr class="dark horizontal">
                         <div class="d-flex ">
                             <i class="material-icons text-sm my-auto me-1">schedule</i>
-                            <p class="mb-0 text-sm"> campaign sent 2 days ago </p>
+                            <p class="mb-0 text-sm"> per month </p>
                         </div>
                     </div>
                 </div>
@@ -634,18 +634,18 @@
                 <div class="card z-index-2 ">
                     <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 bg-transparent">
                         <div class="bg-gradient-dark shadow-dark border-radius-lg py-3 pe-1">
-                            <div class="chart" height="170">
-                                <canvas id="myChart-pie" class="chart-canvas"></canvas>
+                            <div class="chart align-items-center" height="500">
+                                <canvas id="myChart-pie" class="chart-canvas" height="450" style="margin: 0 auto;"></canvas>
                             </div>
                         </div>
                     </div>
                     <div class="card-body">
                         <h6 class="mb-0 ">Completed Tasks</h6>
-                        <p class="text-sm ">Last Campaign Performance</p>
+                        <p class="text-sm ">Updated Issued Merchandise Per Type Summary</p>
                         <hr class="dark horizontal">
                         <div class="d-flex ">
                             <i class="material-icons text-sm my-auto me-1">schedule</i>
-                            <p class="mb-0 text-sm">just updated</p>
+                            <p class="mb-0 text-sm">latest update</p>
                         </div>
                     </div>
                 </div>
@@ -965,68 +965,37 @@
             <div class="col-lg-4 col-md-6">
                 <div class="card h-100">
                     <div class="card-header pb-0">
-                        <h6>Orders overview</h6>
-                        <p class="text-sm">
+                        <h6>My Recent Activities</h6>
+                        {{-- <p class="text-sm">
                             <i class="fa fa-arrow-up text-success" aria-hidden="true"></i>
                             <span class="font-weight-bold">24%</span> this month
-                        </p>
+                        </p> --}}
                     </div>
                     <div class="card-body p-3">
                         <div class="timeline timeline-one-side">
-                            <div class="timeline-block mb-3">
-                                <span class="timeline-step">
-                                    <i class="material-icons text-success text-gradient">notifications</i>
-                                </span>
-                                <div class="timeline-content">
-                                    <h6 class="text-dark text-sm font-weight-bold mb-0">$2400, Design changes</h6>
-                                    <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">22 DEC 7:20 PM</p>
+                            @forelse ($activities as $activity)
+                                <div class="timeline-block mb-3">
+                                    <span class="timeline-step">
+                                        <i class="material-icons text-success text-gradient">notifications</i>
+                                    </span>
+                                    <div class="timeline-content">
+                                        <h6 class="text-dark text-sm font-weight-bold mb-0">{{ $activity->description }}
+                                        </h6>
+                                        <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">
+                                            {{ \Carbon\Carbon::parse($activity->created_at)->diffForHumans() }}</p>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="timeline-block mb-3">
-                                <span class="timeline-step">
-                                    <i class="material-icons text-danger text-gradient">code</i>
-                                </span>
-                                <div class="timeline-content">
-                                    <h6 class="text-dark text-sm font-weight-bold mb-0">New order #1832412</h6>
-                                    <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">21 DEC 11 PM</p>
+                            @empty
+                                <div class="timeline-block mb-3">
+                                    <span class="timeline-step">
+                                        <i class="material-icons text-success text-gradient">notifications</i>
+                                    </span>
+                                    <div class="timeline-content">
+                                        <h6 class="text-dark text-sm font-weight-bold mb-0">No Activity Yet</h6>
+                                        {{-- <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">{{$activity->created_at->diffForhums}}</p> --}}
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="timeline-block mb-3">
-                                <span class="timeline-step">
-                                    <i class="material-icons text-info text-gradient">shopping_cart</i>
-                                </span>
-                                <div class="timeline-content">
-                                    <h6 class="text-dark text-sm font-weight-bold mb-0">Server payments for April</h6>
-                                    <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">21 DEC 9:34 PM</p>
-                                </div>
-                            </div>
-                            <div class="timeline-block mb-3">
-                                <span class="timeline-step">
-                                    <i class="material-icons text-warning text-gradient">credit_card</i>
-                                </span>
-                                <div class="timeline-content">
-                                    <h6 class="text-dark text-sm font-weight-bold mb-0">New card added for order #4395133</h6>
-                                    <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">20 DEC 2:20 AM</p>
-                                </div>
-                            </div>
-                            <div class="timeline-block mb-3">
-                                <span class="timeline-step">
-                                    <i class="material-icons text-primary text-gradient">key</i>
-                                </span>
-                                <div class="timeline-content">
-                                    <h6 class="text-dark text-sm font-weight-bold mb-0">Unlock packages for development</h6>
-                                    <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">18 DEC 4:54 AM</p>
-                                </div>
-                            </div>
-                            <div class="timeline-block">
-                                <span class="timeline-step">
-                                    <i class="material-icons text-dark text-gradient">payments</i>
-                                </span>
-                                <div class="timeline-content">
-                                    <h6 class="text-dark text-sm font-weight-bold mb-0">New order #9583120</h6>
-                                    <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">17 DEC</p>
-                                </div>
-                            </div>
+                            @endforelse
                         </div>
                     </div>
                 </div>
@@ -1243,7 +1212,8 @@
                                         <i class="material-icons text-success text-gradient">notifications</i>
                                     </span>
                                     <div class="timeline-content">
-                                        <h6 class="text-dark text-sm font-weight-bold mb-0">{{ $activity->description }}</h6>
+                                        <h6 class="text-dark text-sm font-weight-bold mb-0">{{ $activity->description }}
+                                        </h6>
                                         <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">
                                             {{ \Carbon\Carbon::parse($activity->created_at)->diffForHumans() }}</p>
                                     </div>
@@ -1317,7 +1287,7 @@
                             <i class="material-icons opacity-10">star</i>
                         </div>
                         <div class="text-end pt-1">
-                            <p class="text-sm mb-0 text-capitalize">Merchandise Given Out</p>
+                            <p class="text-sm mb-0 text-capitalize">Merchandise Issued Out</p>
                             <h4 class="mb-0">
                                 {{ count(\DB::table('issue_products')->where('ba_id', Auth::id())->get()) }}</h4>
                         </div>
@@ -1615,98 +1585,101 @@
             return randomColor
         }
         async function fetchData() {
-                let response_bar = await fetch(url_productsPerMonth);
-                const res_bar = await response_bar.json();
+            let response_bar = await fetch(url_productsPerMonth);
+            const res_bar = await response_bar.json();
 
-                const labels_bar = [];
-                const backgroundColor_bar = [];
-                const data_bar1 = [];
-                let opacity = 1.0;
-                for (let i = 0; i < res_bar.data.length; i++) {
-                    let color = 'rgb(245, 39, 128,'
-                    color = color + ((opacity -= 0.1).toString()) + ')'
-                    //console.log(color)
-                    labels_bar.push(res_bar.data[i].month);
-                    data_bar1.push(res_bar.data[i].count);
-                    backgroundColor_bar.push(color);
-                }
+            const labels_bar = [];
+            const backgroundColor_bar = [];
+            const data_bar1 = [];
+            let opacity = 1.0;
+            for (let i = 0; i < res_bar.data.length; i++) {
+                let color = 'rgb(245, 39, 128,'
+                color = color + ((opacity -= 0.1).toString()) + ')'
+                //console.log(color)
+                labels_bar.push(res_bar.data[i].month);
+                data_bar1.push(res_bar.data[i].count);
+                backgroundColor_bar.push(color);
+            }
 
 
 
-                const data_bar = {
-                    labels: labels_bar,
-                    datasets: [{
-                        label: 'Products Issued Per month',
-                        backgroundColor: backgroundColor_bar,
-                        // borderColor: ['rgb(106, 255, 51)', 'rgb(255,66,51)', 'rgb(255, 189, 51 )'],
-                        data: data_bar1,
-                    }]
-                };
+            const data_bar = {
+                labels: labels_bar,
+                datasets: [{
+                    label: 'Merchandise Issued',
+                    backgroundColor: backgroundColor_bar,
+                    // borderColor: ['rgb(106, 255, 51)', 'rgb(255,66,51)', 'rgb(255, 189, 51 )'],
+                    data: data_bar1,
+                }]
+            };
 
-                const config_bar = {
-                    plugins: [ChartDataLabels],
-                    type: 'bar',
-                    data: data_bar,
-                    options: {
-                        plugins: {
-                            datalabels: {
-                                anchor: 'end',
-                                align: 'top',
-                                formatter: Math.round,
-                                font: {
-                                    weight: 'bold'
-                                }
+            const config_bar = {
+                plugins: [ChartDataLabels],
+                type: 'bar',
+                data: data_bar,
+                options: {
+                    plugins: {
+                        datalabels: {
+                            anchor: 'end',
+                            align: 'top',
+                            formatter: Math.round,
+                            font: {
+                                weight: 'bold'
                             }
                         }
-                    }
-                };
-                const myChart_bar = new Chart(
-                    document.getElementById('myChart-bar'),
-                    config_bar
-                );
-                // Pie Chart
-                const url_pie = `{{ route('api.products.issued-per-type') }}`;
-                let response_pie = await fetch(url_pie);
-                const res_pie = await response_pie.json();
-
-                const labels_pie = [];
-                const backgroundColor_pie = [];
-                const data_pie1 = [];
-                let opacity_pie = 1.0;
-                for (let i = 0; i < res_pie.data.length; i++) {
-                    let color_pie = 'rgb(39, 128, 245,'
-                    color_pie = color_pie + ((opacity_pie -= 0.1).toString()) + ')'
-                    console.log(color_pie)
-                    labels_pie.push(res_pie.data[i].name);
-                    data_pie1.push(res_pie.data[i].count);
-                    backgroundColor_pie.push(color_pie);
+                    },
+                    responsive: true,
+                    maintainAspectRatio: false,
                 }
+            };
+            const myChart_bar = new Chart(
+                document.getElementById('myChart-bar'),
+                config_bar
+            );
+            // Pie Chart
+            const url_pie = `{{ route('api.products.issued-per-type') }}`;
+            let response_pie = await fetch(url_pie);
+            const res_pie = await response_pie.json();
 
-
-
-                const data_pie = {
-                    labels: labels_pie,
-                    datasets: [{
-                        label: 'Merchandise Issued Per Type',
-                        backgroundColor: backgroundColor_pie,
-                        // borderColor: ['rgb(106, 255, 51)', 'rgb(255,66,51)', 'rgb(255, 189, 51 )'],
-                        data: data_pie1,
-                    }]
-                };
-
-                const config_pie = {
-                    type: 'pie',
-                    data: data_pie,
-                    options: {
-                        responsive: false,
-                    }
-                };
-
-                const myChart_pie = new Chart(
-                    document.getElementById('myChart-pie'),
-                    config_pie
-                );
+            const labels_pie = [];
+            const backgroundColor_pie = [];
+            const data_pie1 = [];
+            let opacity_pie = 1.0;
+            for (let i = 0; i < res_pie.data.length; i++) {
+                let color_pie = 'rgb(39, 128, 245,'
+                color_pie = color_pie + ((opacity_pie -= 0.1).toString()) + ')'
+                console.log(color_pie)
+                labels_pie.push(res_pie.data[i].name);
+                data_pie1.push(res_pie.data[i].count);
+                backgroundColor_pie.push(color_pie);
             }
-            fetchData();
+
+
+
+            const data_pie = {
+                labels: labels_pie,
+                datasets: [{
+                    label: 'Merchandise Issued Per Type',
+                    backgroundColor: backgroundColor_pie,
+                    // borderColor: ['rgb(106, 255, 51)', 'rgb(255,66,51)', 'rgb(255, 189, 51 )'],
+                    data: data_pie1,
+                }]
+            };
+
+            const config_pie = {
+                type: 'pie',
+                data: data_pie,
+                options: {
+                    responsive: false,
+                    maintainAspectRatio: true,
+                }
+            };
+
+            const myChart_pie = new Chart(
+                document.getElementById('myChart-pie'),
+                config_pie
+            );
+        }
+        fetchData();
     </script>
 @endsection

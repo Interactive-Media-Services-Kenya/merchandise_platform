@@ -39,7 +39,7 @@ class HomeController extends Controller
         $clients = Client::all();
         $bas = User::where('role_id', 4)->get();
         $categories = Category::all();
-
+        $tls = User::where('role_id',3)->get();
         //Team Leader Data
         // Product for a team leader
         $productsTls = Product::where('assigned_to', Auth::id())->get();
@@ -62,7 +62,7 @@ class HomeController extends Controller
         $activities = Activity::orderBy('created_at', 'DESC')->where('user_id',Auth::id())->take(5)->get();
         // dd($activities);
 
-        return view('home', compact('products','batches','clients','bas',
+        return view('home', compact('products','batches','clients','bas','tls',
                                     'productsbas','batchesbas','categories',
                                     'productsTls', 'brandAmbassadors','batchesTl','activities'));
     }
