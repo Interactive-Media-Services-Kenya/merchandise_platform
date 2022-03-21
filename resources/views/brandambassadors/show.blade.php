@@ -28,7 +28,7 @@
                             <li class="list-group-item"><b>Total Batches:</b> {{ count($batches) }} :
                                 <ul class="list-group">
                                  @foreach ($batches as $batch)
-                                    <li class="list-group-item">{{ $batch->batch->batch_code }}</li>
+                                    <li class="list-group-item"><strong>Batch Code: </strong>{{ $batch->batch->batch_code }}  &nbsp;<strong>Products Issued: </strong>{{ count(\DB::table('issue_products')->where('ba_id',$ba->id)->where('batch_id',$batch->batch->id)->get())}}</li>
                             @endforeach
                             </ul>
                         </li>
