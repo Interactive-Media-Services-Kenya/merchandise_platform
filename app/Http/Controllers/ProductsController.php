@@ -466,8 +466,8 @@ class ProductsController extends Controller
         $issuedProducts = IssueProduct::select('product_id')->where('ba_id', Auth::id())->get();
         // dd($issuedProducts);
         $productsBa= Productbas::select('product_id')->where('assigned_to',Auth::id())->get();
-        $productsBas = Product::select('*')->whereIn('id',$productsBa)->whereNotIn('id',$issuedProducts)->get();
-        //dd($productsBas);
+        $productsBas = Product::select('*')->whereIn('id',$productsBa)->where('batch_id',$request->batch_id)->whereNotIn('id',$issuedProducts)->get();
+        ///dd($productsBas);
         //Check if Batch issue doesn't exceed the expected amount
         if ($request->quantity <= count($productsBas)) {
             $issuedProducts = IssueProduct::select('product_id')->where('ba_id', Auth::id())->get();
