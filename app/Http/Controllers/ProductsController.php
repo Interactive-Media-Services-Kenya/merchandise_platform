@@ -296,7 +296,7 @@ class ProductsController extends Controller
                 Activity::create([
                     'title'=> 'Assign Merchandise',
                     'user_id' => Auth::id(),
-                    'description' => Auth::user()->name.' Assigned Merchandise '.$data->product->product_code.' to ' . $data->user->email,
+                    'description' => Auth::user()->name.' have assigned merchandise: '.$data->product->product_code.' to ' . $data->user->email,
                 ]);
                 array_push($dataProducts, $data);
             }
@@ -345,7 +345,7 @@ class ProductsController extends Controller
         Activity::create([
             'title'=> 'Reject Merchandise',
             'user_id' => Auth::id(),
-            'description' => Auth::user()->name.' Have rejected Merchandise'. $product->product_code ,
+            'description' => Auth::user()->name.' have rejected merchandise: '. $product->product_code ,
         ]);
         $merchandise_type = $product->category->title;
         $batchcode = $product->batch->batch_code;
@@ -375,7 +375,7 @@ class ProductsController extends Controller
             Activity::create([
                 'title'=> 'Merchandise Comfirmed',
                 'user_id' => Auth::id(),
-                'description' => Auth::user()->name.' have confirm '. $product->product_code ,
+                'description' => Auth::user()->name.' have confirm merchandise: '. $product->product_code ,
             ]);
             Alert::success('Success', 'Operation Successfull.');
             return back();
@@ -400,7 +400,7 @@ class ProductsController extends Controller
             Activity::create([
                 'title'=> 'Merchandise Comfirmed',
                 'user_id' => Auth::id(),
-                'description' => Auth::user()->name.' have confirm '. $product->product_code ,
+                'description' => Auth::user()->name.' have confirm merchandise: '. $product->product_code ,
             ]);
         }
         Alert::success('Success', 'Operation Successfull.');
@@ -463,11 +463,13 @@ class ProductsController extends Controller
             'batch_id' => 'required|integer',
             'quantity' => 'required|integer',
         ]);
-        $issuedProducts = IssueProduct::select('product_id')->where('ba_id', Auth::id())->get();
-        // dd($issuedProducts);
+        // Get Products belonging to a brand Ambassador
         $productsBa= Productbas::select('product_id')->where('assigned_to',Auth::id())->get();
+
+        //Get Issued Products By a Brand Ambassodor
+        $issuedProducts = IssueProduct::select('product_id')->where('ba_id', Auth::id())->get();
+        //Filter Out Products not issued but belongs to the selected batch and the logged in Brand Ambassador
         $productsBas = Product::select('*')->whereIn('id',$productsBa)->where('batch_id',$request->batch_id)->whereNotIn('id',$issuedProducts)->get();
-        ///dd($productsBas);
         //Check if Batch issue doesn't exceed the expected amount
         if ($request->quantity <= count($productsBas)) {
             $issuedProducts = IssueProduct::select('product_id')->where('ba_id', Auth::id())->get();
