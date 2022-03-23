@@ -38,7 +38,8 @@ class ProductsController extends Controller
         $issuedProducts = IssueProduct::select('product_id')->where('ba_id', Auth::id())->get();
         // dd($issuedProducts);
         $productsBa = Productbas::select('product_id')->where('assigned_to', Auth::id())->get();
-        $productsBas = Product::select('*')->whereIn('id', $productsBa)->whereNotIn('id', $issuedProducts)->get();
+        //Filter Confirmed Product (accept_status) belonging to Auth Brand Ambassador and not issued out
+        $productsBas = Product::select('*')->where('accept_status',1)->whereIn('id', $productsBa)->whereNotIn('id', $issuedProducts)->get();
         //$productsBatches = Product::select('products.batch_id')->whereNotIn('products.id', $issuedProducts)->join('productbas', 'products.id', 'productbas.product_id')->where('products.accept_status', 1)->where('productbas.assigned_to', Auth::id())->get();
         //dd($productsBas);
 
