@@ -22,4 +22,7 @@ class IssueProduct extends Model
     public function batch(){
         return $this->belongsTo(Batch::class, 'batch_id');
     }
+    public function category(){
+        return $this->belongsTo(Category::class, 'category_id');
+    }
 }

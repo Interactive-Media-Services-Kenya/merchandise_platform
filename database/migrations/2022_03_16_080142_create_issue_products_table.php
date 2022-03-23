@@ -24,6 +24,9 @@ class CreateIssueProductsTable extends Migration
             $table->unsignedBigInteger('batch_id')->nullable();
             $table->foreign('batch_id', 'batch_id_fk_5223027')->references('id')->on('batches')->constrained()
                 ->onUpdate('cascade');
+            $table->unsignedBigInteger('category_id')->nullable();
+            $table->foreign('category_id', 'category_id_fk_5223027')->references('id')->on('categories')->constrained()
+                ->onUpdate('cascade');
             $table->timestamps();
         });
     }

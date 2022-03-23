@@ -10,4 +10,7 @@ class Batch extends Model
     use HasFactory;
    // protected $fillable = ['batch_code'];
     protected $guarded = [];
+    public function teamleader(){
+        return $this->belongsTo(User::class, 'tl_id_accept');
+    }
 }

@@ -40,6 +40,10 @@ class HomeController extends Controller
         $bas = User::where('role_id', 4)->get();
         $categories = Category::all();
         $tls = User::where('role_id',3)->get();
+
+        //True Blaq
+        $batchesConfirmed = Batch::orderBy('updated_at', 'DESC')->where('accept_status',1)->take(5)->get();
+        //dd($batchesConfirmed);
         //Team Leader Data
         // Product for a team leader
         $productsTls = Product::where('assigned_to', Auth::id())->get();
@@ -63,7 +67,7 @@ class HomeController extends Controller
         // dd($activities);
 
         return view('home', compact('products','batches','clients','bas','tls',
-                                    'productsbas','batchesbas','categories',
+                                    'productsbas','batchesbas','categories','batchesConfirmed',
                                     'productsTls', 'brandAmbassadors','batchesTl','activities'));
     }
 }

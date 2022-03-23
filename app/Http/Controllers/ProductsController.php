@@ -113,7 +113,7 @@ class ProductsController extends Controller
                 Activity::create([
                     'title'=> 'Merchandise Created',
                     'user_id' => Auth::id(),
-                    'description' => Auth::user()->name.'Added Merchandise:' .$product_code,
+                    'description' => Auth::user()->name.' Added Merchandise:' .$product_code,
                 ]);
                 if (!$data) {
                     Alert::error('Failed', 'Merchandises Not Added');
@@ -155,7 +155,7 @@ class ProductsController extends Controller
             Activity::create([
                 'title'=> 'Merchandise Created',
                 'user_id' => Auth::id(),
-                'description' => Auth::user()->name.'Added Merchandise:' .$product_code,
+                'description' => Auth::user()->name.' Added Merchandise:' .$product_code,
             ]);
             if ($data) {
                 $receiver_email = User::where('id', $request->assigned_to)->value('email');
@@ -482,6 +482,7 @@ class ProductsController extends Controller
                     'batch_id' => $request->batch_id,
                     'ba_id' => Auth::id(),
                     'product_id' => $product->id,
+                    'category_id'=>$product->category->id,
                 ]);
                 Activity::create([
                     'title'=> 'Merchandise Issued',
@@ -505,6 +506,7 @@ class ProductsController extends Controller
             'ba_id' => Auth::id(),
             'batch_id' => $batch->id,
             'product_id' => $product->id,
+            'category_id'=>$product->category->id,
         ]);
         Activity::create([
             'title'=> 'Merchandise Issued',

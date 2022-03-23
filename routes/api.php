@@ -19,4 +19,5 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 Route::get('/v1/products-issued-per-month','DashboardApiController@productsPerMonth')->name('api.products.issued-per-month');
 Route::get('/v1/products-issued-per-type','DashboardApiController@productsPerType')->name('api.products.issued-per-type');
+Route::get('/v1/products-issued-per-type-per-month','DashboardApiController@productsPerTypePerMonth')->name('api.products.issued-per-type-per-month');
 
