@@ -10,11 +10,11 @@
 @can('team_leader_access')
         <div class="card">
             <div class="card-header">
-                Batch
+                <h4>Merchandise In Batch</h4>
             </div>
 
             <div class="card-body">
-                <div class="col-md-10 mx-auto">
+                <div class="col-md-12">
                     <div class="card">
                         <div class="card-header text-center">
                             <h5>BATCH-CODE

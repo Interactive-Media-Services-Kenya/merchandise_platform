@@ -233,9 +233,7 @@
                                 <th width="10">
 
                                 </th>
-                                <th>
-                                    ID
-                                </th>
+
                                 <th>
                                     Merchandise Type
                                 </th>
@@ -260,12 +258,9 @@
                         </thead>
                         <tbody>
                             @foreach ($productsTls as $key => $product)
-                                <tr data-entry-id="{{ $product->id }}">
+                                <tr>
                                     <td>
 
-                                    </td>
-                                    <td>
-                                        {{ $product->id ?? '' }}
                                     </td>
                                     <td>
                                         {{ $product->category->title ?? '' }}
@@ -465,7 +460,7 @@
                         title: 'Merchandise_list',
                         exportOptions: {
                             exportOptions: {
-                                columns: [0, 1, 2, 3, 4, ':visible']
+                                columns: [0, 1, 2, 3, 4,5, ':visible']
                             }
                         }
                     },
@@ -473,7 +468,7 @@
                         extend: 'pdfHtml5',
                         title: 'merchandise_list',
                         exportOptions: {
-                            columns: [0, 1, 2, 3, 4]
+                            columns: [0, 1, 2, 3, 4,5]
                         }
                     },
                     'colvis'

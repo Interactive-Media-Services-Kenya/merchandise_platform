@@ -6,14 +6,15 @@
         integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn" crossorigin="anonymous"> --}}
 @endsection
 @section('content')
-    <div class="row mb-4 mt-4">
-        <div class="col-lg-12 mx-auto mb-md-0 mb-4">
-            <div class="card">
-                <div class="card-header pb-0">
-                    <div class="row">
-                        <div class="col-lg-6 col-7">
-                            <h6>Batches</h6>
-                            {{-- <p class="text-sm mb-0">
+@can('team_leader_access')
+        <div class="row mb-4 mt-4">
+            <div class="col-lg-12 mx-auto mb-md-0 mb-4">
+                <div class="card">
+                    <div class="card-header pb-0">
+                        <div class="row">
+                            <div class="col-lg-6 col-7">
+                                <h6>Batches</h6>
+                                {{-- <p class="text-sm mb-0">
                             <i class="fa fa-check text-info" aria-hidden="true"></i>
                             <span class="font-weight-bold ms-1">{{ count($batchesbas) }}</span> Assigned and
                             Confirmed
@@ -23,9 +24,9 @@
                             <span class="font-weight-bold ms-1">{{ count($batchesbas) }}</span> Assigned and
                             Rejected
                         </p> --}}
-                        </div>
-                        <div class="col-lg-6 col-5 my-auto text-end">
-                            {{-- <div class="dropdown float-lg-end pe-4">
+                            </div>
+                            <div class="col-lg-6 col-5 my-auto text-end">
+                                {{-- <div class="dropdown float-lg-end pe-4">
                             <a class="cursor-pointer" id="dropdownTable" data-bs-toggle="dropdown"
                                 aria-expanded="false">
                                 <i class="fa fa-ellipsis-v text-secondary"></i>
@@ -38,77 +39,181 @@
                                         here</a></li>
                             </ul>
                         </div> --}}
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="card-body px-2 pb-2">
-                    <div class="table-responsive mt-3">
-                        <table class="table align-items-center mb-3 datatable" id="batchTable">
-                            <thead>
-                                <tr>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                        Batch</th>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                        Merchandise Type</th>
-                                    <th
-                                        class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                        Total Merchandise</th>
-                                    <th
-                                        class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                        Merchandise Issued Out</th>
-                                    <th
-                                        class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                        Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @forelse ($batchesbas as $batch)
+                    <div class="card-body px-2 pb-2">
+                        <div class="table-responsive mt-3">
+                            <table class="table align-items-center mb-3 datatable" id="ProductTable">
+                                <thead>
                                     <tr>
-                                        <td>
-                                            <div class="d-flex px-2 py-1">
-                                                <div class="d-flex flex-column justify-content-center">
-                                                    <h6 class="mb-0 text-sm">{{ $batch->batch->batch_code }}</h6>
+                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                            Batch</th>
+                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                            Merchandise Type</th>
+                                        <th
+                                            class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                            Total Merchandise</th>
+                                        <th
+                                            class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                            Status (Confirm)</th>
+                                        <th
+                                            class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                            Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @forelse ($batchesTls as $batch)
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex px-2 py-1">
+                                                    <div class="d-flex flex-column justify-content-center">
+                                                        <h6 class="mb-0 text-sm">{{ $batch->batch->batch_code }}</h6>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div class="avatar-group mt-2">
-                                                <h6>{{ $batch->product->category->title }}</h6>
-                                            </div>
-                                        </td>
-                                        <td class="align-middle text-center text-sm">
-                                            <span class="text-xs font-weight-bold">
-                                                {{ count(
-                                                    \DB::table('products')->where('products.batch_id', $batch->batch->id)->join('productbas', 'productbas.product_id', 'products.id')->where('productbas.assigned_to', Auth::id())->get(),
-                                                ) }}</span>
-                                        </td>
-                                        <td class="align-middle text-center text-sm">
-                                            <span class="text-xs font-weight-bold">
-                                                {{ count(
-                                                    \DB::table('issue_products')->where('batch_id',$batch->batch->id)->where('ba_id',Auth::id())->get()
-                                                    ) }}</span>
-                                        </td>
-                                        <td class="align-middle text-center text-sm"><a
-                                                href="{{ route('batch.show', [$batch->batch_id]) }}"
-                                                class="btn btn-sm btn-info">View</a>
-                                            {{-- <a href="#"
+                                            </td>
+                                            <td>
+                                                <div class="avatar-group mt-2">
+                                                    <h6>{{\DB::table('categories')->where('id',\DB::table('products')->where('batch_id',$batch->batch->id)->value('category_id'))->value('title')}}</h6>
+                                                </div>
+                                            </td>
+                                            <td class="align-middle text-center text-sm">
+                                                <span class="text-xs font-weight-bold">
+                                                    {{ count(
+                                                        \DB::table('products')->where('assigned_to',Auth::id())->where('batch_id',$batch->batch->id)->get()
+                                                        ) }}</span>
+                                            </td>
+                                            <td class="align-middle text-center text-sm">
+                                                <span class="text-xs font-weight-bold">
+                                                    {{ $batch->batch->accept_status == 1?'Confirmed':'Not Confirmed'}}</span>
+                                            </td>
+                                            <td class="align-middle text-center text-sm"><a
+                                                    href="{{ route('batch.show', [$batch->batch_id]) }}"
+                                                    class="btn btn-sm btn-info">View</a>
+                                                {{-- <a href="#"
                                         class="btn btn-sm btn-success">Confirm</a> &nbsp;
                                         <a href="#"
                                         class="btn btn-sm btn-danger">Reject</a> --}}
-                                        </td>
-                                    </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="5">No Assigned Batches</td>
-                                    </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
+                                            </td>
+                                        </tr>
+                                    @empty
+                                        <tr>
+                                            <td colspan="5">No Assigned Batches</td>
+                                        </tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+    @endcan
+    @can('brand_ambassador_access')
+        <div class="row mb-4 mt-4">
+            <div class="col-lg-12 mx-auto mb-md-0 mb-4">
+                <div class="card">
+                    <div class="card-header pb-0">
+                        <div class="row">
+                            <div class="col-lg-6 col-7">
+                                <h6>Batches</h6>
+                                {{-- <p class="text-sm mb-0">
+                            <i class="fa fa-check text-info" aria-hidden="true"></i>
+                            <span class="font-weight-bold ms-1">{{ count($batchesbas) }}</span> Assigned and
+                            Confirmed
+                        </p>
+                        <p class="text-sm mb-0">
+                            <i class="fa fa-times text-danger" aria-hidden="true"></i>
+                            <span class="font-weight-bold ms-1">{{ count($batchesbas) }}</span> Assigned and
+                            Rejected
+                        </p> --}}
+                            </div>
+                            <div class="col-lg-6 col-5 my-auto text-end">
+                                {{-- <div class="dropdown float-lg-end pe-4">
+                            <a class="cursor-pointer" id="dropdownTable" data-bs-toggle="dropdown"
+                                aria-expanded="false">
+                                <i class="fa fa-ellipsis-v text-secondary"></i>
+                            </a>
+                            <ul class="dropdown-menu px-2 py-3 ms-sm-n4 ms-n5" aria-labelledby="dropdownTable">
+                                <li><a class="dropdown-item border-radius-md" href="javascript:;">Action</a></li>
+                                <li><a class="dropdown-item border-radius-md" href="javascript:;">Another action</a>
+                                </li>
+                                <li><a class="dropdown-item border-radius-md" href="javascript:;">Something else
+                                        here</a></li>
+                            </ul>
+                        </div> --}}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body px-2 pb-2">
+                        <div class="table-responsive mt-3">
+                            <table class="table align-items-center mb-3 datatable" id="batchTable">
+                                <thead>
+                                    <tr>
+                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                            Batch</th>
+                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                            Merchandise Type</th>
+                                        <th
+                                            class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                            Total Merchandise</th>
+                                        <th
+                                            class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                            Merchandise Issued Out</th>
+                                        <th
+                                            class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                            Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @forelse ($batchesbas as $batch)
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex px-2 py-1">
+                                                    <div class="d-flex flex-column justify-content-center">
+                                                        <h6 class="mb-0 text-sm">{{ $batch->batch->batch_code }}</h6>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="avatar-group mt-2">
+                                                    <h6>{{ $batch->product->category->title }}</h6>
+                                                </div>
+                                            </td>
+                                            <td class="align-middle text-center text-sm">
+                                                <span class="text-xs font-weight-bold">
+                                                    {{ count(
+                                                        \DB::table('products')->where('products.batch_id', $batch->batch->id)->join('productbas', 'productbas.product_id', 'products.id')->where('productbas.assigned_to', Auth::id())->get(),
+                                                    ) }}</span>
+                                            </td>
+                                            <td class="align-middle text-center text-sm">
+                                                <span class="text-xs font-weight-bold">
+                                                    {{ count(
+                                                        \DB::table('issue_products')->where('batch_id', $batch->batch->id)->where('ba_id', Auth::id())->get(),
+                                                    ) }}</span>
+                                            </td>
+                                            <td class="align-middle text-center text-sm"><a
+                                                    href="{{ route('batch.show', [$batch->batch_id]) }}"
+                                                    class="btn btn-sm btn-info">View</a>
+                                                {{-- <a href="#"
+                                        class="btn btn-sm btn-success">Confirm</a> &nbsp;
+                                        <a href="#"
+                                        class="btn btn-sm btn-danger">Reject</a> --}}
+                                            </td>
+                                        </tr>
+                                    @empty
+                                        <tr>
+                                            <td colspan="5">No Assigned Batches</td>
+                                        </tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endcan
 @endsection
 @section('scripts')
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"

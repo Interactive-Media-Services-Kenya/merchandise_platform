@@ -20,10 +20,11 @@ class BatchController extends Controller
 {
     public function index()
     {
+        $batchesTls = Product::select('*')->where('assigned_to',Auth::id())->groupBy('batch_id')->get();
 
         $batchesbas = Productbas::select('*')->where('assigned_to', Auth::id())->groupBy('batch_id')->get();
 
-        return view('batches.index', compact('batchesbas'));
+        return view('batches.index', compact('batchesbas','batchesTls'));
     }
 
 
@@ -64,7 +65,7 @@ class BatchController extends Controller
             Alert::success('Success','Operation Successfull');
             return back();
         } else {
-            Alert::error('Failed', 'No Products in batch to Confirm');
+            Alert::error('Failed', 'Batch is Already Confirmed');
             return back();
         }
     }
