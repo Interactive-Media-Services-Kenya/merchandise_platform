@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Activity;
 use App\Models\County;
 use App\Models\Productbas;
 use App\Models\Role;
@@ -21,7 +22,7 @@ class UsersController extends Controller
      */
     public function index()
     {
-        $users = User::with(['roles','county'])->get();
+        $users = User::with(['roles', 'county'])->get();
         // dd($users);
 
         return view('users.index', compact('users'));
@@ -31,7 +32,7 @@ class UsersController extends Controller
 
     public function teamleaders()
     {
-        $teamleaders = User::with(['roles','county'])->where('role_id',3)->get();
+        $teamleaders = User::with(['roles', 'county'])->where('role_id', 3)->get();
 
 
         return view('teamleaders.index', compact('teamleaders'));
@@ -42,7 +43,7 @@ class UsersController extends Controller
     public function brandambassadors()
     {
         $county_id = Auth::user()->county_id;
-        $brandambassadors = User::with(['roles','county'])->where('role_id',4)->where('county_id',$county_id)->get();
+        $brandambassadors = User::with(['roles', 'county'])->where('role_id', 4)->where('county_id', $county_id)->get();
 
 
         return view('brandambassadors.index', compact('brandambassadors'));
@@ -56,8 +57,8 @@ class UsersController extends Controller
      */
     public function create()
     {
-        $roles = Role::pluck('title','id');
-        $counties = County::pluck('name','id');
+        $roles = Role::pluck('title', 'id');
+        $counties = County::pluck('name', 'id');
 
         return view('users.create', compact('roles', 'counties'));
     }
@@ -71,12 +72,12 @@ class UsersController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => ['required','string','max:255'],
-            'email' => ['required','email','max:255','unique:users'],
-            'phone' => ['required','numeric','digits:12'],
-            'county_id' => ['required','integer'],
-            'role_id' => ['required','integer'],
-            'password' => ['required',Password::min(8)->mixedCase()->symbols()->uncompromised(),'confirmed'],
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'email', 'max:255', 'unique:users'],
+            'phone' => ['required', 'numeric', 'digits:12'],
+            'county_id' => ['required', 'integer'],
+            'role_id' => ['required', 'integer'],
+            'password' => ['required', Password::min(8)->mixedCase()->symbols()->uncompromised(), 'confirmed'],
         ]);
 
         $user = User::create([
@@ -87,11 +88,15 @@ class UsersController extends Controller
             'role_id' => $request->role_id,
             'password' => bcrypt($request->password),
         ]);
+        Activity::create([
+            'title' => 'User Added',
+            'description' => Auth::user()->name . ' Added User: ' . $user->email,
+            'user_id' => Auth::id(),
+        ]);
         if ($user) {
             Alert::success('Success', 'User Successfully Added');
             return back();
-        }
-        else {
+        } else {
             Alert::error('Failed', 'Registration failed');
             return back();
         }
@@ -117,10 +122,10 @@ class UsersController extends Controller
     public function edit($id)
     {
         $user = User::findOrFail($id);
-        $roles = Role::pluck('title','id');
-        $counties = County::pluck('name','id');
+        $roles = Role::pluck('title', 'id');
+        $counties = County::pluck('name', 'id');
 
-        return view('users.edit', compact('roles','user','counties'));
+        return view('users.edit', compact('roles', 'user', 'counties'));
     }
 
     /**
@@ -134,22 +139,26 @@ class UsersController extends Controller
     {
 
         $request->validate([
-            'name' => ['required','string','max:255'],
-            'email' => ['required','email','max:255'],
-            'phone' => ['required','numeric','digits:12'],
-            'county_id' => ['required','integer'],
-            'role_id' => ['required','integer'],
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'email', 'max:255'],
+            'phone' => ['required', 'numeric', 'digits:12'],
+            'county_id' => ['required', 'integer'],
+            'role_id' => ['required', 'integer'],
         ]);
         $user = User::findOrFail($id);
 
-       if ($user->update($request->all())) {
-        Alert::success('Success', 'User Details Successfully Edited');
-        return back();
-       }else {
-        Alert::error('Failed', 'Details Not Edited');
-        return back();
-       }
-
+        if ($user->update($request->all())) {
+            Activity::create([
+                'title' => 'User Updated',
+                'description' => Auth::user()->name . ' Updated User: ' . $user->email,
+                'user_id' => Auth::id(),
+            ]);
+            Alert::success('Success', 'User Details Successfully Edited');
+            return back();
+        } else {
+            Alert::error('Failed', 'Details Not Edited');
+            return back();
+        }
     }
 
     /**
@@ -166,22 +175,27 @@ class UsersController extends Controller
     {
         $user = User::findOrFail($id);
 
-        if($user->delete()){
+        if ($user->delete()) {
+            Activity::create([
+                'title' => 'User Deleted',
+                'description' => Auth::user()->name . ' Deleted User: ' . $user->email,
+                'user_id' => Auth::id(),
+            ]);
             Alert::success('Success', 'User Removed Successfully');
             return back();
-        }else{
+        } else {
             Alert::error('Failed', 'User Not Deleted');
             return back();
         }
-
     }
-    public function showBa($id){
+    public function showBa($id)
+    {
         $ba = User::findOrFail($id);
         //Get all products assigned to this one ba
-        $products = Productbas::where('assigned_to',$id)->get();
+        $products = Productbas::where('assigned_to', $id)->get();
 
-        $batches = Productbas::select('batch_id')->where('assigned_to',$id)->groupBy('batch_id')->take(5)->get();
+        $batches = Productbas::select('batch_id')->where('assigned_to', $id)->groupBy('batch_id')->take(5)->get();
 
-        return view('brandambassadors.show', compact('ba','products','batches'));
+        return view('brandambassadors.show', compact('ba', 'products', 'batches'));
     }
 }

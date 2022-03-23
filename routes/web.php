@@ -45,6 +45,8 @@ Route::group(['middleware' => ['auth:web','otp']], function () {
     Route::resource('users', 'UsersController');
     Route::get('delete/user/{user}','UsersController@destroyUser')->name('users.destroyUser');
 
+    //All Activities
+    Route::get('activities', 'ActivityController@index')->name('activities');
 
     //Teamleaders
     Route::get('teamleaders', 'UsersController@teamleaders')->name('teamleaders');

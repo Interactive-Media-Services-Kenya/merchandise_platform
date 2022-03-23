@@ -60,6 +60,8 @@ class HomeController extends Controller
         // Batches ba
 
         $batchesbas = Productbas::select('*')->where('assigned_to',Auth::id())->groupBy('batch_id')->get();
+        $activityAdmin = Activity::select('*')->latest()->take(5)->get();
+        //dd($activityAdmin);
 
         //user activity data
 
@@ -68,6 +70,6 @@ class HomeController extends Controller
 
         return view('home', compact('products','batches','clients','bas','tls',
                                     'productsbas','batchesbas','categories','batchesConfirmed',
-                                    'productsTls', 'brandAmbassadors','batchesTl','activities'));
+                                    'productsTls', 'brandAmbassadors','batchesTl','activities','activityAdmin'));
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\DashboardApiResource;
+use App\Models\Activity;
 use App\Models\Category;
 use App\Models\IssueProduct;
 use Illuminate\Http\Request;
@@ -118,5 +119,10 @@ class DashboardApiController extends Controller
         }
 
         return new DashboardApiResource($products);
+    }
+    public function activitiesApi(){
+        $activities = Activity::with('user')->select('*')->latest()->get();
+
+        return new DashboardApiResource($activities);
     }
 }
