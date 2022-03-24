@@ -19,7 +19,7 @@
                         <div class="card-header text-center">
                             <h5>BATCH-CODE
                                 : {{ strtoupper($batch->batch_code) }}</h5>
-                            <a href="{{ route('batch.confirm', [$batch->id]) }}" class="btn btn-sm btn-success">Confirm
+                            <a href="{{ route('batch.confirm', [$batch->id]) }}" onclick="return confirm('Are you Sure?')" class="btn btn-sm btn-success">Confirm
                                 Batch</a>
                             <a href="#" class="btn btn-sm btn-danger" data-toggle="modal"
                                 data-target="#staticBackdropRejectAll{{ $batch->id }}">Reject Batch</a>
@@ -135,7 +135,7 @@
             </div>
 
             <div class="card-body">
-                <div class="col-md-10 mx-auto">
+                <div class="col-md-12">
                     <div class="card">
                         <div class="card-header text-center">
                             <h5>BATCH-CODE

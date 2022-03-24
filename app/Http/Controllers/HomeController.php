@@ -11,6 +11,8 @@ use App\Models\Productbas;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Yajra\DataTables\Facades\DataTables;
+use Carbon\Carbon;
 
 class HomeController extends Controller
 {
@@ -29,7 +31,7 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function index()
+    public function index(Request $request)
     {
         //Admin data & TB Data
 
@@ -64,12 +66,26 @@ class HomeController extends Controller
         //dd($activityAdmin);
 
         //user activity data
-
         $activities = Activity::orderBy('created_at', 'DESC')->where('user_id',Auth::id())->take(5)->get();
         // dd($activities);
+        if ($request->ajax()) {
+
+            $model = User::orderBy('id','DESC')->with('roles');
+
+            return DataTables::eloquent($model)
+
+                ->addColumn('role', function (User $user) {
+
+                    return $user->roles->title;
+                })
+                ->toJson();
+        }
+
+
 
         return view('home', compact('products','batches','clients','bas','tls',
                                     'productsbas','batchesbas','categories','batchesConfirmed',
                                     'productsTls', 'brandAmbassadors','batchesTl','activities','activityAdmin'));
     }
+
 }

@@ -32,6 +32,7 @@ Route::get('otp/reset', 'OTPController@resend')->name('otp.resend');
 
 Route::group(['middleware' => ['auth:web','otp']], function () {
     Route::get('/home', 'HomeController@index')->name('home');
+    Route::get('/users/get','HomeController@users')->name('users.register');
     // Permissions
     // Route::delete('permissions/destroy', 'PermissionsController@massDestroy')->name('permissions.massDestroy');
     // Route::resource('permissions', 'PermissionsController');
