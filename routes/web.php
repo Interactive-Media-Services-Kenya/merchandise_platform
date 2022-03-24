@@ -84,4 +84,9 @@ Route::group(['middleware' => ['auth:web','otp']], function () {
     Route::get('delete/product/{product}','ProductsController@destroyProduct')->name('products.destroyProduct');
     Route::post('products/store/bas', 'ProductsController@storeBas')->name('products.storebas');
 
+
+    //Reports
+
+    Route::get('reports','ReportController@index')->name('reports');
+    Route::get('reports/products','ReportController@products')->name('report.products');
 });
