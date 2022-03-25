@@ -31,17 +31,17 @@ class BatchController extends Controller
     public function show($id)
     {
         $batch = Batch::findOrFail($id);
-        //Products Brand Ambassodors
+        // ? Products Brand Ambassodors
         $productaccepted = Product::select('id')->where('batch_id', $id)->where('accept_status', 0)->get();
         $productRejects = Reject::select('product_id')->where('user_id', Auth::id())->whereIn('product_id', $productaccepted)->get();
         $products = Productbas::select('*')->whereIn('batch_id', $batch)->whereIn('product_id', $productaccepted)->whereNotIn('product_id', $productRejects)->where('assigned_to', Auth::id())->get();
 
-        //Products Team Leaders
+        // ? Products Team Leaders
         $productsTl = Product::where('batch_id', $id)
             ->join('batches', 'batches.id', 'products.batch_id')
             ->where('batches.tl_id_accept', Auth::id())->get();
         // dd($products);
-        //Rejecting Reasons
+        // ? Rejecting Reasons
         $reasons = Reason::all();
         return view('batches.show', compact('batch', 'products', 'reasons', 'productsTl'));
     }
@@ -79,10 +79,6 @@ class BatchController extends Controller
                             ->where('batches.tl_id_accept', Auth::id())->where('batches.accept_status', 0)->get();
         if (count($productsTl) > 0) {
             foreach ($productsTl as $product) {
-                // $product = Product::findOrFail($product->id);
-                // $product->update([
-                //     'accept_status' => 0,
-                // ]);
                 $batch = Batch::findOrFail($id);
 
                 $batch->update([
