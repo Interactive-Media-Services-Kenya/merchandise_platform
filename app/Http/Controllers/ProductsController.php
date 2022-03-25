@@ -30,18 +30,16 @@ class ProductsController extends Controller
      */
     public function index()
     {
-        //$products = Product::where('user_id', Auth::id())->get();
         $products = Product::all();
+        // ! Products Belonging to a Team Leader
         $productsTls = Product::select('*')->where('assigned_to', Auth::id())
             ->join('batches', 'batches.id', 'products.batch_id')
             ->where('batches.tl_id_accept', Auth::id())->get();
         $issuedProducts = IssueProduct::select('product_id')->where('ba_id', Auth::id())->get();
-        // dd($issuedProducts);
         $productsBa = Productbas::select('product_id')->where('assigned_to', Auth::id())->get();
-        //Filter Confirmed Product (accept_status) belonging to Auth Brand Ambassador and not issued out
+        // !Filter Confirmed Product (accept_status) belonging to Auth Brand Ambassador and not issued out
         $productsBas = Product::select('*')->where('accept_status',1)->whereIn('id', $productsBa)->whereNotIn('id', $issuedProducts)->get();
-        //$productsBatches = Product::select('products.batch_id')->whereNotIn('products.id', $issuedProducts)->join('productbas', 'products.id', 'productbas.product_id')->where('products.accept_status', 1)->where('productbas.assigned_to', Auth::id())->get();
-        //dd($productsBas);
+
 
         $batchesBa = Batch::select('*')->whereIn('id', $productsBas)->get();
         //dd($batchesBa);

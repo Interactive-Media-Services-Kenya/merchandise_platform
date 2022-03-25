@@ -141,8 +141,6 @@ class ReportController extends Controller
     }
     public function teamleaders(Request $request)
     {
-        // $model = IssueProduct::with(['brandambassador', 'product', 'product.client', 'product.assign', 'batch', 'category'])->take(2)->get();
-        // dd($model);
         $teamleaders = User::where('role_id', 3)->get();
         if (request()->ajax()) {
             if (!empty($request->from_date)) {
@@ -184,34 +182,34 @@ class ReportController extends Controller
                 $model = IssueProduct::with(['brandambassador', 'product', 'product.client', 'product.assign', 'batch', 'category']);
                 return DataTables::eloquent($model)
 
-                ->addColumn('ba', function (IssueProduct $product) {
+                    ->addColumn('ba', function (IssueProduct $product) {
 
-                    return $product->brandambassador->email;
-                })
-                ->addColumn('teamleader', function (IssueProduct $product) {
+                        return $product->brandambassador->email;
+                    })
+                    ->addColumn('teamleader', function (IssueProduct $product) {
 
-                    return $product->product->assign->email;
-                })
-                ->addColumn('batch', function (IssueProduct $product) {
+                        return $product->product->assign->email;
+                    })
+                    ->addColumn('batch', function (IssueProduct $product) {
 
-                    return $product->batch->batch_code;
-                })
-                ->addColumn('client', function (IssueProduct $product) {
+                        return $product->batch->batch_code;
+                    })
+                    ->addColumn('client', function (IssueProduct $product) {
 
-                    return $product->product->client->name;
-                })
-                ->addColumn('product_code', function (IssueProduct $product) {
+                        return $product->product->client->name;
+                    })
+                    ->addColumn('product_code', function (IssueProduct $product) {
 
-                    return $product->product->product_code;
-                })
-                ->addColumn('category', function (IssueProduct $product) {
+                        return $product->product->product_code;
+                    })
+                    ->addColumn('category', function (IssueProduct $product) {
 
-                    return $product->category->title;
-                })
-                ->editColumn('created_at', function (IssueProduct $product) {
+                        return $product->category->title;
+                    })
+                    ->editColumn('created_at', function (IssueProduct $product) {
 
-                    return $product->created_at;
-                })
+                        return $product->created_at;
+                    })
 
                     ->toJson();
             }
