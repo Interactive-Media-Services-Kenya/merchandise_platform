@@ -72,8 +72,8 @@
                             </div>
                             <div class="col-md-4">
                                 <h6 class="mb-0 ">Clients Reports</h6>
-                                <p class="text-sm ">Total Count form all Brand Ambassadors</p>
-                                <p><a href="#" class="btn btn-sm btn-primary">View Report</a></p>
+                                <p class="text-sm ">Total Products Issued Per Client</p>
+                                <p><a href="{{route('report.clients')}}" class="btn btn-sm btn-primary">View Report</a></p>
                                 <hr class="dark horizontal">
                                 <div class="d-flex ">
                                     <i class="material-icons text-sm my-auto me-1">schedule</i>
@@ -83,7 +83,7 @@
                             <div class="col-md-4">
                                 <h6 class="mb-0 ">Team Leaders Reports</h6>
                                 <p class="text-sm ">Total Count form all Brand Ambassadors</p>
-                                <p><a href="#" class="btn btn-sm btn-primary">View Report</a></p>
+                                <p><a href="{{ route('report.teamleaders') }}" class="btn btn-sm btn-primary">View Report</a></p>
                                 <hr class="dark horizontal">
                                 <div class="d-flex ">
                                     <i class="material-icons text-sm my-auto me-1">schedule</i>

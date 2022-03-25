@@ -89,4 +89,7 @@ Route::group(['middleware' => ['auth:web','otp']], function () {
 
     Route::get('reports','ReportController@index')->name('reports');
     Route::get('reports/products','ReportController@products')->name('report.products');
+    Route::get('reports/clients','ReportController@clients')->name('report.clients');
+    Route::get('reports/teamleaders','ReportController@teamleaders')->name('report.teamleaders');
+
 });
