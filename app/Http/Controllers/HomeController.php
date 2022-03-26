@@ -56,8 +56,8 @@ class HomeController extends Controller
         $brandAmbassadors =  User::where('role_id', 4)->where('county_id', $region_id)->get();
 
 
-        //Brand Ambassador Data
-        //Products for a Ba
+        // ? Brand Ambassador Data
+        // ? Products for a Ba
         $productsbas = Productbas::where('assigned_to',Auth::id())->get();
         // Batches ba
 

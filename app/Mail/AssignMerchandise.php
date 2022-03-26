@@ -29,7 +29,7 @@ class AssignMerchandise extends Mailable
      */
     public function build()
     {
-        return $this->subject('Merchandise Products Assigned')
-            ->view('emails.assignmerchandise');
+        return $this->subject('Merchandise System')->markdown('emails.assignmerchandise')
+            ->with('details', $this->details);;
     }
 }

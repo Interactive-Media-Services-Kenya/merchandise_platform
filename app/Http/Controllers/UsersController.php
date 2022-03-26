@@ -28,7 +28,7 @@ class UsersController extends Controller
         return view('users.index', compact('users'));
     }
 
-    //get Team leaders all regions
+    // ? get Team leaders all regions
 
     public function teamleaders()
     {
@@ -38,7 +38,7 @@ class UsersController extends Controller
         return view('teamleaders.index', compact('teamleaders'));
     }
 
-    //Get Brand Ambassadors for each team leader
+    // ? Get Brand Ambassadors for each team leader
 
     public function brandambassadors()
     {
@@ -191,7 +191,7 @@ class UsersController extends Controller
     public function showBa($id)
     {
         $ba = User::findOrFail($id);
-        //Get all products assigned to this one ba
+        // ! Get all products assigned to this one brand Ambassador
         $products = Productbas::where('assigned_to', $id)->get();
 
         $batches = Productbas::select('batch_id')->where('assigned_to', $id)->groupBy('batch_id')->take(5)->get();

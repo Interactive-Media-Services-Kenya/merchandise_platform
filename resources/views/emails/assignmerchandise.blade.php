@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+{{-- <!DOCTYPE html>
 <html>
 <head>
     <title>{{config('settings.app_name')}}</title>
@@ -34,4 +34,13 @@
         </div>
     </main>
 </body>
-</html>
+</html> --}}
+@component('mail::message')
+# {{ $details['title'] }}
+{{ $details['body'] }}
+{{-- @component('mail::button', ['url' => $maildata['url']])
+Verify
+@endcomponent --}}
+Thanks,<br>
+{{ config('app.name') }}
+@endcomponent
