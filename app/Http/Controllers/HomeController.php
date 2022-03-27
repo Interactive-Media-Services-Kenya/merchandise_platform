@@ -46,8 +46,8 @@ class HomeController extends Controller
         //True Blaq
         $batchesConfirmed = Batch::orderBy('updated_at', 'DESC')->where('accept_status',1)->take(5)->get();
         //dd($batchesConfirmed);
-        //Team Leader Data
-        // Product for a team leader
+        // ? Team Leader Data
+        // ? Product for a team leader
         $productsTls = Product::where('assigned_to', Auth::id())->get();
         $batchesTl = Product::select('*')->where('assigned_to', Auth::id())->groupBy('batch_id')->get();
         // dd($batchesTl);
