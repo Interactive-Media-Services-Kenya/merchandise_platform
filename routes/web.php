@@ -67,12 +67,12 @@ Route::group(['middleware' => ['auth:web','otp']], function () {
     Route::resource('categories', 'CategoriesController');
     Route::get('delete/category/{category}','CategoriesController@destroyCategory')->name('categories.destroyCategory');
 
-    // Categories
+    // Clients
     Route::delete('clients/destroy', 'ClientsController@massDestroy')->name('clients.massDestroy');
     Route::resource('clients', 'ClientsController');
     Route::get('delete/client/{client}','ClientsController@destroyClient')->name('clients.destroyClient');
 
-    // Categories
+    // Products
     Route::delete('products/destroy', 'ProductsController@massDestroy')->name('products.massDestroy');
     Route::resource('products', 'ProductsController');
     Route::post('product/reject/{product}','ProductsController@reject')->name('product.reject');
@@ -91,5 +91,10 @@ Route::group(['middleware' => ['auth:web','otp']], function () {
     Route::get('reports/products','ReportController@products')->name('report.products');
     Route::get('reports/clients','ReportController@clients')->name('report.clients');
     Route::get('reports/teamleaders','ReportController@teamleaders')->name('report.teamleaders');
+
+
+    //Storages
+    Route::resource('storages','StorageController');
+    Route::get('delete/storage/{storage}','StorageController@destroyStorage')->name('storages.destroyStorage');
 
 });
