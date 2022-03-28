@@ -6,7 +6,7 @@
         integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn" crossorigin="anonymous"> --}}
 @endsection
 @section('content')
-    {{-- Admin and TB Access --}}
+    {{-- Admin Access --}}
     @can('admin_access')
         @can('tb_access')
             <div style="margin-bottom: 10px;" class="row">
@@ -109,7 +109,7 @@
         </div>
     @endcan
 
-    {{-- Admin and TB Access --}}
+    {{-- TB Access --}}
     @can('tb_access')
         <div style="margin-bottom: 10px;" class="row">
             <div class="col-lg-12">

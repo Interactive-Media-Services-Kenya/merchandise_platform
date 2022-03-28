@@ -73,11 +73,12 @@ class DashboardApiController extends Controller
 
     public function productsPerTypePerMonth()
     {
+        // ? Create the months January to December
         $months = [];
         for ($m = 1; $m <= 12; $m++) {
             $months[] = date('F', mktime(0, 0, 0, $m, 1, date('Y')));
         }
-
+        // ! Get the top 5 mostly issued product by brand Ambassodors.
         $productTypeMostIssues = IssueProduct::select('*', DB::raw('count(*) as count_per_type'))
             ->groupBy('category_id')->take(5)
             ->get();
@@ -87,11 +88,14 @@ class DashboardApiController extends Controller
 
         $products = [];
         for ($i = 0; $i < count($months); $i++) {
+            // ? Fetch the month dates for issued products from the database
             $monthDates = IssueProduct::whereMonth('created_at', $i + 1)->first();
+            // ? Set the month if no data is found for the specified month
             if ($monthDates != null) {
                 $data = [
                     'month' => $months[$i],
                 ];
+                // ? Set the default values (count) for each item category to zero
                 foreach ($productTypeMostIssues as $productTypeMostIssue) {
                     $count = count(IssueProduct::where('category_id', $productTypeMostIssue->category_id)->whereMonth('created_at', $i + 1)->get());
                     $dataItems = [
@@ -104,6 +108,7 @@ class DashboardApiController extends Controller
                 }
                 array_push($products, $data);
             } else {
+                // ? Set the month and count for each category if data is found for the specified month
                 $data = [
                     'month' => $months[$i],
                 ];

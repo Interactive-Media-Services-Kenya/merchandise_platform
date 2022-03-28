@@ -140,21 +140,6 @@
                                     <span class="font-weight-bold ms-1">Registered</span> this month
                                 </p>
                             </div>
-                            {{-- <div class="col-lg-6 col-5 my-auto text-end">
-                                <div class="dropdown float-lg-end pe-4">
-                                    <a class="cursor-pointer" id="dropdownTable" data-bs-toggle="dropdown"
-                                        aria-expanded="false">
-                                        <i class="fa fa-ellipsis-v text-secondary"></i>
-                                    </a>
-                                    <ul class="dropdown-menu px-2 py-3 ms-sm-n4 ms-n5" aria-labelledby="dropdownTable">
-                                        <li><a class="dropdown-item border-radius-md" href="javascript:;">Action</a></li>
-                                        <li><a class="dropdown-item border-radius-md" href="javascript:;">Another action</a>
-                                        </li>
-                                        <li><a class="dropdown-item border-radius-md" href="javascript:;">Something else
-                                                here</a></li>
-                                    </ul>
-                                </div>
-                            </div> --}}
                         </div>
                     </div>
                     <div class="card-body px-0 pb-2">
@@ -165,7 +150,8 @@
                                         <tr>
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                                                 Name</th>
-                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                            <th
+                                                class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
                                                 Email</th>
                                             <th
                                                 class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
@@ -217,11 +203,33 @@
                                     </span>
                                     <div class="timeline-content">
                                         <h6 class="text-dark text-sm font-weight-bold mb-0">No Activity Yet</h6>
-                                        {{-- <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">{{$activity->created_at->diffForhums}}</p> --}}
                                     </div>
                                 </div>
                             @endforelse
                             <a href="{{ route('activities') }}" class="btn btn-primary">All Activities</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {{-- Chart for products issued per month --}}
+        <div class="row mt-4" height="200">
+            <div class="col-lg-12 mt-4 mb-4">
+                <div class="card z-index-2 ">
+                    <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 bg-transparent">
+                        <div class="bg-gradient-default shadow-primary border-radius-lg py-3 pe-1">
+                            <div class="chart">
+                                <canvas id="myChart-lines" class="chart-canvas" height="450"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <h6 class="mb-0 ">Merchandise Issued</h6>
+                        <p class="text-sm ">Total Count form all Brand Ambassadors</p>
+                        <hr class="dark horizontal">
+                        <div class="d-flex ">
+                            <i class="material-icons text-sm my-auto me-1">schedule</i>
+                            <p class="mb-0 text-sm"> per month </p>
                         </div>
                     </div>
                 </div>
@@ -734,8 +742,12 @@
                         </div>
                         <div class="text-end pt-1">
                             <p class="text-sm mb-0 text-capitalize">My Team Leader</p>
-                            <h4 class="mb-0">{{ \DB::table('users')->where('role_id',3)->where('county_id',Auth::user()->county_id)->value('name') }}</h4>
-                            <p class="text-sm mb-0">{{ \DB::table('users')->where('role_id',3)->where('county_id',Auth::user()->county_id)->value('email') }}</p>
+                            <h4 class="mb-0">
+                                {{ \DB::table('users')->where('role_id', 3)->where('county_id', Auth::user()->county_id)->value('name') }}
+                            </h4>
+                            <p class="text-sm mb-0">
+                                {{ \DB::table('users')->where('role_id', 3)->where('county_id', Auth::user()->county_id)->value('email') }}
+                            </p>
                         </div>
                     </div>
                     <hr class="dark horizontal my-0">
@@ -959,19 +971,33 @@
     </script>
     <script type="text/javascript">
         $(document).ready(function() {
-        $('#userTable').DataTable({
-            processing: true,
-            serverSide: true,
-            ajax: "{{ route('home') }}",
-            columns: [
-                {data: 'name', name: 'name'},
-                {data: 'email', name: 'email'},
-                {data: 'phone', name: 'phone'},
-                {data: 'role', name: 'roles.title'},
-                {data: 'created_at', name: 'created_at'},
-            ],
-            pageLength: 10,
-            dom: 'lBfrtip',
+            $('#userTable').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: "{{ route('home') }}",
+                columns: [{
+                        data: 'name',
+                        name: 'name'
+                    },
+                    {
+                        data: 'email',
+                        name: 'email'
+                    },
+                    {
+                        data: 'phone',
+                        name: 'phone'
+                    },
+                    {
+                        data: 'role',
+                        name: 'roles.title'
+                    },
+                    {
+                        data: 'created_at',
+                        name: 'created_at'
+                    },
+                ],
+                pageLength: 10,
+                dom: 'lBfrtip',
                 buttons: [
                     'copy',
                     {
@@ -992,8 +1018,8 @@
                     },
                     'colvis'
                 ]
+            });
         });
-    });
     </script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
     <script>
@@ -1117,33 +1143,46 @@
             //     fill: false,
             //     borderColor: 'red'
             // };
+
+            //console.log(res_lines.data)
+
+            //? Get Data Corresponding to each month
+            const dataMonths = []
             for (let i = 0; i < res_lines.data.length; i++) {
                 labels.push(res_lines.data[i].month)
-
-            }
-
-            const dataElementLabel = []
-            for (let i = 0; i < res_lines.data.length; i++) {
                 var innerArrayLength = Object.keys(res_lines.data[i]).length;
-                //console.log(innerArrayLength)
+                const dataElementLabel = []
+                const dataSet = []
                 for (let j = 0; j < innerArrayLength - 1; j++) {
                     dataElementLabel.push(res_lines.data[0][j].type)
+                    dataSet.push(res_lines.data[0][j].count)
                 }
-                break;
-
+                const dataFirst = {
+                    label: dataElementLabel,
+                    data: dataSet,
+                    lineTension: 0,
+                    fill: false,
+                    borderColor: 'red'
+                };
+                dataMonths.push(dataFirst);
             }
-            const dataFirst = {
-                label: dataElementLabel,
-                data: [0, 59, 75, 20, 20, 55, 40],
-                lineTension: 0,
-                fill: false,
-                borderColor: 'red'
-            };
+
+            // for (let i = 0; i < res_lines.data.length; i++) {
+            //     var innerArrayLength = Object.keys(res_lines.data[i]).length;
+            //     //console.log(innerArrayLength)
+            //     for (let j = 0; j < innerArrayLength - 1; j++) {
+            //         dataElementLabel.push(res_lines.data[0][j].type)
+            //     }
+            //     break;
+
+            // }
+            //console.log(dataElementLabel)
 
 
 
 
-            //console.log(labels)
+
+            //console.log(dataMonths)
 
 
             // for (let i = 0; i < res_lines.data.length; i++) {
@@ -1161,7 +1200,7 @@
 
             var speedData = {
                 labels: labels,
-                datasets: [dataFirst],
+                datasets: dataMonths,
             };
 
             var chartOptions = {
