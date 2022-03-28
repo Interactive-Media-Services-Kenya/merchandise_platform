@@ -18,6 +18,7 @@ class DatabaseSeeder extends Seeder
             CountiesTableSeeder::class,
             RolesTableSeeder::class,
             CategoriesTableSeeder::class,
+            StoragesTableSeeder::class,
             UsersTableSeeder::class,
             ClientsTableSeeder::class,
             ReasonsTableSeeder::class,
