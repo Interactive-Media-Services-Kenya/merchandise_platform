@@ -1157,6 +1157,10 @@
                     dataElementLabel.push(res_lines.data[0][j].type)
                     dataSet.push(res_lines.data[0][j].count)
                 }
+                break;
+                for (let j = 0; j < innerArrayLength - 1; j++) {
+                    dataSet.push(res_lines.data[0][j].count)
+                }
                 const dataFirst = {
                     label: dataElementLabel,
                     data: dataSet,
