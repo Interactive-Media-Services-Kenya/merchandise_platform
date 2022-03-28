@@ -7,7 +7,7 @@
         integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn" crossorigin="anonymous"> --}}
 @endsection
 @section('content')
-@can('team_leader_access')
+    @can('tb_access')
         <div class="card">
             <div class="card-header">
                 <h4>Merchandise In Batch</h4>
@@ -19,7 +19,8 @@
                         <div class="card-header text-center">
                             <h5>BATCH-CODE
                                 : {{ strtoupper($batch->batch_code) }}</h5>
-                            <a href="{{ route('batch.confirm', [$batch->id]) }}" onclick="return confirm('Are you Sure?')" class="btn btn-sm btn-success">Confirm
+                            <a href="{{ route('batch.confirm', [$batch->id]) }}" onclick="return confirm('Are you Sure?')"
+                                class="btn btn-sm btn-success">Confirm
                                 Batch</a>
                             <a href="#" class="btn btn-sm btn-danger" data-toggle="modal"
                                 data-target="#staticBackdropRejectAll{{ $batch->id }}">Reject Batch</a>
@@ -114,7 +115,6 @@
                                                     <td> {{ $product->batch->accept_status == 1 ? 'Confirmed' : 'Not Confirmed' }}
                                                     </td>
                                                 </tr>
-
                                             @endforeach
                                         </tbody>
                                     </table>
@@ -140,7 +140,8 @@
                         <div class="card-header text-center">
                             <h5>BATCH-CODE
                                 : {{ strtoupper($batch->batch_code) }}</h5>
-                            <a href="{{ route('products.confirm.batch', [$batch->id]) }}" class="btn btn-sm btn-success">Confirm
+                            <a href="{{ route('products.confirm.batch', [$batch->id]) }}"
+                                class="btn btn-sm btn-success">Confirm
                                 Batch</a>
                             <a href="#" class="btn btn-sm btn-danger" data-toggle="modal"
                                 data-target="#staticBackdropRejectAll{{ $batch->id }}">Reject Batch</a>
@@ -313,6 +314,130 @@
             </div>
         </div>
     @endcan
+
+
+    @can('team_leader_access')
+        <div class="card">
+            <div class="card-header">
+                <h4>Merchandise In Batch</h4>
+            </div>
+
+            <div class="card-body">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header text-center">
+                            <h5>BATCH-CODE
+                                : {{ strtoupper($batch->batch_code) }}</h5>
+                            <a href="{{ route('batch.confirm', [$batch->id]) }}" onclick="return confirm('Are you Sure?')"
+                                class="btn btn-sm btn-success">Confirm
+                                Batch</a>
+                            <a href="#" class="btn btn-sm btn-danger" data-toggle="modal"
+                                data-target="#staticBackdropRejectAll{{ $batch->id }}">Reject Batch</a>
+                            <!-- Modal -->
+                            <div class="modal fade" id="staticBackdropRejectAll{{ $batch->id }}" data-backdrop="static"
+                                data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="staticBackdropLabel">{{ $batch->batch_code }}
+                                            </h5>
+                                            <button type="button" class="close" data-dismiss="modal"
+                                                aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <form action="{{ route('reject.batch', [$batch->id]) }}" method="post">
+                                            @csrf
+                                            <div class="modal-body">
+                                                <div class="form-group mt-4">
+                                                    <label for="reason">
+                                                        <h6>Select Reason</h6>
+                                                    </label>
+                                                    <select name="reason_id" class="form-control" style="border:solid 1px;">
+                                                        <option selected disabled>Select Reason</option>
+                                                        @foreach ($reasons as $reason)
+                                                            <option value="{{ $reason->id }}">
+                                                                {{ strtoupper($reason->title) }}</option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                                <div class="form-group mt-4">
+                                                    <label for="description">
+                                                        <h6>Reason Description</h6>
+                                                    </label>
+                                                    <textarea class="form-control" name="description" id="" cols="20" rows="5" style="border:solid 1px;"></textarea>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary"
+                                                    data-dismiss="modal">Close</button>
+                                                <button type="submit" class="btn btn-primary">Submit</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class=" table table-bordered table-striped table-hover datatable" id="ProductTable">
+                                        <thead>
+                                            <tr>
+
+                                                {{-- <th>
+                                                    ID
+                                                </th> --}}
+                                                <th>
+                                                    Merchandise Type
+                                                </th>
+                                                <th>
+                                                    Client
+                                                </th>
+                                                <th>
+                                                    Serial Number
+                                                </th>
+                                                <th>
+                                                    Batch Code
+                                                </th>
+                                                <th>Status (Confirm)</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach ($productsTl as $key => $product)
+                                                <tr data-entry-id="{{ $product->id }}">
+                                                    {{-- <td>
+                                                        {{ $product->id ?? '' }}
+                                                    </td> --}}
+                                                    <td>
+                                                        {{ $product->category->title ?? '' }}
+                                                    </td>
+                                                    <td>
+                                                        {{ $product->client->name ?? '' }}
+                                                    </td>
+                                                    <td>
+                                                        {{ $product->product_code ?? '' }}
+                                                    </td>
+
+                                                    <td>
+                                                        {{ $product->batch_code ?? 'Single Product' }}
+                                                    </td>
+                                                    <td> {{ $product->batch->accept_status == 1 ? 'Confirmed' : 'Not Confirmed' }}
+                                                    </td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endcan
+
 
 @endsection
 @section('scripts')

@@ -67,7 +67,7 @@
                                 <hr class="dark horizontal">
                                 <div class="d-flex ">
                                     <i class="material-icons text-sm my-auto me-1">schedule</i>
-                                    <p class="mb-0 text-sm"> this month </p>
+                                    <p class="mb-0 text-sm"> Alltime </p>
                                 </div>
                             </div>
                             <div class="col-md-4">
@@ -77,17 +77,17 @@
                                 <hr class="dark horizontal">
                                 <div class="d-flex ">
                                     <i class="material-icons text-sm my-auto me-1">schedule</i>
-                                    <p class="mb-0 text-sm"> this month </p>
+                                    <p class="mb-0 text-sm"> Alltime </p>
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <h6 class="mb-0 ">Team Leaders Reports</h6>
-                                <p class="text-sm ">Total Count form all Brand Ambassadors</p>
+                                <p class="text-sm ">Total Count form all Team Leaders</p>
                                 <p><a href="{{ route('report.teamleaders') }}" class="btn btn-sm btn-primary">View Report</a></p>
                                 <hr class="dark horizontal">
                                 <div class="d-flex ">
                                     <i class="material-icons text-sm my-auto me-1">schedule</i>
-                                    <p class="mb-0 text-sm"> this month </p>
+                                    <p class="mb-0 text-sm"> Alltime </p>
                                 </div>
                             </div>
                         </div>

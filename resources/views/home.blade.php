@@ -393,9 +393,9 @@
 
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
                                             Team Leader</th>
-                                        <th
+                                        {{-- <th
                                             class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                            Action</th>
+                                            Action</th> --}}
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -411,10 +411,10 @@
                                                 {{ $batch->teamleader->name }} ({{ $batch->teamleader->email }})
                                             </td>
 
-                                            <td class="text-center">
+                                            {{-- <td class="text-center">
                                                 <a href="{{ route('batch.show', [$batch->id]) }}"
                                                     class="btn btn-sm btn-primary">View</a>
-                                            </td>
+                                            </td> --}}
                                         </tr>
                                     @empty
                                         <tr>
