@@ -17,7 +17,7 @@
 
 <div class="card">
     <div class="card-header">
-        Clients
+        Storages
     </div>
 
     <div class="card-body">
@@ -34,6 +34,7 @@
                         <th>
                             Name
                         </th>
+                        <td>Batches</td>
                         <th>
                             Action
                         </th>
@@ -50,6 +51,9 @@
                             </td>
                             <td>
                                 {{ $storage->title ?? '' }}
+                            </td>
+                            <td>
+                                {{ count($storage->batches) }}
                             </td>
 
                             @can('tb_access')
