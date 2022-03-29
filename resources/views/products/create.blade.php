@@ -68,20 +68,20 @@
                             </div>
                             <div class="row mb-3">
                                 <label for="county_id" class="col-md-4 col-form-label text-md-end">Select
-                                    Team Leader</label>
+                                    Client</label>
 
                                 <div class="col-md-6">
-                                    <select name="assigned_to" id="" class="form-control"
+                                    <select name="storage_id" id="" class="form-control"
                                         style="border: 1px solid; border-radius:10px;">
-                                        <option selected disabled>--- Select Team Leader ---</option>
-                                        @forelse ($teamleaders as  $leader)
-                                            <option value="{{ $leader->id }}">{{ strtoupper($leader->name) }}</option>
+                                        <option selected disabled>--- Select Storage ---</option>
+                                        @forelse ($storages as  $storage)
+                                            <option value="{{ $storage->id }}">{{ strtoupper($storage->title) }}</option>
                                         @empty
-                                            <option disabled> No Ambassadors Added Yet</option>
+                                            <option disabled> No Storage Added Yet</option>
                                         @endforelse
                                     </select>
 
-                                    @error('assigned_to')
+                                    @error('storage_id')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>
                                         </span>

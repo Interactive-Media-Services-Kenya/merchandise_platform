@@ -115,6 +115,8 @@
             <div class="col-lg-12">
                 <a class="btn btn-success" href="{{ route('products.create') }}">
                     Add Merchandise
+                </a> &nbsp; <a class="btn btn-primary text-end" href="{{ route('products.assign.create') }}">
+                    Assign Merchandise To Team Leader
                 </a>
             </div>
         </div>
@@ -183,7 +185,7 @@
                                     </td>
                                     @can('tb_access')
                                         <td>
-                                            {{ $product->assign->email ?? '' }}
+                                            {{ $product->assign->email ?? 'Not Assigned' }}
                                         </td>
                                     @endcan
                                     <td>

@@ -75,6 +75,8 @@ Route::group(['middleware' => ['auth:web','otp']], function () {
     // Products
     Route::delete('products/destroy', 'ProductsController@massDestroy')->name('products.massDestroy');
     Route::resource('products', 'ProductsController');
+    Route::get('products/assignproducts/create', 'ProductsController@assignProductsCreate')->name('products.assign.create');
+    Route::post('products/assignproducts/storeTL', 'ProductsController@storeTL')->name('products.storeTL');
     Route::post('product/reject/{product}','ProductsController@reject')->name('product.reject');
     Route::get('product/confirm/{product}','ProductsController@confirm')->name('product.confirm');
     Route::get('products/confirm/batch/{batch_code}','ProductsController@confirmBatch')->name('products.confirm.batch');
