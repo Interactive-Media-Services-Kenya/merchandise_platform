@@ -111,6 +111,84 @@
 
     {{-- Admin and TB Access --}}
     @can('tb_access')
+    {{-- Statistics Report Data For Merchandises --}}
+    <div class="row mb-4">
+        <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+            <div class="card">
+                <div class="card-header p-3 pt-2">
+                    <div
+                        class="icon icon-lg icon-shape bg-gradient-dark shadow-dark text-center border-radius-xl mt-n4 position-absolute">
+                        <i class="material-icons opacity-10">weekend</i>
+                    </div>
+                    <div class="text-end pt-1">
+                        <p class="text-sm mb-0 text-capitalize">Total Merchandise</p>
+                        <h4 class="mb-0">{{count($products)}}</h4>
+                    </div>
+                </div>
+                <hr class="dark horizontal my-0">
+                <div class="card-footer p-3">
+                    {{-- <p class="mb-0"><span class="text-success text-sm font-weight-bolder">+55% </span>than lask
+                    week</p> --}}
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+            <div class="card">
+                <div class="card-header p-3 pt-2">
+                    <div
+                        class="icon icon-lg icon-shape bg-gradient-primary shadow-primary text-center border-radius-xl mt-n4 position-absolute">
+                        <i class="material-icons opacity-10">person</i>
+                    </div>
+                    <div class="text-end pt-1">
+                        <p class="text-sm mb-0 text-capitalize">Registered Team Leaders</p>
+                        <h4 class="mb-0">86</h4>
+                    </div>
+                </div>
+                <hr class="dark horizontal my-0">
+                <div class="card-footer p-3">
+                    {{-- <p class="mb-0"><span class="text-success text-sm font-weight-bolder">+3% </span>than lask
+                    month</p> --}}
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+            <div class="card">
+                <div class="card-header p-3 pt-2">
+                    <div
+                        class="icon icon-lg icon-shape bg-gradient-success shadow-success text-center border-radius-xl mt-n4 position-absolute">
+                        <i class="material-icons opacity-10">person</i>
+                    </div>
+                    <div class="text-end pt-1">
+                        <p class="text-sm mb-0 text-capitalize">Total Clients</p>
+                        <h4 class="mb-0">5478</h4>
+                    </div>
+                </div>
+                <hr class="dark horizontal my-0">
+                <div class="card-footer p-3">
+                    {{-- <p class="mb-0"><span class="text-danger text-sm font-weight-bolder">-2%</span> than yesterday
+                </p> --}}
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-sm-6">
+            <div class="card">
+                <div class="card-header p-3 pt-2">
+                    <div
+                        class="icon icon-lg icon-shape bg-gradient-info shadow-info text-center border-radius-xl mt-n4 position-absolute">
+                        <i class="material-icons opacity-10">weekend</i>
+                    </div>
+                    <div class="text-end pt-1">
+                        <p class="text-sm mb-0 text-capitalize">Total Merchandise Batches</p>
+                        <h4 class="mb-0">{{count($batches)}}</h4>
+                    </div>
+                </div>
+                <hr class="dark horizontal my-0">
+                <div class="card-footer p-3">
+                    <p class="mb-0"><span class="text-success text-sm font-weight-bolder">{{count($batchesAccepted)}} </span>Confirmed By Team Leader(s)</p>
+                </div>
+            </div>
+        </div>
+    </div>
         <div style="margin-bottom: 10px;" class="row">
             <div class="col-lg-12">
                 <a class="btn btn-success" href="{{ route('products.create') }}">
@@ -259,7 +337,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($productsTls as $key => $product)
+                            @foreach ($productsTls as $product)
                                 <tr>
                                     <td>
 
@@ -273,17 +351,7 @@
                                     <td>
                                         {{ $product->product_code ?? '' }}
                                     </td>
-                                    {{-- <td>
-                                        {{ \DB::table('users')->where('id',$product->productBa->assigned_to)->value('email') ?? '' }}
-                                    </td> --}}
-                                    <td>
-                                        {{ \DB::table('productbas')->where('product_id', $product->id)->value('assigned_to')
-                                            ? \DB::table('users')->where(
-                                                    'id',
-                                                    \DB::table('productbas')->where('product_id', $product->id)->value('assigned_to'),
-                                                )->value('email')
-                                            : 'Not Assigned' }}
-                                    </td>
+                                    <td>{{ $product->productBa->user->email ?? 'Not Assigned'}}</td>
                                     <td>
                                         {{ $product->batch->batch_code ?? 'Single Product' }}
                                     </td>
@@ -455,6 +523,7 @@
         $(document).ready(function() {
             $('#ProductTable').DataTable({
                 dom: 'lBfrtip',
+                pageLength: 100,
                 buttons: [
                     'copy',
                     {

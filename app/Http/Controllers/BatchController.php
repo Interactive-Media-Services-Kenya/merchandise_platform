@@ -37,10 +37,12 @@ class BatchController extends Controller
         $products = Productbas::select('*')->whereIn('batch_id', $batch)->whereIn('product_id', $productaccepted)->whereNotIn('product_id', $productRejects)->where('assigned_to', Auth::id())->get();
 
         // ? Products Team Leaders
-        $productsTl = Product::where('batch_id', $id)
-            ->join('batches', 'batches.id', 'products.batch_id')
-            ->where('batches.tl_id_accept', Auth::id())->get();
-        // dd($products);
+        // $productsTl = Product::where('products.batch_id', $id)->where('products.assigned_to',Auth::id())
+        //     ->join('batches', 'batches.id', 'products.batch_id')
+        //     ->where('batches.tl_id_accept', Auth::id())->get();
+        $productsTl = Product::where('products.batch_id', $id)
+            ->join('batches', 'batches.id', 'products.batch_id')->where('batches.accept_status', 0)->get();
+        //dd($productsTl);
         // ? Rejecting Reasons
         $reasons = Reason::all();
         return view('batches.show', compact('batch', 'products', 'reasons', 'productsTl'));
@@ -74,7 +76,7 @@ class BatchController extends Controller
     public function rejectBatch(Request $request, $id)
     {
 
-        $productsTl = Product::where('batch_id', $id)
+        $productsTl = Product::where('products.batch_id', $id)
                             ->join('batches', 'batches.id', 'products.batch_id')
                             ->where('batches.tl_id_accept', Auth::id())->where('batches.accept_status', 0)->get();
         if (count($productsTl) > 0) {
@@ -99,7 +101,7 @@ class BatchController extends Controller
             $batchcode = $product->batch->batch_code;
             $sender_email = Auth::user()->email;
             $receiver_email = $product->user->email;
-            dd($receiver_email);
+            //dd($receiver_email);
             $url_login = URL::to('/login');
             $message = "Hello, Merchandise ($merchandise_type), $productsCount from Batch-Code $batchcode, has been rejected by $sender_email. Kindly Confirm through the portal: $url_login.";
             $details = [

@@ -33,7 +33,7 @@ class Product extends Model
     }
 
     public function productBa(){
-        return $this->belongsTo(Productbas::class, 'product_id');
+        return $this->hasOne(Productbas::class, 'product_id');
     }
     public function ownerProduct(){
         return $this->belongsTo(Productbas::class, 'product_id');

@@ -64,7 +64,7 @@
                                     @enderror
                                 </div>
                             </div>
-                            <div class="row mb-3">
+                            {{-- <div class="row mb-3">
                                 <div class="col-md-4 mx-auto">
                                     <div class="form-check">
                                         <input class="form-check-input" type="radio" name="flexRadioDefault"
@@ -82,9 +82,9 @@
                                     </div>
                                 </div>
 
-                            </div>
+                            </div> --}}
 
-                            <div class="row mb-3" id="batch">
+                            {{-- <div class="row mb-3" id="batch">
                                 <label for="quantity" class="col-md-4 col-form-label text-md-end">Quantity</label>
 
                                 <div class="col-md-6">
@@ -99,7 +99,7 @@
                                         </span>
                                     @enderror
                                 </div>
-                            </div>
+                            </div> --}}
 
                             <div class="row mb-0">
                                 <div class="col-md-6 offset-md-4">
@@ -118,7 +118,7 @@
 @endsection
 @section('scripts')
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" referrerpolicy="no-referrer"></script>
-    <script>
+    {{-- <script>
         $("#batch").hide();
         $("#quantity").val("");
         $("input[name='flexRadioDefault']").click(function() {
@@ -130,5 +130,5 @@
                 $("#quantity").val("");
             }
         });
-    </script>
+    </script> --}}
 @endsection
