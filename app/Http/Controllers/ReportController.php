@@ -17,9 +17,10 @@ class ReportController extends Controller
     public function products(Request $request)
     {
 
-        if (request()->ajax()) {
+        if ($request->ajax()) {
             if (!empty($request->from_date)) {
-                $model = IssueProduct::whereBetween('issue_products.created_at', [$request->from_date, $request->to_date])->with(['brandambassador', 'product', 'batch', 'category']);
+                $model = IssueProduct::whereBetween('issue_products.created_at', [$request->from_date, $request->to_date])
+                                    ->with(['brandambassador', 'product', 'batch', 'category'])->select('issue_products.*');
                 return DataTables::eloquent($model)
 
                     ->addColumn('ba', function (IssueProduct $product) {
@@ -44,7 +45,7 @@ class ReportController extends Controller
                     })
                     ->toJson();
             } else {
-                $model = IssueProduct::with(['brandambassador', 'product', 'batch', 'category']);
+                $model = IssueProduct::with(['brandambassador', 'product', 'batch', 'category'])->select('issue_products.*');
 
                 return DataTables::eloquent($model)
 
@@ -75,11 +76,11 @@ class ReportController extends Controller
     public function clients(Request $request)
     {
         $clients = Client::all();
-        if (request()->ajax()) {
+        if ($request->ajax()) {
             if (!empty($request->from_date)) {
                 $model = IssueProduct::join('products', 'products.id', 'issue_products.product_id')
                     ->where('products.client_id', $request->client_id)->whereBetween('issue_products.created_at', [$request->from_date, $request->to_date])
-                    ->with(['brandambassador', 'product', 'product.client', 'batch', 'category']);
+                    ->with(['brandambassador', 'product', 'product.client', 'batch', 'category'])->select('issue_products.*');
                 return DataTables::eloquent($model)
 
                     ->addColumn('ba', function (IssueProduct $product) {
@@ -108,7 +109,7 @@ class ReportController extends Controller
                     })
                     ->toJson();
             } else {
-                $model = IssueProduct::with(['brandambassador', 'product', 'product.client', 'batch', 'category']);
+                $model = IssueProduct::with(['brandambassador', 'product', 'product.client', 'batch', 'category'])->select('issue_products.*');
 
                 return DataTables::eloquent($model)
 
@@ -142,11 +143,12 @@ class ReportController extends Controller
     public function teamleaders(Request $request)
     {
         $teamleaders = User::where('role_id', 3)->get();
-        if (request()->ajax()) {
+        $clients = Client::all();
+        if ($request->ajax()) {
             if (!empty($request->from_date)) {
                 $model = IssueProduct::join('products', 'products.id', 'issue_products.product_id')
-                    ->where('products.assigned_to', $request->user_id)->whereBetween('issue_products.created_at', [$request->from_date, $request->to_date])
-                    ->with(['brandambassador', 'product', 'product.client', 'product.assign', 'batch', 'category']);
+                    ->where('products.assigned_to', $request->user_id)->where('products.client_id',$request->client_id)->whereBetween('issue_products.created_at', [$request->from_date, $request->to_date])
+                    ->with(['brandambassador', 'product', 'product.client', 'product.assign', 'batch', 'category'])->select('issue_products.*');
                 return DataTables::eloquent($model)
 
                     ->addColumn('ba', function (IssueProduct $product) {
@@ -179,7 +181,7 @@ class ReportController extends Controller
                     })
                     ->toJson();
             } else {
-                $model = IssueProduct::with(['brandambassador', 'product', 'product.client', 'product.assign', 'batch', 'category']);
+                $model = IssueProduct::with(['brandambassador', 'product', 'product.client', 'product.assign', 'batch', 'category'])->select('issue_products.*');
                 return DataTables::eloquent($model)
 
                     ->addColumn('ba', function (IssueProduct $product) {
@@ -215,6 +217,6 @@ class ReportController extends Controller
             }
         }
 
-        return view('reports.teamleaders-report', compact('teamleaders'));
+        return view('reports.teamleaders-report', compact('teamleaders','clients'));
     }
 }

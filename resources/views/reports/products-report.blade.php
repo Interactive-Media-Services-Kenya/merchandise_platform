@@ -71,9 +71,9 @@
                                                         Merchandise Type
                                                     </th>
 
-                                                    {{-- <th>
-                                                        Date
-                                                    </th> --}}
+                                                    <th>
+                                                        Date Issued
+                                                    </th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -144,11 +144,10 @@
                             data: 'category',
                             name: 'category.title'
                         },
-                        // {
-                        //     data: 'created_at',
-                        //     name: 'issue_products.created_at',
-                        //     visible: false
-                        // }
+                        {
+                            data: 'created_at',
+                            name: 'created_at'
+                        }
                     ],
                     pageLength: 50,
                     dom: 'lBfrtip',

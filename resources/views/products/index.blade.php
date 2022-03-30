@@ -127,8 +127,7 @@
                 </div>
                 <hr class="dark horizontal my-0">
                 <div class="card-footer p-3">
-                    {{-- <p class="mb-0"><span class="text-success text-sm font-weight-bolder">+55% </span>than lask
-                    week</p> --}}
+                    <p class="mb-0 text-default text-sm font-weight-bolder">{{count($productsIssuedOut)}} Merchandises Issued Out</p>
                 </div>
             </div>
         </div>
@@ -141,13 +140,12 @@
                     </div>
                     <div class="text-end pt-1">
                         <p class="text-sm mb-0 text-capitalize">Registered Team Leaders</p>
-                        <h4 class="mb-0">86</h4>
+                        <h4 class="mb-0">{{count($teamleaders)}}</h4>
                     </div>
                 </div>
                 <hr class="dark horizontal my-0">
                 <div class="card-footer p-3">
-                    {{-- <p class="mb-0"><span class="text-success text-sm font-weight-bolder">+3% </span>than lask
-                    month</p> --}}
+                    <p class="mb-0 text-primary text-sm font-weight-bolder">{{count($teamleadersWithBatches)}} Team Leaders With Batches (Confirmed)</p>
                 </div>
             </div>
         </div>
@@ -160,13 +158,13 @@
                     </div>
                     <div class="text-end pt-1">
                         <p class="text-sm mb-0 text-capitalize">Total Clients</p>
-                        <h4 class="mb-0">5478</h4>
+                        <h4 class="mb-0">{{ count($clients) }}</h4>
                     </div>
                 </div>
                 <hr class="dark horizontal my-0">
                 <div class="card-footer p-3">
-                    {{-- <p class="mb-0"><span class="text-danger text-sm font-weight-bolder">-2%</span> than yesterday
-                </p> --}}
+                    <p class="mb-0 text-success text-sm font-weight-bolder">{{count($clientsWithMerchandise)}} Clients With Products
+                </p>
                 </div>
             </div>
         </div>
@@ -184,18 +182,29 @@
                 </div>
                 <hr class="dark horizontal my-0">
                 <div class="card-footer p-3">
-                    <p class="mb-0"><span class="text-success text-sm font-weight-bolder">{{count($batchesAccepted)}} </span>Confirmed By Team Leader(s)</p>
+                    <p class="mb-0 text-info text-sm font-weight-bolder">{{count($batchesAccepted)}} Confirmed By Team Leader(s)</p>
                 </div>
             </div>
         </div>
     </div>
         <div style="margin-bottom: 10px;" class="row">
             <div class="col-lg-12">
-                <a class="btn btn-success" href="{{ route('products.create') }}">
-                    Add Merchandise
-                </a> &nbsp; <a class="btn btn-primary text-end" href="{{ route('products.assign.create') }}">
-                    Assign Merchandise To Team Leader
-                </a>
+                <div class="row">
+                    <div class="col-md-6">
+                        <a class="btn btn-success" href="{{ route('products.create') }}">
+                            Add Merchandise
+                        </a> &nbsp; <a class="btn btn-primary text-end" href="{{ route('products.assign.create') }}">
+                            Assign Merchandise To Team Leader
+                        </a>
+                    </div>
+                    <div class="col-md-6">
+                        <a class="btn btn-success" href="{{ route('report.products') }}">
+                            Report By Date
+                        </a> &nbsp; <a class="btn btn-primary text-end" href="{{ route('report.clients') }}">
+                            Report By Client
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
 

@@ -18,10 +18,10 @@
                 <div class="card z-index-2 ">
                     <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 bg-transparent">
                         <div class="bg-gradient-success shadow-primary border-radius-lg py-3 pe-1 text-center">
-                            <br />
+
                             <h3>Select Team Leader & Date Range</h3>
                             <br />
-                            <br />
+
 
                             <div class="col-md-5 mx-auto text-center">
                                 <div class="row form-group input-daterange">
@@ -36,6 +36,22 @@
                                                     </option>
                                                 @empty
                                                     <option selected disabled>No Team Leaders Added</option>
+                                                @endforelse
+
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <label for="client_id"><h4>Select Client</h4></label>
+                                            <select name="client_id" id="client_id" class="form-control text-center mb-4" style="border:1px solid; background:#fff;">
+                                                <option selected disabled>Click To Select
+                                                </option>
+                                                @forelse ($clients as $client)
+                                                    <option value="{{ $client->id }}">{{ strtoupper($client->name) }}
+                                                    </option>
+                                                @empty
+                                                    <option selected disabled>No Client Added</option>
                                                 @endforelse
 
                                             </select>
@@ -95,9 +111,9 @@
                                                         Merchandise Type
                                                     </th>
 
-                                                    {{-- <th>
-                                                        Date
-                                                    </th> --}}
+                                                    <th>
+                                                        Date Issued
+                                                    </th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -141,7 +157,7 @@
 
             load_data();
 
-            function load_data(from_date = '', to_date = '',user_id = '') {
+            function load_data(from_date = '', to_date = '',user_id = '', client_id = '') {
                 $('#productReportTable').DataTable({
                     processing: true,
                     serverSide: true,
@@ -151,6 +167,7 @@
                             from_date: from_date,
                             to_date: to_date,
                             user_id: user_id,
+                            client_id: client_id,
                         }
                     },
                     columns: [{
@@ -178,11 +195,10 @@
                             name: 'category.title'
                         },
 
-                        // {
-                        //     data: 'created_at',
-                        //     name: 'issue_products.created_at',
-                        //     visible: false
-                        // }
+                        {
+                            data: 'created_at',
+                            name: 'created_at',
+                        }
                     ],
                     pageLength: 50,
                     dom: 'lBfrtip',
@@ -206,9 +222,10 @@
                 var from_date = $('#from_date').val();
                 var to_date = $('#to_date').val();
                 var user_id = $('#user_id').val();
-                if (from_date != '' && to_date != ''&& user_id != '') {
+                var client_id = $('#client_id').val();
+                if (from_date != '' && to_date != ''&& user_id != '' && client_id != '') {
                     $('#productReportTable').DataTable().destroy();
-                    load_data(from_date, to_date,user_id);
+                    load_data(from_date, to_date,user_id, client_id);
                 } else {
                     alert('All Input Fields are Required!');
                 }
@@ -218,6 +235,7 @@
                 $('#from_date').val('');
                 $('#to_date').val('');
                 $('#user_id').val('');
+                $('#client_id').val('');
                 $('#productReportTable').DataTable().destroy();
                 load_data();
             });

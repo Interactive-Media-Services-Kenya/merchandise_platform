@@ -32,8 +32,13 @@ class ProductsController extends Controller
     public function index()
     {
         $products = Product::all();
+        $productsIssuedOut = Productbas::all();
         $batches = Batch::all();
-        $batchesAccepted = Batch::whereNotNull('tl_id_accept')->get();
+        $clients = Client::all();
+        $clientsWithMerchandise = Product::select('client_id')->groupBy('client_id')->get();
+        $batchesAccepted = Batch::where('accept_status',1)->get();
+        $teamleaders = User::where('role_id',3)->get();
+        $teamleadersWithBatches = Batch::where('accept_status',1)->groupBy('tl_id_accept')->get();
         //dd($batchesAccepted);
         // ! Products Belonging to a Team Leader
         $productsTls = Product::select('products.id','products.product_code','products.category_id','products.batch_id','products.client_id',
@@ -49,7 +54,8 @@ class ProductsController extends Controller
 
         $batchesBa = Batch::select('*')->whereIn('id', $productsBas)->get();
         //dd($batchesBa);
-        return view('products.index', compact('products', 'productsTls', 'productsBas', 'batchesBa','batches','batchesAccepted'));
+        return view('products.index', compact('products', 'productsTls', 'productsBas', 'batchesBa','teamleaders','teamleadersWithBatches',
+                                            'batches','batchesAccepted','clients','clientsWithMerchandise','productsIssuedOut'));
     }
 
     /**
