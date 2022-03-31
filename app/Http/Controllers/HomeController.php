@@ -42,6 +42,12 @@ class HomeController extends Controller
         $bas = User::where('role_id', 4)->get();
         $categories = Category::all();
         $tls = User::where('role_id',3)->get();
+        // ? Products issued Out
+        $productsIssuedOut = Productbas::all();
+        $productsIssuedOutTL = Productbas::join('batches','batches.id','productbas.batch_id')
+                                ->where('batches.tl_id_accept',Auth::id())->get();
+        //? Clients with Merchandise Team Leaders
+        $clientsWithMerchandiseTL = Product::select('client_id')->where('assigned_to',Auth::id())->groupBy('client_id')->get();
 
         //True Blaq
         $batchesConfirmed = Batch::orderBy('updated_at', 'DESC')->where('accept_status',1)->take(5)->get();
@@ -85,7 +91,8 @@ class HomeController extends Controller
 
         return view('home', compact('products','batches','clients','bas','tls',
                                     'productsbas','batchesbas','categories','batchesConfirmed',
-                                    'productsTls', 'brandAmbassadors','batchesTl','activities','activityAdmin'));
+                                    'productsTls', 'brandAmbassadors','batchesTl','activities','activityAdmin',
+                                    'productsIssuedOut','productsIssuedOutTL','clientsWithMerchandiseTL'));
     }
 
 }

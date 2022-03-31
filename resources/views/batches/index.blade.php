@@ -6,7 +6,7 @@
         integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn" crossorigin="anonymous"> --}}
 @endsection
 @section('content')
-@can('team_leader_access')
+    @can('team_leader_access')
         <div class="row mb-4 mt-4">
             <div class="col-lg-12 mx-auto mb-md-0 mb-4">
                 <div class="card">
@@ -56,7 +56,16 @@
                                             Total Merchandise</th>
                                         <th
                                             class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                            Merchandise Assigned</th>
+                                        <th
+                                            class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                            Date Added</th>
+                                        <th
+                                            class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                                             Status (Confirm)</th>
+                                        <th
+                                            class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                            Date Confirmed</th>
                                         <th
                                             class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                                             Action</th>
@@ -74,18 +83,32 @@
                                             </td>
                                             <td>
                                                 <div class="avatar-group mt-2">
-                                                    <h6>{{\DB::table('categories')->where('id',\DB::table('products')->where('batch_id',$batch->batch->id)->value('category_id'))->value('title')}}</h6>
+                                                    <h6>{{ \DB::table('categories')->where('id',\DB::table('products')->where('batch_id', $batch->batch->id)->value('category_id'))->value('title') }}
+                                                    </h6>
                                                 </div>
                                             </td>
                                             <td class="align-middle text-center text-sm">
                                                 <span class="text-xs font-weight-bold">
                                                     {{ count(
-                                                        \DB::table('products')->where('assigned_to',Auth::id())->where('batch_id',$batch->batch->id)->get()
-                                                        ) }}</span>
+                                                        \DB::table('products')->where('assigned_to', Auth::id())->where('batch_id', $batch->batch->id)->get(),
+                                                    ) }}</span>
                                             </td>
                                             <td class="align-middle text-center text-sm">
                                                 <span class="text-xs font-weight-bold">
-                                                    {{ $batch->batch->accept_status == 1?'Confirmed':'Not Confirmed'}}</span>
+                                                    {{ count(\DB::table('productbas')->where('batch_id',$batch->batch->id)->get()) ?? '' }}</span>
+                                            </td>
+                                            <td class="align-middle text-center text-sm">
+                                                <span class="text-xs font-weight-bold">
+                                                    {{ $batch->batch->created_at ?? '' }}</span>
+                                            </td>
+                                            <td class="align-middle text-center text-sm">
+                                                <span class="text-xs font-weight-bold">
+                                                    {{ $batch->batch->accept_status == 1 ? 'Confirmed' : 'Not Confirmed' }}</span>
+                                            </td>
+
+                                            <td class="align-middle text-center text-sm">
+                                                <span class="text-xs font-weight-bold">
+                                                    {{ $batch->batch->updated_at == $batch->batch->created_at ? 'Not Confirmed' : $batch->batch->updated_at }}</span>
                                             </td>
                                             <td class="align-middle text-center text-sm"><a
                                                     href="{{ route('batch.show', [$batch->batch_id]) }}"

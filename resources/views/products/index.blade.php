@@ -111,82 +111,87 @@
 
     {{-- Admin and TB Access --}}
     @can('tb_access')
-    {{-- Statistics Report Data For Merchandises --}}
-    <div class="row mb-4">
-        <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
-            <div class="card">
-                <div class="card-header p-3 pt-2">
-                    <div
-                        class="icon icon-lg icon-shape bg-gradient-dark shadow-dark text-center border-radius-xl mt-n4 position-absolute">
-                        <i class="material-icons opacity-10">weekend</i>
+        {{-- Statistics Report Data For Merchandises --}}
+        <div class="row mb-4">
+            <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+                <div class="card">
+                    <div class="card-header p-3 pt-2">
+                        <div
+                            class="icon icon-lg icon-shape bg-gradient-dark shadow-dark text-center border-radius-xl mt-n4 position-absolute">
+                            <i class="material-icons opacity-10">weekend</i>
+                        </div>
+                        <div class="text-end pt-1">
+                            <p class="text-sm mb-0 text-capitalize">Total Merchandise</p>
+                            <h4 class="mb-0">{{ count($products) }}</h4>
+                        </div>
                     </div>
-                    <div class="text-end pt-1">
-                        <p class="text-sm mb-0 text-capitalize">Total Merchandise</p>
-                        <h4 class="mb-0">{{count($products)}}</h4>
+                    <hr class="dark horizontal my-0">
+                    <div class="card-footer p-3">
+                        <p class="mb-0 text-default text-sm font-weight-bolder">{{ count($productsIssuedOut) }} Issued Out
+                            &nbsp;&nbsp;&nbsp;&nbsp; {{ count($products) - count($productsIssuedOut) }} Remaining Merchandise
+                        </p>
                     </div>
                 </div>
-                <hr class="dark horizontal my-0">
-                <div class="card-footer p-3">
-                    <p class="mb-0 text-default text-sm font-weight-bolder">{{count($productsIssuedOut)}} Issued Out    &nbsp;&nbsp;&nbsp;&nbsp;  {{count($products) - count($productsIssuedOut)}} Remaining Merchandise   </p>
+            </div>
+            <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+                <div class="card">
+                    <div class="card-header p-3 pt-2">
+                        <div
+                            class="icon icon-lg icon-shape bg-gradient-primary shadow-primary text-center border-radius-xl mt-n4 position-absolute">
+                            <i class="material-icons opacity-10">person</i>
+                        </div>
+                        <div class="text-end pt-1">
+                            <p class="text-sm mb-0 text-capitalize">Registered Team Leaders</p>
+                            <h4 class="mb-0">{{ count($teamleaders) }}</h4>
+                        </div>
+                    </div>
+                    <hr class="dark horizontal my-0">
+                    <div class="card-footer p-3">
+                        <p class="mb-0 text-primary text-sm font-weight-bolder">{{ count($teamleadersWithBatches) }} Team
+                            Leaders With Batches (Confirmed)</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+                <div class="card">
+                    <div class="card-header p-3 pt-2">
+                        <div
+                            class="icon icon-lg icon-shape bg-gradient-success shadow-success text-center border-radius-xl mt-n4 position-absolute">
+                            <i class="material-icons opacity-10">person</i>
+                        </div>
+                        <div class="text-end pt-1">
+                            <p class="text-sm mb-0 text-capitalize">Total Clients</p>
+                            <h4 class="mb-0">{{ count($clients) }}</h4>
+                        </div>
+                    </div>
+                    <hr class="dark horizontal my-0">
+                    <div class="card-footer p-3">
+                        <p class="mb-0 text-success text-sm font-weight-bolder">{{ count($clientsWithMerchandise) }} Clients
+                            With Products
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-sm-6">
+                <div class="card">
+                    <div class="card-header p-3 pt-2">
+                        <div
+                            class="icon icon-lg icon-shape bg-gradient-info shadow-info text-center border-radius-xl mt-n4 position-absolute">
+                            <i class="material-icons opacity-10">weekend</i>
+                        </div>
+                        <div class="text-end pt-1">
+                            <p class="text-sm mb-0 text-capitalize">Total Merchandise Batches</p>
+                            <h4 class="mb-0">{{ count($batches) }}</h4>
+                        </div>
+                    </div>
+                    <hr class="dark horizontal my-0">
+                    <div class="card-footer p-3">
+                        <p class="mb-0 text-info text-sm font-weight-bolder">{{ count($batchesAccepted) }} Confirmed By Team
+                            Leader(s)</p>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
-            <div class="card">
-                <div class="card-header p-3 pt-2">
-                    <div
-                        class="icon icon-lg icon-shape bg-gradient-primary shadow-primary text-center border-radius-xl mt-n4 position-absolute">
-                        <i class="material-icons opacity-10">person</i>
-                    </div>
-                    <div class="text-end pt-1">
-                        <p class="text-sm mb-0 text-capitalize">Registered Team Leaders</p>
-                        <h4 class="mb-0">{{count($teamleaders)}}</h4>
-                    </div>
-                </div>
-                <hr class="dark horizontal my-0">
-                <div class="card-footer p-3">
-                    <p class="mb-0 text-primary text-sm font-weight-bolder">{{count($teamleadersWithBatches)}} Team Leaders With Batches (Confirmed)</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
-            <div class="card">
-                <div class="card-header p-3 pt-2">
-                    <div
-                        class="icon icon-lg icon-shape bg-gradient-success shadow-success text-center border-radius-xl mt-n4 position-absolute">
-                        <i class="material-icons opacity-10">person</i>
-                    </div>
-                    <div class="text-end pt-1">
-                        <p class="text-sm mb-0 text-capitalize">Total Clients</p>
-                        <h4 class="mb-0">{{ count($clients) }}</h4>
-                    </div>
-                </div>
-                <hr class="dark horizontal my-0">
-                <div class="card-footer p-3">
-                    <p class="mb-0 text-success text-sm font-weight-bolder">{{count($clientsWithMerchandise)}} Clients With Products
-                </p>
-                </div>
-            </div>
-        </div>
-        <div class="col-xl-3 col-sm-6">
-            <div class="card">
-                <div class="card-header p-3 pt-2">
-                    <div
-                        class="icon icon-lg icon-shape bg-gradient-info shadow-info text-center border-radius-xl mt-n4 position-absolute">
-                        <i class="material-icons opacity-10">weekend</i>
-                    </div>
-                    <div class="text-end pt-1">
-                        <p class="text-sm mb-0 text-capitalize">Total Merchandise Batches</p>
-                        <h4 class="mb-0">{{count($batches)}}</h4>
-                    </div>
-                </div>
-                <hr class="dark horizontal my-0">
-                <div class="card-footer p-3">
-                    <p class="mb-0 text-info text-sm font-weight-bolder">{{count($batchesAccepted)}} Confirmed By Team Leader(s)</p>
-                </div>
-            </div>
-        </div>
-    </div>
         <div style="margin-bottom: 10px;" class="row">
             <div class="col-lg-12">
                 <div class="row">
@@ -304,6 +309,85 @@
 
     {{-- Team Leader Access --}}
     @can('team_leader_access')
+        {{-- Statistics Report Data For Merchandises --}}
+        <div class="row mb-4">
+            <div class="col-xl-4 col-sm-6 mb-xl-0 mb-4">
+                <div class="card">
+                    <div class="card-header p-3 pt-2">
+                        <div
+                            class="icon icon-lg icon-shape bg-gradient-dark shadow-dark text-center border-radius-xl mt-n4 position-absolute">
+                            <i class="material-icons opacity-10">weekend</i>
+                        </div>
+                        <div class="text-end pt-1">
+                            <p class="text-sm mb-0 text-capitalize">Total Merchandise</p>
+                            <h4 class="mb-0">{{ count($productsTls) }}</h4>
+                        </div>
+                    </div>
+                    <hr class="dark horizontal my-0">
+                    <div class="card-footer p-3">
+                        <p class="mb-0 text-default text-sm font-weight-bolder">{{ count($productsIssuedOutTL) }} Assigned
+                            &nbsp;&nbsp;&nbsp;&nbsp; {{ count($productsTls) - count($productsIssuedOutTL) }} Remaining Merchandise
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-4 col-sm-6 mb-xl-0 mb-4">
+                <div class="card">
+                    <div class="card-header p-3 pt-2">
+                        <div
+                            class="icon icon-lg icon-shape bg-gradient-primary shadow-primary text-center border-radius-xl mt-n4 position-absolute">
+                            <i class="material-icons opacity-10">person</i>
+                        </div>
+                        <div class="text-end pt-1">
+                            <p class="text-sm mb-0 text-capitalize">My Brand Ambassadors</p>
+                            <h4 class="mb-0">{{ count($brandAmbassadors) }}</h4>
+                        </div>
+                    </div>
+                    <hr class="dark horizontal my-0">
+                    <div class="card-footer p-3">
+                        <p class="mb-0 text-primary text-sm font-weight-bolder">Total Registered Brand Ambassadors in My Region </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-4 col-sm-6 mb-xl-0 mb-4">
+                <div class="card">
+                    <div class="card-header p-3 pt-2">
+                        <div
+                            class="icon icon-lg icon-shape bg-gradient-success shadow-success text-center border-radius-xl mt-n4 position-absolute">
+                            <i class="material-icons opacity-10">person</i>
+                        </div>
+                        <div class="text-end pt-1">
+                            <p class="text-sm mb-0 text-capitalize">Total Clients</p>
+                            <h4 class="mb-0">{{ count($clientsWithMerchandiseTL) }}</h4>
+                        </div>
+                    </div>
+                    <hr class="dark horizontal my-0">
+                    <div class="card-footer p-3">
+                        <p class="mb-0 text-success text-sm font-weight-bolder">Associated Client with Brand Ambassador
+                        </p>
+                    </div>
+                </div>
+            </div>
+            {{-- <div class="col-xl-3 col-sm-6">
+                <div class="card">
+                    <div class="card-header p-3 pt-2">
+                        <div
+                            class="icon icon-lg icon-shape bg-gradient-info shadow-info text-center border-radius-xl mt-n4 position-absolute">
+                            <i class="material-icons opacity-10">weekend</i>
+                        </div>
+                        <div class="text-end pt-1">
+                            <p class="text-sm mb-0 text-capitalize">Total Merchandise Batches</p>
+                            <h4 class="mb-0">{{ count($batches) }}</h4>
+                        </div>
+                    </div>
+                    <hr class="dark horizontal my-0">
+                    <div class="card-footer p-3">
+                        <p class="mb-0 text-info text-sm font-weight-bolder">{{ count($batchesAccepted) }} Confirmed By Team
+                            Leader(s)</p>
+                    </div>
+                </div>
+            </div> --}}
+        </div>
         <div style="margin-bottom: 10px;" class="row">
             <div class="col-lg-12">
                 <a class="btn btn-success" href="{{ route('products.create') }}">
@@ -339,6 +423,9 @@
                                     Asigned To
                                 </th>
                                 <th>
+                                    Date Assigned
+                                </th>
+                                <th>
                                     Batch Code
                                 </th>
                                 @can('admin_access')
@@ -363,7 +450,12 @@
                                     <td>
                                         {{ $product->product_code ?? '' }}
                                     </td>
-                                    <td>{{ $product->productBa->user->email ?? 'Not Assigned'}}</td>
+                                    <td>
+                                        {{ $product->productBa->user->email ?? 'Not Assigned' }}
+                                    </td>
+                                    <td>
+                                        {{ $product->productBa->created_at ?? 'Not Assigned' }}
+                                    </td>
                                     <td>
                                         {{ $product->batch->batch_code ?? 'Single Product' }}
                                     </td>
@@ -543,7 +635,7 @@
                         title: 'Merchandise_list',
                         exportOptions: {
                             exportOptions: {
-                                columns: [0, 1, 2, 3, 4,5, ':visible']
+                                columns: [0, 1, 2, 3, 4, 5, ':visible']
                             }
                         }
                     },
@@ -551,7 +643,7 @@
                         extend: 'pdfHtml5',
                         title: 'merchandise_list',
                         exportOptions: {
-                            columns: [0, 1, 2, 3, 4,5]
+                            columns: [0, 1, 2, 3, 4, 5]
                         }
                     },
                     'colvis'

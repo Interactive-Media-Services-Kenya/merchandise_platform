@@ -56,12 +56,11 @@
                                 {{ count($storage->batches) }}
                             </td>
 
-                            @can('tb_access')
                             <td>
-                                <a href="{{route('storages.edit', [$storage->id])}}" class="btn btn-primary btn-sm">Edit</a>
-                                <a href="{{route('storages.destroyStorage',[$storage->id])}}" class="btn btn-danger btn-sm" onclick="return confirm('Are you Sure?')">Delete</a>
+                                @can('tb_access')<a href="{{route('storages.edit', [$storage->id])}}" class="btn btn-primary btn-sm">Edit</a>@endcan
+                                @can('admin_access')<a href="{{route('storages.destroyStorage',[$storage->id])}}" class="btn btn-danger btn-sm" onclick="return confirm('Are you Sure?')">Delete</a>@endcan
                             </td>
-                            @endcan
+
                         </tr>
                         @empty
                         <tr>

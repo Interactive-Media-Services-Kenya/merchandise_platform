@@ -33,8 +33,12 @@ class ProductsController extends Controller
     {
         $products = Product::all();
         $productsIssuedOut = Productbas::all();
+        $productsIssuedOutTL = Productbas::join('batches','batches.id','productbas.batch_id')
+                                ->where('batches.tl_id_accept',Auth::id())->get();
         $batches = Batch::all();
+        $brandAmbassadors = User::where('role_id', 3)->where('county_id',Auth::user()->county_id)->get();
         $clients = Client::all();
+        $clientsWithMerchandiseTL = Product::select('client_id')->where('assigned_to',Auth::id())->groupBy('client_id')->get();
         $clientsWithMerchandise = Product::select('client_id')->groupBy('client_id')->get();
         $batchesAccepted = Batch::where('accept_status',1)->get();
         $teamleaders = User::where('role_id',3)->get();
@@ -55,7 +59,7 @@ class ProductsController extends Controller
         $batchesBa = Batch::select('*')->whereIn('id', $productsBas)->get();
         //dd($batchesBa);
         return view('products.index', compact('products', 'productsTls', 'productsBas', 'batchesBa','teamleaders','teamleadersWithBatches',
-                                            'batches','batchesAccepted','clients','clientsWithMerchandise','productsIssuedOut'));
+                                            'clientsWithMerchandiseTL','brandAmbassadors','productsIssuedOutTL','batches','batchesAccepted','clients','clientsWithMerchandise','productsIssuedOut'));
     }
 
     /**

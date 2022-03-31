@@ -484,8 +484,9 @@
                     </div>
                     <hr class="dark horizontal my-0">
                     <div class="card-footer p-3">
-                        {{-- <p class="mb-0"><span class="text-success text-sm font-weight-bolder">+55% </span>than lask
-                        week</p> --}}
+                        <p class="mb-0 text-default text-sm font-weight-bolder">{{ count($productsIssuedOutTL) }} Assigned
+                            &nbsp;&nbsp;&nbsp;&nbsp; {{ count($productsTls) - count($productsIssuedOutTL) }} Remaining Merchandise
+                        </p>
                     </div>
                 </div>
             </div>
@@ -503,8 +504,7 @@
                     </div>
                     <hr class="dark horizontal my-0">
                     <div class="card-footer p-3">
-                        {{-- <p class="mb-0"><span class="text-success text-sm font-weight-bolder">+3% </span>than lask
-                        month</p> --}}
+                        <p class="mb-0 text-primary text-sm font-weight-bolder">Total Registered Brand Ambassadors in My Region </p>
                     </div>
                 </div>
             </div>
@@ -517,13 +517,13 @@
                         </div>
                         <div class="text-end pt-1">
                             <p class="text-sm mb-0 text-capitalize">Total Clients</p>
-                            <h4 class="mb-0">{{ count($clients) }}</h4>
+                            <h4 class="mb-0">{{ count($clientsWithMerchandiseTL) }}</h4>
                         </div>
                     </div>
                     <hr class="dark horizontal my-0">
                     <div class="card-footer p-3">
-                        {{-- <p class="mb-0"><span class="text-danger text-sm font-weight-bolder">-2%</span> than yesterday
-                    </p> --}}
+                        <p class="mb-0 text-success text-sm font-weight-bolder">Associated Client with Team Leaders
+                        </p>
                     </div>
                 </div>
             </div>
@@ -541,8 +541,7 @@
                     </div>
                     <hr class="dark horizontal my-0">
                     <div class="card-footer p-3">
-                        {{-- <p class="mb-0"><span class="text-success text-sm font-weight-bolder">+5% </span>than
-                        yesterday</p> --}}
+                        <p class="mb-0"><span class="text-info text-sm font-weight-bolder">Batches Assigned</p>
                     </div>
                 </div>
             </div>
