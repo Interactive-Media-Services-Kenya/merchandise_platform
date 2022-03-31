@@ -127,7 +127,7 @@
                 </div>
                 <hr class="dark horizontal my-0">
                 <div class="card-footer p-3">
-                    <p class="mb-0 text-default text-sm font-weight-bolder">{{count($productsIssuedOut)}} Merchandises Issued Out</p>
+                    <p class="mb-0 text-default text-sm font-weight-bolder">{{count($productsIssuedOut)}} Issued Out    &nbsp;&nbsp;&nbsp;&nbsp;  {{count($products) - count($productsIssuedOut)}} Remaining Merchandise   </p>
                 </div>
             </div>
         </div>
@@ -202,6 +202,9 @@
                             Report By Date
                         </a> &nbsp; <a class="btn btn-primary text-end" href="{{ route('report.clients') }}">
                             Report By Client
+                        </a>
+                        &nbsp; <a class="btn btn-primary text-end" href="{{ route('report.product-type') }}">
+                            Report By Merchandise Type
                         </a>
                     </div>
                 </div>

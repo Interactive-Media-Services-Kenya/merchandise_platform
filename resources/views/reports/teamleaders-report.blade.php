@@ -98,9 +98,9 @@
                                                     <th>
                                                         Team Leader
                                                     </th>
-                                                    <th>
+                                                    {{-- <th>
                                                         Brand Ambassador
-                                                    </th>
+                                                    </th> --}}
                                                     <th>
                                                         Client
                                                     </th>
@@ -178,10 +178,10 @@
                             data: 'teamleader',
                             name: 'product.assign.email'
                         },
-                        {
-                            data: 'ba',
-                            name: 'brandambassador.email'
-                        },
+                        // {
+                        //     data: 'ba',
+                        //     name: 'brandambassador.email'
+                        // },
                         {
                             data: 'client',
                             name: 'product.client.name'

@@ -19,12 +19,28 @@
                     <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 bg-transparent">
                         <div class="bg-gradient-success shadow-primary border-radius-lg py-3 pe-1 text-center">
                             <br />
-                            <h3>Select Client & Date Range</h3>
+                            <h3>Select Merchandise Type, Client & Date Range</h3>
                             <br />
                             <br />
 
                             <div class="col-md-5 mx-auto text-center">
                                 <div class="row form-group input-daterange">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <label for="category_id"><h4>Select Merchandise Type</h4></label>
+                                            <select name="category_id" id="category_id" class="form-control text-center mb-4" style="border:1px solid; background:#fff;">
+                                                <option selected disabled>Click To Select
+                                                </option>
+                                                @forelse ($categories as $category)
+                                                    <option value="{{ $category->id }}">{{ strtoupper($category->title) }}
+                                                    </option>
+                                                @empty
+                                                    <option selected disabled>No Merchandise Types Added</option>
+                                                @endforelse
+
+                                            </select>
+                                        </div>
+                                    </div>
                                     <div class="row">
                                         <div class="col-md-12">
                                             <label for="client_id"><h4>Select Client</h4></label>
@@ -137,16 +153,17 @@
 
             load_data();
 
-            function load_data(from_date = '', to_date = '',client_id = '') {
+            function load_data(from_date = '', to_date = '',client_id = '', category_id = '') {
                 $('#productReportTable').DataTable({
                     processing: true,
                     serverSide: true,
                     ajax: {
-                        url: "{{ route('report.clients') }}",
+                        url: "{{ route('report.product-type') }}",
                         data: {
                             from_date: from_date,
                             to_date: to_date,
                             client_id: client_id,
+                            category_id: category_id,
                         }
                     },
                     columns: [{
@@ -203,9 +220,10 @@
                 var from_date = $('#from_date').val();
                 var to_date = $('#to_date').val();
                 var client_id = $('#client_id').val();
-                if (from_date != '' && to_date != ''&& client_id != '') {
+                var category_id = $('#category_id').val();
+                if (from_date != '' && to_date != ''&& client_id != '' && category_id != '') {
                     $('#productReportTable').DataTable().destroy();
-                    load_data(from_date, to_date,client_id);
+                    load_data(from_date, to_date,client_id, category_id);
                 } else {
                     alert('All Input Fields are Required!');
                 }
@@ -215,6 +233,7 @@
                 $('#from_date').val('');
                 $('#to_date').val('');
                 $('#client_id').val('');
+                $('#category_id').val('');
                 $('#productReportTable').DataTable().destroy();
                 load_data();
             });
