@@ -55,10 +55,11 @@ class ProductsController extends Controller
         // ! Filter Confirmed Product (accept_status) belonging to Auth Brand Ambassador and not issued out
         $productsBas = Product::select('*')->where('accept_status', 1)->whereIn('id', $productsBa)->whereNotIn('id', $issuedProducts)->get();
 
+        $batchesTl = Product::select('*')->where('assigned_to', Auth::id())->groupBy('batch_id')->get();
 
         $batchesBa = Batch::select('*')->whereIn('id', $productsBas)->get();
         //dd($batchesBa);
-        return view('products.index', compact('products', 'productsTls', 'productsBas', 'batchesBa','teamleaders','teamleadersWithBatches',
+        return view('products.index', compact('products','batchesTl', 'productsTls', 'productsBas', 'batchesBa','teamleaders','teamleadersWithBatches',
                                             'clientsWithMerchandiseTL','brandAmbassadors','productsIssuedOutTL','batches','batchesAccepted','clients','clientsWithMerchandise','productsIssuedOut'));
     }
 
@@ -303,9 +304,7 @@ class ProductsController extends Controller
             'assigned_to' => 'required|integer',
         ]);
         if ($product->update($request->all())) {
-            // $product->update([
-            //     'user_id' => Auth::id(),
-            // ]);
+
             Activity::create([
                 'title' => 'Merchandise Updated',
                 'user_id' => Auth::id(),
@@ -441,6 +440,8 @@ class ProductsController extends Controller
         Alert::success('Success', 'Operation Successfull An Email has been sent to ' . $receiver_email);
         return back();
     }
+
+    // ? Team Leader Confirms a single product
     public function confirm($id)
     {
         $product = Product::findOrFail($id);

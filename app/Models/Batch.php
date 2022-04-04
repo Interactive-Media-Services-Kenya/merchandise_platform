@@ -13,4 +13,8 @@ class Batch extends Model
     public function teamleader(){
         return $this->belongsTo(User::class, 'tl_id_accept');
     }
+
+    public function products(){
+        return $this->hasMany(Product::class);
+    }
 }

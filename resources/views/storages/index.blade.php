@@ -57,6 +57,7 @@
                             </td>
 
                             <td>
+                                {{-- @can('tb_access')<a href="{{route('storages.show', [$storage->id])}}" class="btn btn-info btn-sm">View</a>@endcan --}}
                                 @can('tb_access')<a href="{{route('storages.edit', [$storage->id])}}" class="btn btn-primary btn-sm">Edit</a>@endcan
                                 @can('admin_access')<a href="{{route('storages.destroyStorage',[$storage->id])}}" class="btn btn-danger btn-sm" onclick="return confirm('Are you Sure?')">Delete</a>@endcan
                             </td>
@@ -64,7 +65,7 @@
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="7" class="text-center">
+                            <td colspan="5" class="text-center">
                                 No Storages Registered
                             </td>
                         </tr>

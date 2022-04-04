@@ -357,13 +357,13 @@
                             <i class="material-icons opacity-10">person</i>
                         </div>
                         <div class="text-end pt-1">
-                            <p class="text-sm mb-0 text-capitalize">Total Clients</p>
-                            <h4 class="mb-0">{{ count($clientsWithMerchandiseTL) }}</h4>
+                            <p class="text-sm mb-0 text-capitalize">Total Batches</p>
+                            <h4 class="mb-0">{{ count($batchesTl) }}</h4>
                         </div>
                     </div>
                     <hr class="dark horizontal my-0">
                     <div class="card-footer p-3">
-                        <p class="mb-0 text-success text-sm font-weight-bolder">Associated Client with Brand Ambassador
+                        <p class="mb-0 text-success text-sm font-weight-bolder">Batches Assigned
                         </p>
                     </div>
                 </div>

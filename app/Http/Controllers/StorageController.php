@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Batch;
 use App\Models\Storage;
 use Illuminate\Http\Request;
 use RealRashid\SweetAlert\Facades\Alert;
@@ -66,8 +67,9 @@ class StorageController extends Controller
     public function show($id)
     {
         $storage = Storage::findOrFail($id);
+        $batches = Batch::where('storage_id', $id)->get();
 
-        return view('storage.show', compact('storage'));
+        return view('storages.show', compact('storage','batches'));
     }
 
 
