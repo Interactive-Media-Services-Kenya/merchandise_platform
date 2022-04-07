@@ -13,4 +13,8 @@ class Storage extends Model
     public function batches(){
         return $this->hasMany(Batch::class);
     }
+
+    public function client(){
+        return $this->belongsTo(Client::class, 'client_id');
+    }
 }
