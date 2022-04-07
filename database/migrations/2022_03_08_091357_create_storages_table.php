@@ -17,7 +17,7 @@ class CreateStoragesTable extends Migration
             $table->bigIncrements('id');
             $table->string('title');
             $table->unsignedBigInteger('client_id')->nullable();
-            $table->foreign('client_id', 'client_id_fk_52770127')->references('id')->on('clients')->constrained()
+            $table->foreign('client_id', 'client_id_fk_52780127')->references('id')->on('clients')->constrained()
             ->onUpdate('cascade');
             $table->timestamps();
         });

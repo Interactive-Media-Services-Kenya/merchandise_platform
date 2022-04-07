@@ -8,10 +8,13 @@ use Illuminate\Database\Eloquent\Model;
 class Category extends Model
 {
     use HasFactory;
-    protected $fillable = ['title'];
+    protected $guarded = [];
 
     // public function product()
     // {
     //     return $this->hasMany('')
     // }
+    public function client(){
+        return $this->belongsTo(Client::class, 'client_id');
+    }
 }

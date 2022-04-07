@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use RealRashid\SweetAlert\Facades\Alert;
+use Illuminate\Support\Facades\Auth;
 
 class CategoriesController extends Controller
 {
@@ -15,8 +16,10 @@ class CategoriesController extends Controller
      */
     public function index()
     {
-        $categories = Category::all();
-        return view('categories.index', compact('categories'));
+        $categories = Category::where('client_id',null)->get();
+        $categoriesClient = Category::where('client_id',Auth::user()->client_id)->get();
+
+        return view('categories.index', compact('categories','categoriesClient'));
     }
 
     /**
@@ -30,7 +33,7 @@ class CategoriesController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a newly created resource in cate$category.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
@@ -40,8 +43,16 @@ class CategoriesController extends Controller
         $request->validate([
             'title' => 'required|string|max:255'
         ]);
-
-        $category = Category::create($request->all());
+        if (Auth::user()->client_id != null) {
+            $category = Category::create([
+                'title' => $request->title,
+                'client_id' => Auth::user()->client_id,
+            ]);
+        } else {
+            $category = Category::create([
+                'title' => $request->title,
+            ]);
+        }
 
         if ($category) {
             Alert::success('Success', 'Merchandise Category Successfully Added');
@@ -77,7 +88,7 @@ class CategoriesController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update the specified resource in cate$category.
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
@@ -100,7 +111,7 @@ class CategoriesController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified resource from cate$category.
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response

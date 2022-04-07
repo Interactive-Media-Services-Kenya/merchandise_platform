@@ -6,77 +6,158 @@
         integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn" crossorigin="anonymous"> --}}
 @endsection
 @section('content')
-@can('tb_access')
-    <div style="margin-bottom: 10px;" class="row">
-        <div class="col-lg-12">
-            <a class="btn btn-success" href="{{ route('storages.create') }}">
-                Add Storage
-            </a>
+    @can('tb_access')
+        <div style="margin-bottom: 10px;" class="row">
+            <div class="col-lg-12">
+                <a class="btn btn-success" href="{{ route('storages.create') }}">
+                    Add Storage
+                </a>
+            </div>
         </div>
-    </div>
 
-<div class="card">
-    <div class="card-header">
-        Storages
-    </div>
+        <div class="card">
+            <div class="card-header">
+                Storages
+            </div>
 
-    <div class="card-body">
-        <div class="table-responsive">
-            <table class=" table table-bordered table-striped table-hover datatable datatable-client" id="ClientTable">
-                <thead>
-                    <tr>
-                        <th width="10">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class=" table table-bordered table-striped table-hover datatable datatable-client" id="ClientTable">
+                        <thead>
+                            <tr>
+                                <th width="10">
 
-                        </th>
-                        <th>
-                           ID
-                        </th>
-                        <th>
-                            Name
-                        </th>
-                        <td>Batches</td>
-                        <th>
-                            Action
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse($storages as $key => $storage)
-                        <tr data-entry-id="{{ $storage->id }}">
-                            <td>
+                                </th>
+                                <th>
+                                    ID
+                                </th>
+                                <th>
+                                    Name
+                                </th>
+                                <td>Batches</td>
+                                <th>
+                                    Action
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse($storages as $key => $storage)
+                                <tr data-entry-id="{{ $storage->id }}">
+                                    <td>
 
-                            </td>
-                            <td>
-                                {{ $storage->id ?? '' }}
-                            </td>
-                            <td>
-                                {{ $storage->title ?? '' }}
-                            </td>
-                            <td>
-                                {{ count($storage->batches) }}
-                            </td>
+                                    </td>
+                                    <td>
+                                        {{ $storage->id ?? '' }}
+                                    </td>
+                                    <td>
+                                        {{ $storage->title ?? '' }}
+                                    </td>
+                                    <td>
+                                        {{ count($storage->batches) }}
+                                    </td>
 
-                            <td>
-                                {{-- @can('tb_access')<a href="{{route('storages.show', [$storage->id])}}" class="btn btn-info btn-sm">View</a>@endcan --}}
-                                @can('tb_access')<a href="{{route('storages.edit', [$storage->id])}}" class="btn btn-primary btn-sm">Edit</a>@endcan
-                                @can('admin_access')<a href="{{route('storages.destroyStorage',[$storage->id])}}" class="btn btn-danger btn-sm" onclick="return confirm('Are you Sure?')">Delete</a>@endcan
-                            </td>
+                                    <td>
+                                        {{-- @can('tb_access')<a href="{{route('storages.show', [$storage->id])}}" class="btn btn-info btn-sm">View</a>@endcan --}}
+                                        @can('tb_access')
+                                            <a href="{{ route('storages.edit', [$storage->id]) }}"
+                                                class="btn btn-primary btn-sm">Edit</a>
+                                        @endcan
+                                        @can('admin_access')
+                                            <a href="{{ route('storages.destroyStorage', [$storage->id]) }}"
+                                                class="btn btn-danger btn-sm" onclick="return confirm('Are you Sure?')">Delete</a>
+                                        @endcan
+                                    </td>
 
-                        </tr>
-                        @empty
-                        <tr>
-                            <td colspan="5" class="text-center">
-                                No Storages Registered
-                            </td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="5" class="text-center">
+                                        No Storages Registered
+                                    </td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
-    </div>
-</div>
+    @endcan
+    @can('client_access')
+        <div style="margin-bottom: 10px;" class="row">
+            <div class="col-lg-12">
+                <a class="btn btn-success" href="{{ route('storages.create') }}">
+                    Add Storage
+                </a>
+            </div>
+        </div>
 
-@endcan
+        <div class="card">
+            <div class="card-header">
+                Storages
+            </div>
+
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class=" table table-bordered table-striped table-hover datatable datatable-client" id="ClientTable">
+                        <thead>
+                            <tr>
+                                <th width="10">
+
+                                </th>
+                                <th>
+                                    ID
+                                </th>
+                                <th>
+                                    Name
+                                </th>
+                                <td>Batches</td>
+                                <th>
+                                    Action
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse($storagesClient as $key => $storage)
+                                <tr data-entry-id="{{ $storage->id }}">
+                                    <td>
+
+                                    </td>
+                                    <td>
+                                        {{ $storage->id ?? '' }}
+                                    </td>
+                                    <td>
+                                        {{ $storage->title ?? '' }}
+                                    </td>
+                                    <td>
+                                        {{ count($storage->batches) }}
+                                    </td>
+
+                                    <td>
+                                        {{-- @can('tb_access')<a href="{{route('storages.show', [$storage->id])}}" class="btn btn-info btn-sm">View</a>@endcan --}}
+                                        @can('client_access')
+                                            <a href="{{ route('storages.edit', [$storage->id]) }}"
+                                                class="btn btn-primary btn-sm">Edit</a>
+                                        @endcan
+                                        @can('admin_access')
+                                            <a href="{{ route('storages.destroyStorage', [$storage->id]) }}"
+                                                class="btn btn-danger btn-sm" onclick="return confirm('Are you Sure?')">Delete</a>
+                                        @endcan
+                                    </td>
+
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="5" class="text-center">
+                                        No Storages Registered
+                                    </td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    @endcan
 
 @endsection
 @section('scripts')

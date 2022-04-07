@@ -5,15 +5,17 @@ namespace App\Http\Controllers;
 use App\Models\Batch;
 use App\Models\Storage;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use RealRashid\SweetAlert\Facades\Alert;
 
 class StorageController extends Controller
 {
     public function index()
     {
-        $storages = Storage::all();
+        $storages = Storage::where('client_id',null)->get();
+        $storagesClient = Storage::where('client_id', Auth::user()->client_id)->get();
 
-        return view('storages.index', compact('storages'));
+        return view('storages.index', compact('storages','storagesClient'));
     }
 
     public function create()
@@ -26,10 +28,17 @@ class StorageController extends Controller
         $request->validate([
             'title' => 'required|string|max:255',
         ]);
+        if (Auth::user()->client_id != null) {
+            $storage = Storage::create([
+                'title' => $request->title,
+                'client_id' => Auth::user()->client_id,
+            ]);
+        } else {
+            $storage = Storage::create([
+                'title' => $request->title,
+            ]);
+        }
 
-        $storage = Storage::create([
-            'title' => $request->title,
-        ]);
         if ($storage) {
             Alert::success('Success', 'Storage Created Successfully');
             return back();

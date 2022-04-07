@@ -100,6 +100,32 @@
                     </a>
                 </li>
             @endcan
+            @can('client_access')
+                <li class="nav-item">
+                    <a class="nav-link text-white " href="{{ route('categories.index') }}">
+                        <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                            <i class="material-icons opacity-10">assessment</i>
+                        </div>
+                        <span class="nav-link-text ms-1">Merchandise Categories</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white " href="{{ route('reports') }}">
+                        <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                            <i class="material-icons opacity-10">filter</i>
+                        </div>
+                        <span class="nav-link-text ms-1">Reports</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white " href="{{ route('storages.index') }}">
+                        <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                            <i class="material-icons opacity-10">folder</i>
+                        </div>
+                        <span class="nav-link-text ms-1">Storage Locations</span>
+                    </a>
+                </li>
+            @endcan
             @can('brand_ambassador_access')
                 <li class="nav-item">
                     <a class="nav-link text-white " href="{{ route('batches.index') }}">
