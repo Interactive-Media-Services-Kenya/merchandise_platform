@@ -906,6 +906,245 @@
             </div>
         </div>
     @endcan
+    @can('client_access')
+        <div class="row">
+            <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+                <div class="card">
+                    <div class="card-header p-3 pt-2">
+                        <div
+                            class="icon icon-lg icon-shape bg-gradient-dark shadow-dark text-center border-radius-xl mt-n4 position-absolute">
+                            <i class="material-icons opacity-10">weekend</i>
+                        </div>
+                        <div class="text-end pt-1">
+                            <p class="text-sm mb-0 text-capitalize">Total Merchandise</p>
+                            <h4 class="mb-0">{{ count($products) }}</h4>
+                        </div>
+                    </div>
+                    <hr class="dark horizontal my-0">
+                    <div class="card-footer p-3">
+                        {{-- <p class="mb-0"><span class="text-success text-sm font-weight-bolder">+55% </span>than lask
+                        week</p> --}}
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+                <div class="card">
+                    <div class="card-header p-3 pt-2">
+                        <div
+                            class="icon icon-lg icon-shape bg-gradient-primary shadow-primary text-center border-radius-xl mt-n4 position-absolute">
+                            <i class="material-icons opacity-10">person</i>
+                        </div>
+                        <div class="text-end pt-1">
+                            <p class="text-sm mb-0 text-capitalize">Registered Team Leaders</p>
+                            <h4 class="mb-0">{{ count($tls) }}</h4>
+                        </div>
+                    </div>
+                    <hr class="dark horizontal my-0">
+                    <div class="card-footer p-3">
+                        {{-- <p class="mb-0"><span class="text-success text-sm font-weight-bolder">+3% </span>than lask
+                        month</p> --}}
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+                <div class="card">
+                    <div class="card-header p-3 pt-2">
+                        <div
+                            class="icon icon-lg icon-shape bg-gradient-success shadow-success text-center border-radius-xl mt-n4 position-absolute">
+                            <i class="material-icons opacity-10">person</i>
+                        </div>
+                        <div class="text-end pt-1">
+                            <p class="text-sm mb-0 text-capitalize">Total Clients</p>
+                            <h4 class="mb-0">{{ count($clients) }}</h4>
+                        </div>
+                    </div>
+                    <hr class="dark horizontal my-0">
+                    <div class="card-footer p-3">
+                        {{-- <p class="mb-0"><span class="text-danger text-sm font-weight-bolder">-2%</span> than yesterday
+                    </p> --}}
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-sm-6">
+                <div class="card">
+                    <div class="card-header p-3 pt-2">
+                        <div
+                            class="icon icon-lg icon-shape bg-gradient-info shadow-info text-center border-radius-xl mt-n4 position-absolute">
+                            <i class="material-icons opacity-10">weekend</i>
+                        </div>
+                        <div class="text-end pt-1">
+                            <p class="text-sm mb-0 text-capitalize">Total Merchandise Batches</p>
+                            <h4 class="mb-0">{{ count($batches) }}</h4>
+                        </div>
+                    </div>
+                    <hr class="dark horizontal my-0">
+                    <div class="card-footer p-3">
+                        {{-- <p class="mb-0"><span class="text-success text-sm font-weight-bolder">+5% </span>than
+                        yesterday</p> --}}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-4" height="200">
+            <div class="col-lg-6 mt-4 mb-4">
+                <div class="card z-index-2 ">
+                    <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 bg-transparent">
+                        <div class="bg-gradient-default shadow-primary border-radius-lg py-3 pe-1">
+                            <div class="chart">
+                                <canvas id="myChart-bar" class="chart-canvas" height="450"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <h6 class="mb-0 ">Merchandise Issued</h6>
+                        <p class="text-sm ">Total Count from all Brand Ambassadors</p>
+                        <hr class="dark horizontal">
+                        <div class="d-flex ">
+                            <i class="material-icons text-sm my-auto me-1">schedule</i>
+                            <p class="mb-0 text-sm"> per month </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6 mt-4 mb-3">
+                <div class="card z-index-2 ">
+                    <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 bg-transparent">
+                        <div class="bg-gradient-dark shadow-dark border-radius-lg py-3 pe-1">
+                            <div class="chart align-items-center" height="500">
+                                <canvas id="myChart-pie" class="chart-canvas" height="450" style="margin: 0 auto;"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <h6 class="mb-0 ">Completed Tasks</h6>
+                        <p class="text-sm ">Updated Issued Merchandise Per Type Summary</p>
+                        <hr class="dark horizontal">
+                        <div class="d-flex ">
+                            <i class="material-icons text-sm my-auto me-1">schedule</i>
+                            <p class="mb-0 text-sm">latest update</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {{-- <div class="row mb-4">
+            <div class="col-lg-8 mt-4 mb-3">
+                <div class="card z-index-2 ">
+                    <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 bg-transparent">
+                        <div class="bg-gradient-light shadow-dark border-radius-lg py-3 pe-1">
+                            <div class="chart align-items-center" height="500">
+                                <canvas id="myChart-lines" class="chart-canvas" height="450"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <h6 class="mb-0 ">Completed Tasks</h6>
+                        <p class="text-sm ">Updated Issued Merchandise Per Type Summary</p>
+                        <hr class="dark horizontal">
+                        <div class="d-flex ">
+                            <i class="material-icons text-sm my-auto me-1">schedule</i>
+                            <p class="mb-0 text-sm">latest update</p>
+                        </div>
+                    </div>
+                </div>
+            </div> --}}
+        <div class="row mb-4">
+            <div class="col-lg-8 col-md-6 mb-md-0 mb-4">
+                <div class="card">
+                    <div class="card-header pb-0">
+                        <div class="row">
+                            <div class="col-lg-6 col-7">
+                                <h6>Latest Batches Confirmed</h6>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body px-0 pb-2">
+                        <div class="col-md-10 mx-auto table-responsive">
+                            <table class="table align-items-center mb-0">
+                                <thead>
+                                    <tr>
+                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                            Confirmed At</th>
+                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                            Batch Code</th>
+
+                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                            Team Leader</th>
+                                        {{-- <th
+                                            class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                            Action</th> --}}
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @forelse ($batchesConfirmed as $batch)
+                                        <tr>
+                                            <td>
+                                                {{ $batch->updated_at }}
+                                            </td>
+                                            <td>
+                                                {{ $batch->batch_code }}
+                                            </td>
+                                            <td>
+                                                {{ $batch->teamleader->name }} ({{ $batch->teamleader->email }})
+                                            </td>
+
+                                            {{-- <td class="text-center">
+                                                <a href="{{ route('batch.show', [$batch->id]) }}"
+                                                    class="btn btn-sm btn-primary">View</a>
+                                            </td> --}}
+                                        </tr>
+                                    @empty
+                                        <tr>
+                                            <td class="text-center" colspan="4">No Batches Assigned Yet</td>
+                                        </tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="card h-100">
+                    <div class="card-header pb-0">
+                        <h6>My Recent Activities</h6>
+                        {{-- <p class="text-sm">
+                            <i class="fa fa-arrow-up text-success" aria-hidden="true"></i>
+                            <span class="font-weight-bold">24%</span> this month
+                        </p> --}}
+                    </div>
+                    <div class="card-body p-3">
+                        <div class="timeline timeline-one-side">
+                            @forelse ($activities as $activity)
+                                <div class="timeline-block mb-3">
+                                    <span class="timeline-step">
+                                        <i class="material-icons text-success text-gradient">notifications</i>
+                                    </span>
+                                    <div class="timeline-content">
+                                        <h6 class="text-dark text-sm font-weight-bold mb-0">{{ $activity->description }}
+                                        </h6>
+                                        <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">
+                                            {{ \Carbon\Carbon::parse($activity->created_at)->diffForHumans() }}</p>
+                                    </div>
+                                </div>
+                            @empty
+                                <div class="timeline-block mb-3">
+                                    <span class="timeline-step">
+                                        <i class="material-icons text-success text-gradient">notifications</i>
+                                    </span>
+                                    <div class="timeline-content">
+                                        <h6 class="text-dark text-sm font-weight-bold mb-0">No Activity Yet</h6>
+                                        {{-- <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">{{$activity->created_at->diffForhums}}</p> --}}
+                                    </div>
+                                </div>
+                            @endforelse
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endcan
 @endsection
 @section('scripts')
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"

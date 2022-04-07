@@ -43,5 +43,8 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('brand_ambassador_access', function ($user) {
             return in_array($user->role_id, [4]);
         });
+        Gate::define('client_access', function ($user) {
+            return in_array($user->role_id, [5]);
+        });
     }
 }

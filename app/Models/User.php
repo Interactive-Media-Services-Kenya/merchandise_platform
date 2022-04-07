@@ -47,6 +47,9 @@ class User extends Authenticatable
     {
         return $this->belongsTo(County::class, 'county_id');
     }
+    public function client(){
+        return $this->belongsTo(Client::class, 'client_id');
+    }
     public function generateCode()
     {
         $code = rand(1000, 9999);

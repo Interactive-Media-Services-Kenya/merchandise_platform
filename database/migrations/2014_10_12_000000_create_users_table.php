@@ -25,6 +25,9 @@ class CreateUsersTable extends Migration
             $table->unsignedBigInteger('county_id')->nullable();
             $table->foreign('county_id', 'county_fk_5358227')->references('id')->on('counties')->constrained()
             ->onUpdate('cascade');
+            $table->unsignedBigInteger('client_id')->nullable();
+            $table->foreign('client_id', 'client_id_fk_52760127')->references('id')->on('clients')->constrained()
+            ->onUpdate('cascade');
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();

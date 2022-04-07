@@ -19,9 +19,7 @@ class CreateClientsTable extends Migration
             $table->string('email')->nullable();
             $table->string('phone')->nullable();
             $table->string('address')->nullable();
-            $table->unsignedBigInteger('created_by')->default(1);
-            $table->foreign('created_by', 'created_by_fk_52760127')->references('id')->on('users')->constrained()
-            ->onUpdate('cascade');
+            $table->unsignedBigInteger('created_by')->nullable();
             $table->timestamps();
         });
     }

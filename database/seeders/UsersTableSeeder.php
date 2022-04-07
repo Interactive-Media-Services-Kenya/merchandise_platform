@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\User;
 use Illuminate\Database\Seeder;
+use DB;
 
 class UsersTableSeeder extends Seeder
 {
@@ -66,5 +67,16 @@ class UsersTableSeeder extends Seeder
         ];
 
         User::insert($users);
+        DB::table('users')->insert(
+            [
+                'name'=> 'Client One',
+                'phone' =>  mt_rand(254700000000, 254799999999),
+                'email'=> 'clientone@ims.co.ke',
+                'role_id'=>5,
+                'county_id' => mt_rand(1,47),
+                'password'=>  bcrypt('password'),
+                'client_id'=>1,
+            ],
+        );
     }
 }
