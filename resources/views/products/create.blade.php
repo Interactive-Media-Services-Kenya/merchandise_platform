@@ -139,6 +139,114 @@
             {{-- End of registered Users --}}
         </div>
     @endcan
+    @can('client_access')
+        <div class="row">
+            <div class="col-sm-8 offset-2">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="text-center">Add Merchandise</h4>
+                    </div>
+
+                    <div class="card-body">
+                        <form method="POST" action="{{ route('products.store') }}">
+                            @csrf
+
+
+                            <div class="row mb-3">
+                                <label for="county_id" class="col-md-4 col-form-label text-md-end">Select
+                                    Type</label>
+
+                                <div class="col-md-6">
+                                    <select name="category_id" id="" class="form-control"
+                                        style="border: 1px solid; border-radius:10px;">
+                                        <option selected disabled>--- Select Merchandise Type ---</option>
+                                        @forelse ($categoriesClient as $category)
+                                            <option value="{{ $category->id }}">{{ strtoupper($category->title) }}</option>
+                                        @empty
+                                            <option disabled> No Merchandise To Select Yet</option>
+                                        @endforelse
+                                    </select>
+                                    <input type="hidden" name="owner_id" value="{{Auth::id()}}">
+                                    @error('category_id')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <label for="county_id" class="col-md-4 col-form-label text-md-end">Select
+                                    Storage</label>
+
+                                <div class="col-md-6">
+                                    <select name="storage_id" id="" class="form-control"
+                                        style="border: 1px solid; border-radius:10px;">
+                                        <option selected disabled>--- Select Storage ---</option>
+                                        @forelse ($storagesClient as  $storage)
+                                            <option value="{{ $storage->id }}">{{ strtoupper($storage->title) }}</option>
+                                        @empty
+                                            <option disabled> No Storage Added Yet</option>
+                                        @endforelse
+                                    </select>
+
+                                    @error('storage_id')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-4 mx-auto">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="flexRadioDefault"
+                                            id="flexRadioDefault2" checked>
+                                        <label class="form-check-label" for="flexRadioDefault2">
+                                            Single Merchandise
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="flexRadioDefault"
+                                            id="flexRadioDefault1" value="2">
+                                        <label class="form-check-label" for="flexRadioDefault1">
+                                            Batch Merchandise
+                                        </label>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="row mb-3" id="batch">
+                                <label for="quantity" class="col-md-4 col-form-label text-md-end">Quantity</label>
+
+                                <div class="col-md-6">
+                                    <input id="quantity" type="number"
+                                        class="form-control @error('quantity') is-invalid @enderror input"
+                                        style="border: 1px solid; border-radius:10px;" name="quantity" autocomplete="number"
+                                        placeholder="200">
+
+                                    @error('quantity')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+                            </div>
+
+                            <div class="row mb-0">
+                                <div class="col-md-6 offset-md-4">
+                                    <button type="submit" class="btn btn-success">
+                                        Submit
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {{-- End of registered Users --}}
+        </div>
+    @endcan
     @can('team_leader_access')
         <div class="row">
             <div class="col-sm-8 offset-2">

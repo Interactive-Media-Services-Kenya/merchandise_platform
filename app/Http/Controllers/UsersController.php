@@ -33,9 +33,10 @@ class UsersController extends Controller
     public function teamleaders()
     {
         $teamleaders = User::with(['roles', 'county'])->where('role_id', 3)->get();
+        $salesreps = User::with(['roles', 'county'])->where('role_id', 3)->where('client_id',Auth::user()->client_id)->get();
 
 
-        return view('teamleaders.index', compact('teamleaders'));
+        return view('teamleaders.index', compact('teamleaders','salesreps'));
     }
 
     // ? Get Brand Ambassadors for each team leader
@@ -79,7 +80,6 @@ class UsersController extends Controller
             'role_id' => ['required', 'integer'],
             'password' => ['required', Password::min(8)->mixedCase()->symbols()->uncompromised(), 'confirmed'],
         ]);
-
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
@@ -88,6 +88,12 @@ class UsersController extends Controller
             'role_id' => $request->role_id,
             'password' => bcrypt($request->password),
         ]);
+        if ($request->has('client_id')) {
+            $user->update([
+                'client_id' => Auth::user()->client_id,
+            ]);
+        }
+
         Activity::create([
             'title' => 'User Added',
             'description' => Auth::user()->name . ' Added User: ' . $user->email,

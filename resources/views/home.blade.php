@@ -935,8 +935,8 @@
                             <i class="material-icons opacity-10">person</i>
                         </div>
                         <div class="text-end pt-1">
-                            <p class="text-sm mb-0 text-capitalize">Registered Team Leaders</p>
-                            <h4 class="mb-0">{{ count($tls) }}</h4>
+                            <p class="text-sm mb-0 text-capitalize">Registered Sales Reprresentatives</p>
+                            <h4 class="mb-0">{{ count($salesreps) }}</h4>
                         </div>
                     </div>
                     <hr class="dark horizontal my-0">
@@ -974,7 +974,7 @@
                         </div>
                         <div class="text-end pt-1">
                             <p class="text-sm mb-0 text-capitalize">Total Merchandise Batches</p>
-                            <h4 class="mb-0">{{ count($batches) }}</h4>
+                            <h4 class="mb-0">{{ count($batchesClient) }}</h4>
                         </div>
                     </div>
                     <hr class="dark horizontal my-0">

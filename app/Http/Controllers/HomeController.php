@@ -36,12 +36,15 @@ class HomeController extends Controller
         //Admin data & TB Data
 
         //All products
-        $products = Product::all();
-        $batches = Batch::all();
+        $products = Product::where('owner_id',Auth::id())->get();
+        $batches = Batch::join('storages','storages.id','batches.storage_id')->where('storages.client_id',null)->get();
+        //Batches for a client
+        $batchesClient = Batch::join('storages','storages.id','batches.storage_id')->where('storages.client_id',Auth::user()->client_id)->get();
         $clients = Client::all();
         $bas = User::where('role_id', 4)->get();
-        $categories = Category::all();
-        $tls = User::where('role_id',3)->get();
+        $categories = Category::where('client_id',null)->get();
+        $tls = User::where('role_id',3)->where('client_id',null)->get();
+        $salesreps = User::where('role_id',3)->where('client_id',Auth::user()->client_id)->get();
         // ? Products issued Out
         $productsIssuedOut = Productbas::all();
         $productsIssuedOutTL = Productbas::join('batches','batches.id','productbas.batch_id')
@@ -89,7 +92,7 @@ class HomeController extends Controller
 
 
 
-        return view('home', compact('products','batches','clients','bas','tls',
+        return view('home', compact('products','batches','batchesClient','clients','bas','tls','salesreps',
                                     'productsbas','batchesbas','categories','batchesConfirmed',
                                     'productsTls', 'brandAmbassadors','batchesTl','activities','activityAdmin',
                                     'productsIssuedOut','productsIssuedOutTL','clientsWithMerchandiseTL'));

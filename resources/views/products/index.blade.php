@@ -307,6 +307,200 @@
         </div>
     @endcan
 
+    {{-- Client Access --}}
+    @can('client_access')
+        {{-- Statistics Report Data For Merchandises --}}
+        <div class="row mb-4">
+            <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+                <div class="card">
+                    <div class="card-header p-3 pt-2">
+                        <div
+                            class="icon icon-lg icon-shape bg-gradient-dark shadow-dark text-center border-radius-xl mt-n4 position-absolute">
+                            <i class="material-icons opacity-10">weekend</i>
+                        </div>
+                        <div class="text-end pt-1">
+                            <p class="text-sm mb-0 text-capitalize">Total Merchandise</p>
+                            <h4 class="mb-0">{{ count($productsClient) }}</h4>
+                        </div>
+                    </div>
+                    <hr class="dark horizontal my-0">
+                    <div class="card-footer p-3">
+                        <p class="mb-0 text-default text-sm font-weight-bolder">{{ count($productsIssuedOut) }} Issued Out
+                            &nbsp;&nbsp;&nbsp;&nbsp; {{ count($productsClient) - count($productsIssuedOut) }} Remaining Merchandise
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+                <div class="card">
+                    <div class="card-header p-3 pt-2">
+                        <div
+                            class="icon icon-lg icon-shape bg-gradient-primary shadow-primary text-center border-radius-xl mt-n4 position-absolute">
+                            <i class="material-icons opacity-10">person</i>
+                        </div>
+                        <div class="text-end pt-1">
+                            <p class="text-sm mb-0 text-capitalize">Registered Sales Representatives</p>
+                            <h4 class="mb-0">{{ count($salesreps) }}</h4>
+                        </div>
+                    </div>
+                    <hr class="dark horizontal my-0">
+                    <div class="card-footer p-3">
+                        <p class="mb-0 text-primary text-sm font-weight-bolder">{{ count($teamleadersWithBatches) }} Sales Represantatives With Batches (Confirmed)</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+                <div class="card">
+                    <div class="card-header p-3 pt-2">
+                        <div
+                            class="icon icon-lg icon-shape bg-gradient-success shadow-success text-center border-radius-xl mt-n4 position-absolute">
+                            <i class="material-icons opacity-10">person</i>
+                        </div>
+                        <div class="text-end pt-1">
+                            <p class="text-sm mb-0 text-capitalize">Total Clients</p>
+                            <h4 class="mb-0">{{ count($clients) }}</h4>
+                        </div>
+                    </div>
+                    <hr class="dark horizontal my-0">
+                    <div class="card-footer p-3">
+                        <p class="mb-0 text-success text-sm font-weight-bolder">{{ count($clientsWithMerchandise) }} Clients
+                            With Products
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-sm-6">
+                <div class="card">
+                    <div class="card-header p-3 pt-2">
+                        <div
+                            class="icon icon-lg icon-shape bg-gradient-info shadow-info text-center border-radius-xl mt-n4 position-absolute">
+                            <i class="material-icons opacity-10">weekend</i>
+                        </div>
+                        <div class="text-end pt-1">
+                            <p class="text-sm mb-0 text-capitalize">Total Merchandise Batches</p>
+                            <h4 class="mb-0">{{ count($batches) }}</h4>
+                        </div>
+                    </div>
+                    <hr class="dark horizontal my-0">
+                    <div class="card-footer p-3">
+                        <p class="mb-0 text-info text-sm font-weight-bolder">{{ count($batchesAccepted) }} Confirmed By Sales Representatives</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div style="margin-bottom: 10px;" class="row">
+            <div class="col-lg-12">
+                <div class="row">
+                    <div class="col-md-6">
+                        <a class="btn btn-success" href="{{ route('products.create') }}">
+                            Add Merchandise
+                        </a> &nbsp; <a class="btn btn-primary text-end" href="{{ route('products.assign.create') }}">
+                            Assign Merchandise To Sale Representative
+                        </a>
+                    </div>
+                    <div class="col-md-6">
+                        <a class="btn btn-success" href="{{ route('report.products') }}">
+                            Report By Date
+                        </a>
+                        &nbsp; <a class="btn btn-primary text-end" href="{{ route('report.product-type') }}">
+                            Report By Merchandise Type
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                Merchandise
+            </div>
+
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class=" table table-bordered table-striped table-hover datatable" id="ProductTable">
+                        <thead>
+                            <tr>
+                                <th width="10">
+
+                                </th>
+                                <th>
+                                    ID
+                                </th>
+                                <th>
+                                    Merchandise Type
+                                </th>
+                                <th>
+                                    Client
+                                </th>
+                                <th>
+                                    Serial Number
+                                </th>
+                                @can('tb_access')
+                                    <th>
+                                        Team Leader
+                                    </th>
+                                @endcan
+                                <th>
+                                    Batch Code
+                                </th>
+                                <th>
+                                    Date Added
+                                </th>
+                                @can('admin_access')
+                                    <th>
+                                        Actions
+                                    </th>
+                                @endcan
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($products as $key => $product)
+                                <tr data-entry-id="{{ $product->id }}">
+                                    <td>
+
+                                    </td>
+                                    <td>
+                                        {{ $product->id ?? '' }}
+                                    </td>
+                                    <td>
+                                        {{ $product->category->title ?? '' }}
+                                    </td>
+                                    <td>
+                                        {{ $product->client->name ?? '' }}
+                                    </td>
+                                    <td>
+                                        {{ $product->product_code ?? '' }}
+                                    </td>
+                                    @can('tb_access')
+                                        <td>
+                                            {{ $product->assign->email ?? 'Not Assigned' }}
+                                        </td>
+                                    @endcan
+                                    <td>
+                                        {{ $product->batch->batch_code ?? 'Single Product' }}
+                                    </td>
+                                    <td>
+                                        {{ $product->created_at ?? '' }}
+                                    </td>
+                                    @can('admin_access')
+                                        <td>
+                                            <a href="{{ route('products.edit', [$product->id]) }}"
+                                                class="btn btn-primary btn-sm">Edit</a>
+                                            <a href="{{ route('products.destroyProduct', [$product->id]) }}"
+                                                class="btn btn-danger btn-sm" onclick="return confirm('Are you Sure?')">Delete</a>
+                                        </td>
+                                    @endcan
+
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    @endcan
+
     {{-- Team Leader Access --}}
     @can('team_leader_access')
         {{-- Statistics Report Data For Merchandises --}}

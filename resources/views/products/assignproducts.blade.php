@@ -115,6 +115,75 @@
             {{-- End of registered Users --}}
         </div>
     @endcan
+    @can('client_access')
+        <div class="row">
+            <div class="col-sm-8 offset-2">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="text-center">Assign Merchandise from Batch</h4>
+                    </div>
+
+                    <div class="card-body">
+                        <form method="POST" action="{{ route('products.storeTL') }}">
+                            @csrf
+                            <div class="row mb-3">
+                                <label for="batch_id" class="col-md-4 col-form-label text-md-end">Select
+                                    Batch</label>
+
+                                <div class="col-md-6">
+                                    <select name="batch_id" id="" class="form-control"
+                                        style="border: 1px solid; border-radius:10px;">
+                                        <option selected disabled>--- Select Batch Code ---</option>
+                                        @forelse ($batchesClient as $batch)
+                                            <option value="{{ $batch->id }}">{{ strtoupper($batch->batch_code) }}</option>
+                                        @empty
+                                            <option disabled> No Batches To Select Yet</option>
+                                        @endforelse
+                                    </select>
+                                    <input type="hidden" name="owner_id" value="{{Auth::id()}}">
+                                    @error('category_id')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <label for="assigned_to" class="col-md-4 col-form-label text-md-end">Select
+                                    Sales Representative</label>
+
+                                <div class="col-md-6">
+                                    <select name="assigned_to" id="" class="form-control"
+                                        style="border: 1px solid; border-radius:10px;">
+                                        <option selected disabled>--- Select Sales Representative ---</option>
+                                        @forelse ($salesreps as  $leader)
+                                            <option value="{{ $leader->id }}">{{ strtoupper($leader->name) }}</option>
+                                        @empty
+                                            <option disabled> No Sales Representative Added Yet</option>
+                                        @endforelse
+                                    </select>
+
+                                    @error('assigned_to')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="row mb-0">
+                                <div class="col-md-6 offset-md-4">
+                                    <button type="submit" class="btn btn-success">
+                                        Submit
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {{-- End of registered Users --}}
+        </div>
+    @endcan
 @endsection
 @section('scripts')
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" referrerpolicy="no-referrer"></script>

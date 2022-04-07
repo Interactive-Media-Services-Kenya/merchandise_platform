@@ -6,78 +6,154 @@
         integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn" crossorigin="anonymous"> --}}
 @endsection
 @section('content')
-@can('tb_access')
+    @can('tb_access')
+        <div class="card">
+            <div class="card-header">
+                Team Leaders
+            </div>
 
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class=" table table-bordered table-striped table-hover datatable datatable-teamleader" id="UserTable">
+                        <thead>
+                            <tr>
+                                <th width="10">
 
-<div class="card">
-    <div class="card-header">
-        Team Leaders
-    </div>
-
-    <div class="card-body">
-        <div class="table-responsive">
-            <table class=" table table-bordered table-striped table-hover datatable datatable-teamleader" id="UserTable">
-                <thead>
-                    <tr>
-                        <th width="10">
-
-                        </th>
-                        <th>
-                           ID
-                        </th>
-                        <th>
-                            Name
-                        </th>
-                        <th>
-                            Email
-                        </th>
-                        <th>
-                            Phone
-                        </th>
-                        <th>
-                            County
-                        </th>
-                        {{-- <th>
+                                </th>
+                                <th>
+                                    ID
+                                </th>
+                                <th>
+                                    Name
+                                </th>
+                                <th>
+                                    Email
+                                </th>
+                                <th>
+                                    Phone
+                                </th>
+                                <th>
+                                    County
+                                </th>
+                                {{-- <th>
                             Actions
                         </th> --}}
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($teamleaders as $key => $teamleader)
-                        <tr data-entry-id="{{ $teamleader->id }}">
-                            <td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($teamleaders as $key => $teamleader)
+                                <tr data-entry-id="{{ $teamleader->id }}">
+                                    <td>
 
-                            </td>
-                            <td>
-                                {{ $teamleader->id ?? '' }}
-                            </td>
-                            <td>
-                                {{ $teamleader->name ?? '' }}
-                            </td>
-                            <td>
-                                {{ $teamleader->email ?? '' }}
-                            </td>
-                            <td>
-                                {{ $teamleader->phone ?? '' }}
-                            </td>
-                            <td>
-                                {{ $teamleader->county->name ?? '' }}
-                            </td>
-                            {{-- <td>
+                                    </td>
+                                    <td>
+                                        {{ $teamleader->id ?? '' }}
+                                    </td>
+                                    <td>
+                                        {{ $teamleader->name ?? '' }}
+                                    </td>
+                                    <td>
+                                        {{ $teamleader->email ?? '' }}
+                                    </td>
+                                    <td>
+                                        {{ $teamleader->phone ?? '' }}
+                                    </td>
+                                    <td>
+                                        {{ $teamleader->county->name ?? '' }}
+                                    </td>
+                                    {{-- <td>
                                 <a href="{{route('teamleaders.edit', [$teamleader->id])}}" class="btn btn-primary btn-sm">Edit</a>
-                                @if(Auth::id() != $teamleader->id)<a href="{{route('teamleaders.destroyteamleader',[$teamleader->id])}}" class="btn btn-danger btn-sm" onclick="return confirm('Are you Sure?')">Delete</a>@endif
+                                @if (Auth::id() != $teamleader->id)<a href="{{route('teamleaders.destroyteamleader',[$teamleader->id])}}" class="btn btn-danger btn-sm" onclick="return confirm('Are you Sure?')">Delete</a>@endif
                             </td> --}}
 
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
-    </div>
-</div>
+    @endcan
+    @can('client_access')
+        <div style="margin-bottom: 10px;" class="row">
+            <div class="col-lg-12">
+                <div class="row">
+                    <div class="col-md-6">
+                        <a class="btn btn-success" href="{{ route('users.create') }}">
+                            Add Sales Representative
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header">
+                Sales Representative
+            </div>
 
-@endcan
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class=" table table-bordered table-striped table-hover datatable datatable-teamleader"
+                        id="UserTable">
+                        <thead>
+                            <tr>
+                                <th width="10">
 
+                                </th>
+                                <th>
+                                    ID
+                                </th>
+                                <th>
+                                    Name
+                                </th>
+                                <th>
+                                    Email
+                                </th>
+                                <th>
+                                    Phone
+                                </th>
+                                <th>
+                                    County
+                                </th>
+                                {{-- <th>
+                            Actions
+                        </th> --}}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($salesreps as $key => $teamleader)
+                                <tr data-entry-id="{{ $teamleader->id }}">
+                                    <td>
+
+                                    </td>
+                                    <td>
+                                        {{ $teamleader->id ?? '' }}
+                                    </td>
+                                    <td>
+                                        {{ $teamleader->name ?? '' }}
+                                    </td>
+                                    <td>
+                                        {{ $teamleader->email ?? '' }}
+                                    </td>
+                                    <td>
+                                        {{ $teamleader->phone ?? '' }}
+                                    </td>
+                                    <td>
+                                        {{ $teamleader->county->name ?? '' }}
+                                    </td>
+                                    {{-- <td>
+                                <a href="{{route('teamleaders.edit', [$teamleader->id])}}" class="btn btn-primary btn-sm">Edit</a>
+                                @if (Auth::id() != $teamleader->id)<a href="{{route('teamleaders.destroyteamleader',[$teamleader->id])}}" class="btn btn-danger btn-sm" onclick="return confirm('Are you Sure?')">Delete</a>@endif
+                            </td> --}}
+
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    @endcan
 @endsection
 @section('scripts')
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"

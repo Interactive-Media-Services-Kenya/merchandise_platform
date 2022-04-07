@@ -96,6 +96,96 @@
             </div>
         </div>
     @endcan
+    @can('client_access')
+        <div class="row mt-4" height="200">
+            <div class="col-lg-6 mt-4 mb-4">
+                <div class="card z-index-2 ">
+                    <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 bg-transparent">
+                        <div class="bg-gradient-default shadow-primary border-radius-lg py-3 pe-1">
+                            <div class="chart">
+                                <canvas id="myChart-bar" class="chart-canvas" height="450"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <h6 class="mb-0 ">Merchandise Issued</h6>
+                        <p class="text-sm ">Total Count from all Brand Ambassadors</p>
+                        <hr class="dark horizontal">
+                        <div class="d-flex ">
+                            <i class="material-icons text-sm my-auto me-1">schedule</i>
+                            <p class="mb-0 text-sm"> per month </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6 mt-4 mb-3">
+                <div class="card z-index-2 ">
+                    <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 bg-transparent">
+                        <div class="bg-gradient-dark shadow-dark border-radius-lg py-3 pe-1">
+                            <div class="chart align-items-center" height="500">
+                                <canvas id="myChart-pie" class="chart-canvas" height="450" style="margin: 0 auto;"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <h6 class="mb-0 ">Completed Tasks</h6>
+                        <p class="text-sm ">Updated Issued Merchandise Per Type Summary</p>
+                        <hr class="dark horizontal">
+                        <div class="d-flex ">
+                            <i class="material-icons text-sm my-auto me-1">schedule</i>
+                            <p class="mb-0 text-sm">latest update</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-4" height="200">
+            <div class="col-lg-12 mt-4 mb-4">
+                <div class="card z-index-2 ">
+                    <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 bg-transparent">
+                        <div class="bg-gradient-success shadow-primary border-radius-lg py-3 pe-1 mr-5">
+                            <h4 class="text-center">Report Categories</h4>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <h6 class="mb-0 ">Products Reports</h6>
+                                <p class="text-sm ">Get Products Issued Out</p>
+                                <p><a href="{{route('report.products')}}" class="btn btn-sm btn-primary">View Report</a></p>
+                                <hr class="dark horizontal">
+                                <div class="d-flex ">
+                                    <i class="material-icons text-sm my-auto me-1">schedule</i>
+                                    <p class="mb-0 text-sm"> Alltime </p>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <h6 class="mb-0 ">Product Type Reports</h6>
+                                <p class="text-sm ">Total Products Issued Per Product Type</p>
+                                <p><a href="{{route('report.clients')}}" class="btn btn-sm btn-primary">View Report</a></p>
+                                <hr class="dark horizontal">
+                                <div class="d-flex ">
+                                    <i class="material-icons text-sm my-auto me-1">schedule</i>
+                                    <p class="mb-0 text-sm"> Alltime </p>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <h6 class="mb-0 ">Sales Representatives Reports</h6>
+                                <p class="text-sm ">Total Count form all Team Leaders</p>
+                                <p><a href="{{ route('report.teamleaders') }}" class="btn btn-sm btn-primary">View Report</a></p>
+                                <hr class="dark horizontal">
+                                <div class="d-flex ">
+                                    <i class="material-icons text-sm my-auto me-1">schedule</i>
+                                    <p class="mb-0 text-sm"> Alltime </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endcan
 @endsection
 @section('scripts')
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
