@@ -399,10 +399,10 @@
                         </a>
                     </div>
                     <div class="col-md-6">
-                        <a class="btn btn-success" href="{{ route('report.products') }}">
+                        <a class="btn btn-success" href="{{ route('report.products.client') }}">
                             Report By Date
                         </a>
-                        &nbsp; <a class="btn btn-primary text-end" href="{{ route('report.product-type') }}">
+                        &nbsp; <a class="btn btn-primary text-end" href="{{ route('report.product-type.client') }}">
                             Report By Merchandise Type
                         </a>
                     </div>
