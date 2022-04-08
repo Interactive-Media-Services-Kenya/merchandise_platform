@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Batch;
 use App\Models\Category;
 use App\Models\Client;
 use App\Models\IssueProduct;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\Facades\DataTables;
 
 class ReportController extends Controller
@@ -21,7 +23,7 @@ class ReportController extends Controller
         if ($request->ajax()) {
             if (!empty($request->from_date)) {
                 $model = IssueProduct::whereBetween('issue_products.created_at', [$request->from_date, $request->to_date])
-                                    ->with(['brandambassador', 'product', 'batch', 'category'])->select('issue_products.*');
+                    ->with(['brandambassador', 'product', 'batch', 'category'])->select('issue_products.*');
                 return DataTables::eloquent($model)
 
                     ->addColumn('ba', function (IssueProduct $product) {
@@ -72,6 +74,76 @@ class ReportController extends Controller
         }
 
         return view('reports.products-report');
+    }
+
+    public function productsClient(Request $request)
+    {
+        // $batchClient = Batch::join('storages','batches.storage_id','storages.id')->where('storages.client_id',Auth::user()->client_id)->select('batches.id')->get();
+        //         $model = IssueProduct::join('batches', 'batches.id', 'issue_products.batch_id')
+        //             ->whereIn('issue_products.batch_id',$batchClient)
+        //             ->with(['brandambassador', 'product', 'batch', 'category'])->select('issue_products.*')->get();
+
+
+        if ($request->ajax()) {
+            if (!empty($request->from_date)) {
+                $batchClient = Batch::join('storages','batches.storage_id','storages.id')->where('storages.client_id',Auth::user()->client_id)->select('batches.id')->get();
+                $model = IssueProduct::join('batches', 'batches.id', 'issue_products.batch_id')
+                    ->whereIn('issue_products.batch_id',$batchClient)
+                    ->whereBetween('issue_products.created_at', [$request->from_date, $request->to_date])
+                    ->with(['brandambassador', 'product', 'batch', 'category'])->select('issue_products.*');
+                return DataTables::eloquent($model)
+
+                    ->addColumn('ba', function (IssueProduct $product) {
+
+                        return $product->brandambassador->email;
+                    })
+                    ->addColumn('batch', function (IssueProduct $product) {
+
+                        return $product->batch->batch_code;
+                    })
+                    ->addColumn('product_code', function (IssueProduct $product) {
+
+                        return $product->product->product_code;
+                    })
+                    ->addColumn('category', function (IssueProduct $product) {
+
+                        return $product->category->title;
+                    })
+                    ->editColumn('created_at', function (IssueProduct $product) {
+
+                        return $product->created_at;
+                    })
+                    ->toJson();
+            } else {
+                $batchClient = Batch::join('storages','batches.storage_id','storages.id')->where('storages.client_id',Auth::user()->client_id)->select('batches.id')->get();
+                $model = IssueProduct::join('batches', 'batches.id', 'issue_products.batch_id')
+                    ->whereIn('issue_products.batch_id',$batchClient)
+                    ->with(['brandambassador', 'product', 'batch', 'category'])->select('issue_products.*');
+
+                return DataTables::eloquent($model)
+
+                    ->addColumn('product_code', function (IssueProduct $product) {
+
+                        return $product->product->product_code;
+                    })
+                    ->addColumn('ba', function (IssueProduct $product) {
+
+                        return $product->brandambassador->email;
+                    })
+                    ->addColumn('batch', function (IssueProduct $product) {
+
+                        return $product->batch->batch_code;
+                    })
+                    ->addColumn('category', function (IssueProduct $product) {
+
+                        return $product->category->title;
+                    })
+
+                    ->toJson();
+            }
+        }
+
+        return view('reports.product-report-client');
     }
 
     public function clients(Request $request)
@@ -209,7 +281,7 @@ class ReportController extends Controller
             }
         }
 
-        return view('reports.merchandise-type-report', compact('clients','categories'));
+        return view('reports.merchandise-type-report', compact('clients', 'categories'));
     }
 
     public function teamleaders(Request $request)
@@ -219,7 +291,7 @@ class ReportController extends Controller
         if ($request->ajax()) {
             if (!empty($request->from_date)) {
                 $model = IssueProduct::join('products', 'products.id', 'issue_products.product_id')
-                    ->where('products.assigned_to', $request->user_id)->where('products.client_id',$request->client_id)->whereBetween('issue_products.created_at', [$request->from_date, $request->to_date])
+                    ->where('products.assigned_to', $request->user_id)->where('products.client_id', $request->client_id)->whereBetween('issue_products.created_at', [$request->from_date, $request->to_date])
                     ->with(['brandambassador', 'product', 'product.client', 'product.assign', 'batch', 'category'])->select('issue_products.*');
                 return DataTables::eloquent($model)
 
@@ -289,6 +361,6 @@ class ReportController extends Controller
             }
         }
 
-        return view('reports.teamleaders-report', compact('teamleaders','clients'));
+        return view('reports.teamleaders-report', compact('teamleaders', 'clients'));
     }
 }

@@ -153,7 +153,7 @@
                             <div class="col-md-4">
                                 <h6 class="mb-0 ">Products Reports</h6>
                                 <p class="text-sm ">Get Products Issued Out</p>
-                                <p><a href="{{route('report.products')}}" class="btn btn-sm btn-primary">View Report</a></p>
+                                <p><a href="{{route('report.products.client')}}" class="btn btn-sm btn-primary">View Report</a></p>
                                 <hr class="dark horizontal">
                                 <div class="d-flex ">
                                     <i class="material-icons text-sm my-auto me-1">schedule</i>
