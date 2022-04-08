@@ -28,11 +28,16 @@ class UsersController extends Controller
         return view('users.index', compact('users'));
     }
 
+
+    public function getClientID(){
+       dd(Auth::user()->client_id);
+    }
+
     // ? get Team leaders all regions
 
     public function teamleaders()
     {
-        $teamleaders = User::with(['roles', 'county'])->where('role_id', 3)->get();
+        $teamleaders = User::with(['roles', 'county'])->where('role_id', 3)->where('client_id',null)->get();
         $salesreps = User::with(['roles', 'county'])->where('role_id', 3)->where('client_id',Auth::user()->client_id)->get();
 
 

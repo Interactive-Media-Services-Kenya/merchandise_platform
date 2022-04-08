@@ -1235,7 +1235,12 @@
     </script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
     <script>
-        const url_productsPerMonth = `{{ route('api.products.issued-per-month') }}`;
+        @can('tb_access')
+            const url_productsPerMonth = `{{ route('api.products.issued-per-month') }}`;
+        @endcan
+        @can('client_access')
+            const url_productsPerMonth = `{{ route('api.products.issued-per-month.client',[Auth::user()->client_id]) }}`;
+        @endcan
         const setBg = () => {
             const randomColor = "#" + Math.floor(Math.random() * 16777215).toString(16);
             return randomColor
@@ -1293,7 +1298,13 @@
                 config_bar
             );
             // Pie Chart
+            @can('tb_access')
             const url_pie = `{{ route('api.products.issued-per-type') }}`;
+            @endcan
+            @can('client_access')
+            const url_pie = `{{ route('api.products.issued-per-type.client',[Auth::user()->client_id]) }}`;
+            @endcan
+
             let response_pie = await fetch(url_pie);
             const res_pie = await response_pie.json();
 
