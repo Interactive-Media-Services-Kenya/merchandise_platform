@@ -1,7 +1,5 @@
 @extends('layouts.backend')
 @section('css')
-    {{-- <link rel="stylesheet" href="{{ asset('assets/datepicker/dist/mc-calendar.min.css') }}" />
-    <script src="{{ asset('assets/datepicker/dist/mc-calendar.min.js') }}"></script> --}}
     <link rel="stylesheet" href="https://cdn.datatables.net/1.11.4/css/jquery.dataTables.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.2.2/css/buttons.dataTables.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
