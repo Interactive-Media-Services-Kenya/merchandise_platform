@@ -135,9 +135,16 @@
                                                     <th>
                                                         Merchandise
                                                     </th>
+                                                    @can('tb_access')
                                                     <th>
-                                                        Brand Ambassador
+                                                        Team Leader
                                                     </th>
+                                                    @endcan
+                                                    @can('client_access')
+                                                    <th>
+                                                        Sales Representative
+                                                    </th>
+                                                    @endcan
                                                     <th>
                                                         Batch
                                                     </th>
@@ -301,8 +308,8 @@
                                 name: 'product.product_code'
                             },
                             {
-                                data: 'ba',
-                                name: 'brandambassador.email'
+                                data: 'salesrep',
+                                name: 'product.assign.email'
                             },
                             {
                                 data: 'batch',
