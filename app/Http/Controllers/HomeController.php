@@ -9,6 +9,7 @@ use App\Models\Client;
 use App\Models\Product;
 use App\Models\Productbas;
 use App\Models\User;
+use App\Models\Reject;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\Facades\DataTables;
@@ -34,6 +35,7 @@ class HomeController extends Controller
     public function index(Request $request)
     {
         //Admin data & TB Data
+        $rejects = Reject::select('product_id')->get();
 
         //All products
         $products = Product::where('owner_id',Auth::id())->get();
@@ -41,6 +43,8 @@ class HomeController extends Controller
         //Batches for a client
         $batchesClient = Batch::join('storages','storages.id','batches.storage_id')->where('storages.client_id',Auth::user()->client_id)->get();
         $clients = Client::all();
+        $categoriesClient = Category::where('client_id',Auth::user()->client_id)->get();
+
         $bas = User::where('role_id', 4)->get();
         $categories = Category::where('client_id',null)->get();
         $tls = User::where('role_id',3)->where('client_id',null)->get();
@@ -57,7 +61,7 @@ class HomeController extends Controller
         //dd($batchesConfirmed);
         // ? Team Leader Data
         // ? Product for a team leader
-        $productsTls = Product::where('assigned_to', Auth::id())->get();
+        $productsTls = Product::where('assigned_to', Auth::id())->whereNotIn('product_id',$rejects)->get();
         $batchesTl = Product::select('*')->where('assigned_to', Auth::id())->groupBy('batch_id')->get();
         // dd($batchesTl);
         //Get Bas under a team leader
@@ -67,7 +71,7 @@ class HomeController extends Controller
 
         // ? Brand Ambassador Data
         // ? Products for a Ba
-        $productsbas = Productbas::where('assigned_to',Auth::id())->get();
+        $productsbas = Productbas::where('assigned_to',Auth::id())->whereNotIn('product_id',$rejects)->get();
         // Batches ba
 
         $batchesbas = Productbas::select('*')->where('assigned_to',Auth::id())->groupBy('batch_id')->get();
@@ -92,7 +96,7 @@ class HomeController extends Controller
 
 
 
-        return view('home', compact('products','batches','batchesClient','clients','bas','tls','salesreps',
+        return view('home', compact('products','batches','batchesClient','clients','categoriesClient','bas','tls','salesreps',
                                     'productsbas','batchesbas','categories','batchesConfirmed',
                                     'productsTls', 'brandAmbassadors','batchesTl','activities','activityAdmin',
                                     'productsIssuedOut','productsIssuedOutTL','clientsWithMerchandiseTL'));

@@ -954,8 +954,8 @@
                             <i class="material-icons opacity-10">person</i>
                         </div>
                         <div class="text-end pt-1">
-                            <p class="text-sm mb-0 text-capitalize">Total Clients</p>
-                            <h4 class="mb-0">{{ count($clients) }}</h4>
+                            <p class="text-sm mb-0 text-capitalize">Merchandise Types</p>
+                            <h4 class="mb-0">{{ count($categoriesClient) }}</h4>
                         </div>
                     </div>
                     <hr class="dark horizontal my-0">

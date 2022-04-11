@@ -31,6 +31,7 @@ class ProductsController extends Controller
      */
     public function index()
     {
+        $rejects = Reject::select('product_id')->get();
         $products = Product::where('owner_id', Auth::id())->get();
         $productsClient = Product::where('client_id', Auth::user()->client_id)->get();
         $productsIssuedOut = Productbas::all();

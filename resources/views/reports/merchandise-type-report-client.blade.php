@@ -140,7 +140,7 @@
                     processing: true,
                     serverSide: true,
                     ajax: {
-                        url: "{{ route('report.product-type.client') }}",
+                        url: "{{ route('report.product-type.client',[Auth::user()->client_id]) }}",
                         data: {
                             from_date: from_date,
                             to_date: to_date,

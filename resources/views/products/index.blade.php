@@ -402,7 +402,7 @@
                         <a class="btn btn-success" href="{{ route('report.products.client') }}">
                             Report By Date
                         </a>
-                        &nbsp; <a class="btn btn-primary text-end" href="{{ route('report.product-type.client') }}">
+                        &nbsp; <a class="btn btn-primary text-end" href="{{ route('report.product-type.client',[Auth::user()->client_id]) }}">
                             Report By Merchandise Type
                         </a>
                     </div>
