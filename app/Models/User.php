@@ -9,10 +9,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Auth;
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, HasApiTokens;
 
     /**
      * The attributes that are mass assignable.
@@ -61,6 +62,22 @@ class User extends Authenticatable
 
 
         $receiverNumber = auth()->user()->phone;
+        $message = "OTP login code is " . $code;
+        //$this->sendCode($receiverNumber,$message);
+
+    }
+    public function generateCodeApi($user)
+    {
+        $code = rand(1000, 9999);
+
+        UserCode::updateOrCreate(
+            ['user_id' => $user->id],
+            ['code' => $code]
+        );
+
+
+
+        $receiverNumber = $user->phone;
         $message = "OTP login code is " . $code;
         //$this->sendCode($receiverNumber,$message);
 
