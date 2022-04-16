@@ -6,7 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Models\Activity;
 use App\Models\IssueProduct;
 use App\Models\Product;
+use App\Models\Productbas;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class SPAApiController extends Controller
 {
@@ -68,7 +70,18 @@ class SPAApiController extends Controller
     //Brand Ambassadors
     public function IssueProductBA(Request $request)
     {
+        //Chack if user is Brand Ambassador && product assigned to him/her
+        $product_id = Product::select('id')->where('product_code', $request->product_code)->first();
+        $productBa = Productbas::where('assigned_to',auth()->user()->id)->whereIn('product_id',$product_id)->get();
+        // return count($productBa);
+        abort_if(auth()->user()->role_id != 4, Response::HTTP_FORBIDDEN, '403 Forbidden');
         //Check if product is issued Out
+        if (count($productBa)==0) {
+            return response()->json([
+                'message' => "Merchandise Does not Belong to Brand Ambassador",
+                200,
+            ]);
+        }
         $product = Product::where('product_code', $request->product_code)->first();
         $issuedProduct = IssueProduct::where('product_id', $product->id)->first();
         // return $issuedProduct;
@@ -102,5 +115,7 @@ class SPAApiController extends Controller
                 ]);
             }
         }
+
+        // Outlet code..
     }
 }

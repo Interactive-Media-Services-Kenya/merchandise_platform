@@ -1256,6 +1256,7 @@
             for (let i = 0; i < res_bar.data.length; i++) {
                 let color = 'rgb(245, 39, 128,'
                 color = color + ((opacity -= 0.1).toString()) + ')'
+                color = setBg()
                 //console.log(color)
                 labels_bar.push(res_bar.data[i].month);
                 data_bar1.push(res_bar.data[i].count);
@@ -1315,6 +1316,7 @@
             for (let i = 0; i < res_pie.data.length; i++) {
                 let color_pie = 'rgb(39, 128, 245,'
                 color_pie = color_pie + ((opacity_pie -= 0.1).toString()) + ')'
+                color_pie = setBg()
                 // console.log(color_pie)
                 labels_pie.push(res_pie.data[i].name);
                 data_pie1.push(res_pie.data[i].count);
