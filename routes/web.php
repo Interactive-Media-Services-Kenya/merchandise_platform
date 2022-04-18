@@ -54,6 +54,8 @@ Route::group(['middleware' => ['auth:web','otp']], function () {
 
     // Brand Ambassadors
     Route::get('brandambassadors', 'UsersController@brandambassadors')->name('brandambassadors');
+    Route::get('brandambassadors/create', 'UsersController@brandambassadorCreate')->name('brandambassadors.create');
+    Route::post('brandambassadors/BAstore', 'UsersController@BAstore')->name('brandambassador.store');
     Route::get('brandambassador/{ba}', 'UsersController@showBa')->name('brandambassador.show');
 
     //Show Batch with associated products route

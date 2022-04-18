@@ -38,7 +38,7 @@ class ProductsController extends Controller
         $productsIssuedOutTL = Productbas::join('batches', 'batches.id', 'productbas.batch_id')
             ->where('batches.tl_id_accept', Auth::id())->get();
         $batches = Batch::all();
-        $brandAmbassadors = User::where('role_id', 3)->where('county_id', Auth::user()->county_id)->get();
+        $brandAmbassadors = User::where('role_id', 4)->where('teamleader_id', Auth::id())->get();
         $clients = Client::all();
         $clientsWithMerchandiseTL = Product::select('client_id')->where('assigned_to', Auth::id())->groupBy('client_id')->get();
         $clientsWithMerchandise = Product::select('client_id')->groupBy('client_id')->get();
@@ -107,11 +107,10 @@ class ProductsController extends Controller
 
         $storages = Storage::where('client_id', null)->get();
         $storagesClient = Storage::where('client_id', Auth::user()->client_id)->get();
-        $region_id = Auth::user()->county_id;
+        $user_id = Auth::id();
 
-        $brandAmbassadors =  User::where('role_id', 4)->where('county_id', $region_id)->get();
+        $brandAmbassadors =  User::where('role_id', 4)->where('teamleader_id', $user_id)->get();
         $batches = Product::select('batch_id', 'batch_code')->where('assigned_to', Auth::id())->join('batches', 'batches.id', 'products.batch_id')->groupBy('batch_id')->get();
-        //dd($batches);
 
         return view('products.create', compact(
             'teamleaders',
@@ -134,9 +133,9 @@ class ProductsController extends Controller
         $categories = Category::all();
 
         $storages = Storage::all();
-        $region_id = Auth::user()->county_id;
+        $user_id = Auth::id();
 
-        $brandAmbassadors =  User::where('role_id', 4)->where('county_id', $region_id)->get();
+        $brandAmbassadors =  User::where('role_id', 4)->where('teamleader_id', $user_id)->get();
         $batches = Product::select('batch_id', 'batch_code')->where('assigned_to', Auth::id())->join('batches', 'batches.id', 'products.batch_id')->groupBy('batch_id')->get();
         //dd($batches);
 

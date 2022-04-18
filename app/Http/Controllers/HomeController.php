@@ -65,8 +65,8 @@ class HomeController extends Controller
         $batchesTl = Product::select('*')->where('assigned_to', Auth::id())->groupBy('batch_id')->get();
         // dd($batchesTl);
         //Get Bas under a team leader
-        $region_id = Auth::user()->county_id;
-        $brandAmbassadors =  User::where('role_id', 4)->where('county_id', $region_id)->get();
+        $user_id = Auth::id();
+        $brandAmbassadors =  User::where('role_id', 4)->where('teamleader_id', $user_id)->get();
 
 
         // ? Brand Ambassador Data

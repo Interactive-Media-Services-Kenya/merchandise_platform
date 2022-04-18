@@ -8,7 +8,14 @@
 @section('content')
 @can('team_leader_access')
 
+<div class="row">
+    <div class="col-md-6">
+        <a class="btn btn-success" href="{{ route('brandambassadors.create') }}">
+            Add Brand Ambassador
+        </a>
+    </div>
 
+</div>
 <div class="card">
     <div class="card-header">
         Brand Ambassadors

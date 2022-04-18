@@ -48,11 +48,18 @@ class UsersController extends Controller
 
     public function brandambassadors()
     {
-        $county_id = Auth::user()->county_id;
-        $brandambassadors = User::with(['roles', 'county'])->where('role_id', 4)->where('county_id', $county_id)->get();
+        $user_id = Auth::user()->id;
+        $brandambassadors = User::with(['roles', 'county'])->where('role_id', 4)->where('teamleader_id', $user_id)->get();
 
 
         return view('brandambassadors.index', compact('brandambassadors'));
+    }
+
+    public function brandambassadorCreate(){
+        $roles = Role::pluck('title', 'id');
+        $counties = County::pluck('name', 'id');
+
+        return view('brandambassadors.create', compact('roles', 'counties'));
     }
 
 
@@ -91,6 +98,44 @@ class UsersController extends Controller
             'phone' => $request->phone,
             'county_id' => $request->county_id,
             'role_id' => $request->role_id,
+            'password' => bcrypt($request->password),
+        ]);
+        if ($request->has('client_id')) {
+            $user->update([
+                'client_id' => Auth::user()->client_id,
+            ]);
+        }
+
+        Activity::create([
+            'title' => 'User Added',
+            'description' => Auth::user()->name . ' Added User: ' . $user->email,
+            'user_id' => Auth::id(),
+        ]);
+        if ($user) {
+            Alert::success('Success', 'User Successfully Added');
+            return back();
+        } else {
+            Alert::error('Failed', 'Registration failed');
+            return back();
+        }
+    }
+
+    public function BAstore(Request $request)
+    {
+        $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'email', 'max:255', 'unique:users'],
+            'phone' => ['required', 'numeric', 'digits:12'],
+            'county_id' => ['required', 'integer'],
+            'password' => ['required', Password::min(8)->mixedCase()->symbols()->uncompromised(), 'confirmed'],
+        ]);
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'phone' => $request->phone,
+            'county_id' => $request->county_id,
+            'role_id' => 4,
+            'teamleader_id' =>Auth::id(),
             'password' => bcrypt($request->password),
         ]);
         if ($request->has('client_id')) {

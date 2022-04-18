@@ -539,7 +539,7 @@
                     </div>
                     <hr class="dark horizontal my-0">
                     <div class="card-footer p-3">
-                        <p class="mb-0 text-primary text-sm font-weight-bolder">Total Registered Brand Ambassadors in My Region </p>
+                        <p class="mb-0 text-primary text-sm font-weight-bolder">Total Registered Brand Ambassadors </p>
                     </div>
                 </div>
             </div>
