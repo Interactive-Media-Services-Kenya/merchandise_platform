@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Activity;
+use App\Models\Customer;
 use App\Models\IssueProduct;
 use App\Models\Product;
 use App\Models\Productbas;
@@ -71,10 +72,17 @@ class SPAApiController extends Controller
     public function IssueProductBA(Request $request)
     {
         //Chack if user is Brand Ambassador && product assigned to him/her
-        $product_id = Product::select('id')->where('product_code', $request->product_code)->first();
-        $productBa = Productbas::where('assigned_to',auth()->user()->id)->whereIn('product_id',$product_id)->get();
+
         // return count($productBa);
         abort_if(auth()->user()->role_id != 4, Response::HTTP_FORBIDDEN, '403 Forbidden');
+        $product_id = Product::select('id')->where('product_code', $request->product_code)->first();
+        if($product_id == null){
+            return response()->json([
+                'message' => "Merchandise Is not Found",
+                200,
+            ]);
+        }
+        $productBa = Productbas::where('assigned_to',auth()->user()->id)->whereIn('product_id',$product_id)->get();
         //Check if product is issued Out
         if (count($productBa)==0) {
             return response()->json([
@@ -98,6 +106,15 @@ class SPAApiController extends Controller
                 'product_id' => $product->id,
                 'category_id' => $product->category->id,
             ]);
+            // Save Customer Data Api
+
+            if ($request->has('customer_phone') || $request->has('customer_name')) {
+                Customer::create([
+                    'name' => $request->customer_name,
+                    'phone' => $request->customer_phone,
+                    'product_id' => $product->id,
+                ]);
+            }
             Activity::create([
                 'title' => 'Merchandise Issued',
                 'user_id' => auth()->user()->id,
@@ -116,6 +133,6 @@ class SPAApiController extends Controller
             }
         }
 
-        // Outlet code..
+
     }
 }
