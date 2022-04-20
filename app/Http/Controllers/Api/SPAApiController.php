@@ -77,7 +77,7 @@ class SPAApiController extends Controller
         abort_if(auth()->user()->role_id != 4, Response::HTTP_FORBIDDEN, '403 Forbidden');
         $product_id = Product::select('id')->where('product_code', $request->product_code)->first();
         if($product_id == null){
-            return response()->json([
+            return \Response::json([
                 'message' => "Merchandise Is not Found",
                 200,
             ]);
@@ -85,7 +85,7 @@ class SPAApiController extends Controller
         $productBa = Productbas::where('assigned_to',auth()->user()->id)->whereIn('product_id',$product_id)->get();
         //Check if product is issued Out
         if (count($productBa)==0) {
-            return response()->json([
+            return \Response::json([
                 'message' => "Merchandise Does not Belong to Brand Ambassador",
                 200,
             ]);
@@ -94,7 +94,7 @@ class SPAApiController extends Controller
         $issuedProduct = IssueProduct::where('product_id', $product->id)->first();
         // return $issuedProduct;
         if ($issuedProduct) {
-            return response()->json([
+            return \Response::json([
                 'message' => "Merchandise Is Already Issued Out",
                 200,
             ]);
@@ -106,8 +106,9 @@ class SPAApiController extends Controller
                 'product_id' => $product->id,
                 'category_id' => $product->category->id,
             ]);
-            // Save Customer Data Api
-
+            // Save Customer Data through Api.
+            $productsIssued = IssueProduct::select('product_id')->where('ba_id',auth()->user()->id)->where('category_id',$product->category_id)->get();
+            $remainingProducts = Productbas::where('assigned_to',auth()->user()->id)->whereNotIn('product_id',$productsIssued)->get();
             if ($request->has('customer_phone') || $request->has('customer_name')) {
                 Customer::create([
                     'name' => $request->customer_name,
@@ -121,14 +122,18 @@ class SPAApiController extends Controller
                 'description' => auth()->user()->name . ' have issued out ' . $product->product_code,
             ]);
             if ($issueProduct) {
-                return response()->json([
+
+                return \Response::json([
                     'message' => "Merchandise Found and Issued Successfully",
-                    200,
+                    'merchandise_type'  => $product->category->title??'No Merchandise Type Registered for the Merchandise',
+                    'remaining_items' => $remainingProducts?count($remainingProducts):0,
+                    'issued_items' => $productsIssued?count($productsIssued):0,
+                    201,
                 ]);
             } else {
-                return response()->json([
+                return \Response::json([
                     'message' => "Merchandise Not Found",
-                    401,
+                    404,
                 ]);
             }
         }

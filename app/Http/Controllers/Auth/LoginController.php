@@ -9,6 +9,7 @@ use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Models\UserCode;
+use Illuminate\Http\Client\Response;
 
 class LoginController extends Controller
 {
@@ -73,12 +74,12 @@ class LoginController extends Controller
         $user = User::where('phone', $phoneNumber)->first();
         if ($user) {
             $user->generateCodeApi($user);
-            return response()->json([
+            return  \Response::json([
                 'message' => "OTP Code Sent Use it to generate Auth Token",
                 200,
             ]);
         } else {
-            return response()->json([
+            return \Response::json([
                 'message' => "Phone Number doesn't exist",
                 400,
             ]);
@@ -97,7 +98,7 @@ class LoginController extends Controller
 
             $token = 'token';
             $token = $user->createToken($token);
-            return response()->json([
+            return \Response::json([
                 'message' => "Token Generated Successfull",
                 'token' => $token->plainTextToken,
                 'user_id' => $user->id,
@@ -109,17 +110,15 @@ class LoginController extends Controller
             ]);
         }
     }
-    public function fetchUser()
-    {
-        return 'Jack';
-    }
+
     public function logoutApi()
     {
 
         auth()->user()->tokens()->delete();
 
-        return [
-            'message' => 'Successfully Logged Out'
-        ];
+        return \Response::json([
+            'message' => 'Successfully Logged Out',
+            200
+        ]);
     }
 }
