@@ -17,7 +17,9 @@ class CreateOutletsTable extends Migration
             $table->bigIncrements('id');
             $table->string('name');
             $table->string('code')->unique();
-            $table->bigInteger('region_id')->nullable();
+            $table->unsignedBigInteger('county_id')->nullable();
+            $table->foreign('county_id', 'county_id_fk_5206527')->references('id')->on('counties')->constrained()
+                ->onUpdate('cascade');
             $table->timestamps();
         });
     }

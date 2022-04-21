@@ -151,6 +151,7 @@ class SPAApiController extends Controller
 
         foreach ($outlets as $outlet) {
             $outl = [
+                'id' => $outlet->id,
                 'outlet_name' => $outlet->name,
                 'outlet_code' => $outlet->code,
             ];

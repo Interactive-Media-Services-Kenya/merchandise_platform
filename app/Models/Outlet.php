@@ -9,4 +9,8 @@ class Outlet extends Model
 {
     use HasFactory;
     protected $guarded = [];
+
+    public function county(){
+        return $this->belongsTo(County::class,'county_id');
+    }
 }
