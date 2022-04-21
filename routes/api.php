@@ -29,7 +29,6 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     // Login and Auth APi
     Route::post('/v1/login','Auth\LoginController@LoginApi')->name('api.login');
     Route::post('/v1/token','Auth\LoginController@verifyOTPApi')->name('api.verifyOTP');
-
     //Protected Routes
     Route::middleware('auth:sanctum')->group(function() {
         Route::get('/v1/user', function(){
@@ -38,4 +37,5 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
         Route::post('/v1/logout-api','Auth\LoginController@logoutApi')->name('api.logoutApi');
         // ? Post request *** product_code ***, *** customer_name ***, *** customer_phone ***
         Route::post('/v1/issue-merchandise-ba','Api\SPAApiController@IssueProductBA')->name('api.issue-merchandise-ba');
+        Route::get('/v1/outlets','Api\SPAApiController@outlets')->name('api.oulets');
     });

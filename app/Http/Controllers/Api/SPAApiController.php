@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Activity;
 use App\Models\Customer;
 use App\Models\IssueProduct;
+use App\Models\Outlet;
 use App\Models\Product;
 use App\Models\Productbas;
 use Illuminate\Http\Request;
@@ -141,5 +142,21 @@ class SPAApiController extends Controller
         }
 
 
+    }
+
+    public function outlets(){
+        $outlets = Outlet::all();
+
+        $data = [];
+
+        foreach ($outlets as $outlet) {
+            $outl = [
+                'outlet_name' => $outlet->name,
+                'outlet_code' => $outlet->code,
+            ];
+            array_push($data,$outl);
+        }
+
+        return response()->json($data, 200);
     }
 }
