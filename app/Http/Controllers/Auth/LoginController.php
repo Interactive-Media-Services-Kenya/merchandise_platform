@@ -53,8 +53,9 @@ class LoginController extends Controller
 
         $credentials = $request->only('email', 'password');
         if (Auth::attempt($credentials)) {
-
-            auth()->user()->generateCode();
+            $user_id = auth()->user()->id;
+            $user = User::where('id',$user_id)->get();
+            $user->generateCode();
 
             return redirect()->route('otp.index');
         }
