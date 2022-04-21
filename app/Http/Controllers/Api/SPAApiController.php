@@ -154,6 +154,7 @@ class SPAApiController extends Controller
                 'id' => $outlet->id,
                 'outlet_name' => $outlet->name,
                 'outlet_code' => $outlet->code,
+                'county' => $outlet->county->name,
             ];
             array_push($data,$outl);
         }
