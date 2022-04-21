@@ -34,7 +34,7 @@ class UsersTableSeeder extends Seeder
             ],
             [
                 'name'=> 'Brand Ambassador',
-                'phone' =>mt_rand(254700000000, 254799999999),
+                'phone' =>254724756011,
                 'email'=> 'ba@ims.co.ke',
                 'role_id'=>4,
                 'county_id' => mt_rand(1,47),
@@ -70,7 +70,7 @@ class UsersTableSeeder extends Seeder
         DB::table('users')->insert(
             [
                 'name'=> 'Client One',
-                'phone' =>  mt_rand(254700000000, 254799999999),
+                'phone' =>  254713218312,
                 'email'=> 'clientone@ims.co.ke',
                 'role_id'=>5,
                 'county_id' => mt_rand(1,47),

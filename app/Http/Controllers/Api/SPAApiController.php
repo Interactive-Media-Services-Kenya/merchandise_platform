@@ -79,7 +79,7 @@ class SPAApiController extends Controller
         if($product_id == null){
             return \Response::json([
                 'message' => "Merchandise Is not Found",
-                200,
+                'status'=>0,
             ]);
         }
         $productBa = Productbas::where('assigned_to',auth()->user()->id)->whereIn('product_id',$product_id)->get();
@@ -87,7 +87,7 @@ class SPAApiController extends Controller
         if (count($productBa)==0) {
             return \Response::json([
                 'message' => "Merchandise Does not Belong to Brand Ambassador",
-                200,
+                'status'=>0,
             ]);
         }
         $product = Product::where('product_code', $request->product_code)->first();
@@ -96,7 +96,7 @@ class SPAApiController extends Controller
         if ($issuedProduct) {
             return \Response::json([
                 'message' => "Merchandise Is Already Issued Out",
-                200,
+                'status'=>1,
             ]);
         } else {
             $batch = $product->batch_id;
@@ -128,12 +128,14 @@ class SPAApiController extends Controller
                     'merchandise_type'  => $product->category->title??'No Merchandise Type Registered for the Merchandise',
                     'remaining_items' => $remainingProducts?count($remainingProducts):0,
                     'issued_items' => $productsIssued?count($productsIssued):0,
-                    201,
+                    //Status success
+                    'status'=>1,
                 ]);
             } else {
                 return \Response::json([
                     'message' => "Merchandise Not Found",
-                    404,
+                    // Status Unsuccessful
+                    'status'=>0,
                 ]);
             }
         }

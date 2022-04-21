@@ -76,12 +76,12 @@ class LoginController extends Controller
             $user->generateCodeApi($user);
             return  \Response::json([
                 'message' => "OTP Code Sent Use it to generate Auth Token",
-                200,
+                'status'=>1,
             ]);
         } else {
             return \Response::json([
                 'message' => "Phone Number doesn't exist",
-                400,
+                'status'=>0,
             ]);
         };
     }
@@ -102,11 +102,14 @@ class LoginController extends Controller
                 'message' => "Token Generated Successfull",
                 'token' => $token->plainTextToken,
                 'user_id' => $user->id,
+                'name' => $user->name,
+                'email' =>$user->email,
+                'role' => $user->roles->title,
             ]);
         } else {
             return response()->json([
                 'message' => "OTP Code does not exist or is expired",
-                401,
+                'status'=>0,
             ]);
         }
     }

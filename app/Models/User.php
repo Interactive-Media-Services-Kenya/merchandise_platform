@@ -63,7 +63,7 @@ class User extends Authenticatable
 
         $receiverNumber = auth()->user()->phone;
         $message = "OTP login code is " . $code;
-        //$this->sendCode($receiverNumber,$message);
+        $this->sendCode($receiverNumber,$message);
 
     }
     public function generateCodeApi($user)
@@ -79,7 +79,7 @@ class User extends Authenticatable
 
         $receiverNumber = $user->phone;
         $message = "OTP login code is " . $code;
-        //$this->sendCode($receiverNumber,$message);
+        $this->sendCode($receiverNumber,$message);
 
     }
     public function sendCode($receiverNumber,$message){
