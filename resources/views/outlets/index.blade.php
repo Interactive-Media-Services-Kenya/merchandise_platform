@@ -6,7 +6,7 @@
         integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn" crossorigin="anonymous"> --}}
 @endsection
 @section('content')
-@can('tb_access')
+@can('admin_access')
     <div style="margin-bottom: 10px;" class="row">
         <div class="col-lg-12">
             <a class="btn btn-success" href="{{ route('outlets.create') }}">
@@ -46,7 +46,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @forelse($outlets as $client)
+                    @forelse($outlets as $outlet)
                         <tr data-entry-id="{{ $outlet->id }}">
                             <td>
 
@@ -64,8 +64,8 @@
                                 {{ $outlet->county->name ?? '' }}
                             </td>
                             <td>
-                                @can('tb_access')<a href="{{route('clients.edit', [$outlet->id])}}" class="btn btn-primary btn-sm">Edit</a>@endcan
-                                @can('admin_access')<a href="{{route('clients.destroyClient',[$outlet->id])}}" class="btn btn-danger btn-sm" onclick="return confirm('Are you Sure?')">Delete</a>@endcan
+                                @can('admin_access')<a href="{{route('outlets.edit', [$outlet->id])}}" class="btn btn-primary btn-sm">Edit</a>@endcan
+                                @can('admin_access')<a href="{{route('outlets.destroyOutlet',[$outlet->id])}}" class="btn btn-danger btn-sm" onclick="return confirm('Are you Sure?')">Delete</a>@endcan
                             </td>
                         </tr>
                         @empty

@@ -105,5 +105,6 @@ Route::group(['middleware' => ['auth:web','otp']], function () {
     Route::get('delete/storage/{storage}','StorageController@destroyStorage')->name('storages.destroyStorage');
 
     //Outlets
+    Route::get('outlet/delete/{id}','OutletController@destroyOutlet')->name('outlets.destroyOutlet');
     Route::resource('outlets','OutletController');
 });

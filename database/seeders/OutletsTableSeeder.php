@@ -22,6 +22,7 @@ class OutletsTableSeeder extends Seeder
                 'id'=> $count,
                 'name' => 'Outlet '.$count,
                 'code' => 'OUTLET_CODE'.$count,
+                'county_id' => mt_rand(1,47),
             ];
             array_push($outlets,$data);
         }
