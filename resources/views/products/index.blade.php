@@ -241,6 +241,9 @@
                                 <th>
                                     Serial Number
                                 </th>
+                                <th>
+                                    BarCode
+                                </th>
                                 @can('tb_access')
                                     <th>
                                         Team Leader
@@ -277,6 +280,11 @@
                                     </td>
                                     <td>
                                         {{ $product->product_code ?? '' }}
+                                    </td>
+                                    <td>@php
+                                        $generator = new Picqer\Barcode\BarcodeGeneratorHTML();
+                                    @endphp
+                                        {!! $generator->getBarcode($product->product_code, $generator::TYPE_CODE_128) !!}
                                     </td>
                                     @can('tb_access')
                                         <td>
@@ -326,7 +334,8 @@
                     <hr class="dark horizontal my-0">
                     <div class="card-footer p-3">
                         <p class="mb-0 text-default text-sm font-weight-bolder">{{ count($productsIssuedOut) }} Issued Out
-                            &nbsp;&nbsp;&nbsp;&nbsp; {{ count($productsClient) - count($productsIssuedOut) }} Remaining Merchandise
+                            &nbsp;&nbsp;&nbsp;&nbsp; {{ count($productsClient) - count($productsIssuedOut) }} Remaining
+                            Merchandise
                         </p>
                     </div>
                 </div>
@@ -345,7 +354,8 @@
                     </div>
                     <hr class="dark horizontal my-0">
                     <div class="card-footer p-3">
-                        <p class="mb-0 text-primary text-sm font-weight-bolder">{{ count($teamleadersWithBatches) }} Sales Represantatives With Batches (Confirmed)</p>
+                        <p class="mb-0 text-primary text-sm font-weight-bolder">{{ count($teamleadersWithBatches) }} Sales
+                            Represantatives With Batches (Confirmed)</p>
                     </div>
                 </div>
             </div>
@@ -383,7 +393,8 @@
                     </div>
                     <hr class="dark horizontal my-0">
                     <div class="card-footer p-3">
-                        <p class="mb-0 text-info text-sm font-weight-bolder">{{ count($batchesAccepted) }} Confirmed By Sales Representatives</p>
+                        <p class="mb-0 text-info text-sm font-weight-bolder">{{ count($batchesAccepted) }} Confirmed By
+                            Sales Representatives</p>
                     </div>
                 </div>
             </div>
@@ -402,7 +413,8 @@
                         <a class="btn btn-success" href="{{ route('report.products.client') }}">
                             Report By Date
                         </a>
-                        &nbsp; <a class="btn btn-primary text-end" href="{{ route('report.product-type.client',[Auth::user()->client_id]) }}">
+                        &nbsp; <a class="btn btn-primary text-end"
+                            href="{{ route('report.product-type.client', [Auth::user()->client_id]) }}">
                             Report By Merchandise Type
                         </a>
                     </div>
@@ -434,6 +446,9 @@
                                 </th>
                                 <th>
                                     Serial Number
+                                </th>
+                                <th>
+                                    BarCode
                                 </th>
                                 @can('tb_access')
                                     <th>
@@ -471,6 +486,11 @@
                                     </td>
                                     <td>
                                         {{ $product->product_code ?? '' }}
+                                    </td>
+                                    <td>@php
+                                        $generator = new Picqer\Barcode\BarcodeGeneratorHTML();
+                                    @endphp
+                                        {!! $generator->getBarcode($product->product_code, $generator::TYPE_CODE_128) !!}
                                     </td>
                                     @can('tb_access')
                                         <td>
@@ -520,7 +540,8 @@
                     <hr class="dark horizontal my-0">
                     <div class="card-footer p-3">
                         <p class="mb-0 text-default text-sm font-weight-bolder">{{ count($productsIssuedOutTL) }} Assigned
-                            &nbsp;&nbsp;&nbsp;&nbsp; {{ count($productsTls) - count($productsIssuedOutTL) }} Remaining Merchandise
+                            &nbsp;&nbsp;&nbsp;&nbsp; {{ count($productsTls) - count($productsIssuedOutTL) }} Remaining
+                            Merchandise
                         </p>
                     </div>
                 </div>
@@ -614,6 +635,9 @@
                                     Serial Number
                                 </th>
                                 <th>
+                                    BarCode
+                                </th>
+                                <th>
                                     Asigned To
                                 </th>
                                 <th>
@@ -643,6 +667,11 @@
                                     </td>
                                     <td>
                                         {{ $product->product_code ?? '' }}
+                                    </td>
+                                    <td>@php
+                                        $generator = new Picqer\Barcode\BarcodeGeneratorHTML();
+                                    @endphp
+                                        {!! $generator->getBarcode($product->product_code, $generator::TYPE_CODE_128) !!}
                                     </td>
                                     <td>
                                         {{ $product->productBa->user->email ?? 'Not Assigned' }}
@@ -751,7 +780,9 @@
                                 <th>
                                     Serial Number
                                 </th>
-
+                                <th>
+                                    BarCode
+                                </th>
                                 <th>
                                     Batch Code
                                 </th>
@@ -778,7 +809,12 @@
                                     <td>
                                         {{ $product->product_code ?? '' }}
                                     </td>
-
+                                    <td>
+                                        @php
+                                            $generator = new Picqer\Barcode\BarcodeGeneratorHTML();
+                                        @endphp
+                                        {!! $generator->getBarcode($product->product_code, $generator::TYPE_CODE_128) !!}
+                                    </td>
                                     <td>
                                         {{ $product->batch->batch_code ?? 'Single Product' }}
                                     </td>
