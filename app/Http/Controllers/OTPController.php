@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Session;
 use App\Models\UserCode;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
+
 //use App\Utility\SendSMS;
 
 class OTPController extends Controller
@@ -45,7 +47,8 @@ class OTPController extends Controller
      */
     public function resend()
     {
-        auth()->user()->generateCode();
+        $user = User::where('id',Auth::id())->first();
+        $user->generateCode($user);
 
         return back()->with('success', 'We sent you code on your mobile number.');
     }

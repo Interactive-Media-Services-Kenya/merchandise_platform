@@ -54,8 +54,8 @@ class LoginController extends Controller
         $credentials = $request->only('email', 'password');
         if (Auth::attempt($credentials)) {
             $user_id = auth()->user()->id;
-            $user = User::where('id',$user_id)->get();
-            $user->generateCode();
+            $user = User::where('id',$user_id)->first();
+            $user->generateCode($user);
 
             return redirect()->route('otp.index');
         }
@@ -74,7 +74,7 @@ class LoginController extends Controller
         $phoneNumber = $request->phone;
         $user = User::where('phone', $phoneNumber)->first();
         if ($user) {
-            $user->generateCodeApi($user);
+            $user->generateCode($user);
             return  \Response::json([
                 'message' => "OTP Code Sent Use it to generate Auth Token",
                 'status'=>1,

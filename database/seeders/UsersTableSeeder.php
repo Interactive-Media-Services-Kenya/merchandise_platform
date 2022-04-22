@@ -18,7 +18,7 @@ class UsersTableSeeder extends Seeder
         $users = [
             [
                 'name'=> 'Super Admin',
-                'phone' => '245713218312',
+                'phone' => 245713218312,
                 'email'=> 'stephen@ims.co.ke',
                 'role_id'=>1,
                 'county_id' => mt_rand(1,47),
