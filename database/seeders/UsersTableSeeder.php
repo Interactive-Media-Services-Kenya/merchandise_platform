@@ -18,7 +18,7 @@ class UsersTableSeeder extends Seeder
         $users = [
             [
                 'name'=> 'Super Admin',
-                'phone' => 245713218312,
+                'phone' =>245713218312,
                 'email'=> 'stephen@ims.co.ke',
                 'role_id'=>1,
                 'county_id' => mt_rand(1,47),
@@ -33,9 +33,9 @@ class UsersTableSeeder extends Seeder
                 'password'=>  bcrypt('password'),
             ],
             [
-                'name'=> 'Brand Ambassador',
+                'name'=> 'Brand Ambassador (Francis)',
                 'phone' =>254724756011,
-                'email'=> 'ba@ims.co.ke',
+                'email'=> 'brandambassador@ims.co.ke',
                 'role_id'=>4,
                 'county_id' => mt_rand(1,47),
                 'password'=>  bcrypt('password'),
@@ -73,6 +73,15 @@ class UsersTableSeeder extends Seeder
                 'phone' =>  254713218312,
                 'email'=> 'clientone@ims.co.ke',
                 'role_id'=>5,
+                'county_id' => mt_rand(1,47),
+                'password'=>  bcrypt('password'),
+                'client_id'=>1,
+            ],
+            [
+                'name'=> 'Sales Rep 1',
+                'phone' =>  254713218312,
+                'email'=> 'salesrepone@ims.co.ke',
+                'role_id'=>3,
                 'county_id' => mt_rand(1,47),
                 'password'=>  bcrypt('password'),
                 'client_id'=>1,
