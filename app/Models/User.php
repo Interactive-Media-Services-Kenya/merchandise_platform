@@ -50,6 +50,8 @@ class User extends Authenticatable
     public function client(){
         return $this->belongsTo(Client::class, 'client_id');
     }
+
+    // ? Generate OTP Code
     public function generateCode($user)
     {
         $code = rand(1000, 9999);
@@ -60,28 +62,14 @@ class User extends Authenticatable
         );
 
 
-
+        // ? Get the user phone number
         $receiverNumber = $user->phone;
         $message = "OTP login code is " . $code;
+        // ? Send the code as message
         $this->sendCode($receiverNumber,$message);
 
     }
-    // public function generateCodeApi($user)
-    // {
-    //     $code = rand(1000, 9999);
-
-    //     UserCode::updateOrCreate(
-    //         ['user_id' => $user->id],
-    //         ['code' => $code]
-    //     );
-
-
-
-    //     $receiverNumber = $user->phone;
-    //     $message = "OTP login code is " . $code;
-    //     $this->sendCode($receiverNumber,$message);
-
-    // }
+    // ! Function to Send SMS through the API.
     public function sendCode($receiverNumber,$message){
 
         try {

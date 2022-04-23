@@ -131,7 +131,7 @@ class SPAApiController extends Controller
         }
         $product = Product::where('product_code', $request->product_code)->first();
         $issuedProduct = IssueProduct::where('product_id', $product->id)->first();
-        // return $issuedProduct;
+
         if ($issuedProduct) {
             return \Response::json([
                 'message' => "Merchandise Is Already Issued Out",
@@ -146,8 +146,11 @@ class SPAApiController extends Controller
                 'category_id' => $product->category->id,
             ]);
             // Save Customer Data through Api.
+            // ? Get all the products issued by a logged in BrandAmbassador
             $productsIssued = IssueProduct::select('product_id')->where('ba_id', auth()->user()->id)->where('category_id', $product->category_id)->get();
+            // ? Fetch the remaining products of the brandAmbassador Assigned to but not issued out.
             $remainingProducts = Productbas::where('assigned_to', auth()->user()->id)->whereNotIn('product_id', $productsIssued)->get();
+            //Save customer details alongside issued Product.
             if ($request->has('customer_phone') || $request->has('customer_name')) {
                 Customer::create([
                     'name' => $request->customer_name,
@@ -180,6 +183,8 @@ class SPAApiController extends Controller
         }
     }
 
+
+     // ? Get all the outlets registered in the database
     public function outlets()
     {
         $outlets = Outlet::all();
