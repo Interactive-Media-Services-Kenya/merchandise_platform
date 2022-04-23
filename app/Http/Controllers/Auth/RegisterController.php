@@ -50,6 +50,7 @@ class RegisterController extends Controller
      */
     protected function validator(array $data)
     {
+        // ? Increase Password Complexity and validation rules
         return Validator::make($data, [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
