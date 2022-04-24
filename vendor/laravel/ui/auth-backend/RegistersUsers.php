@@ -2,7 +2,6 @@
 
 namespace Illuminate\Foundation\Auth;
 
-use App\Models\County;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -19,10 +18,7 @@ trait RegistersUsers
      */
     public function showRegistrationForm()
     {
-        //Add regions
-        $counties = County::all();
-
-        return view('auth.register', compact('counties'));
+        return view('auth.register');
     }
 
     /**
@@ -37,16 +33,15 @@ trait RegistersUsers
 
         event(new Registered($user = $this->create($request->all())));
 
-        //$this->guard()->login($user);
+        $this->guard()->login($user);
 
         if ($response = $this->registered($request, $user)) {
             return $response;
         }
 
-        // return $request->wantsJson()
-        //             ? new JsonResponse([], 201)
-        //             : redirect($this->redirectPath());
-        return back()->with('message','Thank You for Registering to Our Platform');
+        return $request->wantsJson()
+                    ? new JsonResponse([], 201)
+                    : redirect($this->redirectPath());
     }
 
     /**

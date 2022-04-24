@@ -107,4 +107,9 @@ Route::group(['middleware' => ['auth:web','otp']], function () {
     //Outlets
     Route::get('outlet/delete/{id}','OutletController@destroyOutlet')->name('outlets.destroyOutlet');
     Route::resource('outlets','OutletController');
+
+
+    //Brands
+
+    Route::resource('brands','BrandController');
 });
