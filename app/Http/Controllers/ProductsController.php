@@ -212,8 +212,8 @@ class ProductsController extends Controller
                         'client_id' => $request->client_id,
                         'batch_id' => $batch->id,
                         'brand_id' => $request->brand_id,
-                        'size' => $request->size,
-                        'color' => $request->color,
+                        'size' => strtolower($request->size),
+                        'color' => strtolower($request->color),
                     ]);
                     Activity::create([
                         'title' => 'Merchandise Created',
@@ -243,8 +243,8 @@ class ProductsController extends Controller
                     'category_id' => $request->category_id,
                     'client_id' => $request->client_id,
                     'brand_id' => $request->brand_id,
-                    'size' => $request->size,
-                    'color' => $request->color,
+                    'size' => strtolower($request->size),
+                    'color' => strtolower($request->color),
                 ]);
                 Activity::create([
                     'title' => 'Merchandise Created',
@@ -302,8 +302,8 @@ class ProductsController extends Controller
                         'client_id' => Auth::user()->client_id,
                         'batch_id' => $batch->id,
                         'brand_id' => $request->brand_id,
-                        'size' => $request->size,
-                        'color' => $request->color,
+                        'size' => strtolower($request->size),
+                        'color' => strtolower($request->color),
                     ]);
                     Activity::create([
                         'title' => 'Merchandise Created',
