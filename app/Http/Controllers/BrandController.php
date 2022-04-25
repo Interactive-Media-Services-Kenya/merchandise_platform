@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Brand;
+use App\Models\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use RealRashid\SweetAlert\Facades\Alert;
@@ -17,8 +18,8 @@ class BrandController extends Controller
     public function index()
     {
         $brands = Brand::where('client_id',Auth::user()->client_id)->get();
-
-        return view('brands.index',compact('brands'));
+        $brandsAll= Brand::all();
+        return view('brands.index',compact('brands','brandsAll'));
     }
 
     /**
@@ -28,7 +29,8 @@ class BrandController extends Controller
      */
     public function create()
     {
-        return view('brand.create');
+        $clients = Client::all();
+        return view('brands.create', compact('clients'));
     }
 
     /**
@@ -41,11 +43,12 @@ class BrandController extends Controller
     {
         $request->validate([
             'name'=>'required|string|max:255',
+            'client_id'=> 'required|integer',
         ]);
 
         $brand = Brand::create([
             'name' => $request->name,
-            'client_id' => Auth::user()->client_id ? Auth::user()->client_id : null,
+            'client_id' => $request->client_id,
         ]);
         if ($brand) {
             Alert::success('Success','Brand Added Successfully');
@@ -79,8 +82,9 @@ class BrandController extends Controller
     public function edit($id)
     {
         $brand = Brand::findOrFail($id);
+        $clients = Client::all();
 
-        return view('brands.edit',compact('brand'));
+        return view('brands.edit',compact('brand','clients'));
     }
 
     /**
@@ -100,6 +104,7 @@ class BrandController extends Controller
 
         $brand->update([
             'name' => $request->name,
+            'client_id' => $request->client_id,
         ]);
 
         if ($brand) {
@@ -118,6 +123,10 @@ class BrandController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
+    {
+        //
+    }
+    public function destroyBrand($id)
     {
         $brand = Brand::findOrFail($id);
         $deleteBrand = $brand->delete();

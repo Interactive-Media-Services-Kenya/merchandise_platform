@@ -110,6 +110,6 @@ Route::group(['middleware' => ['auth:web','otp']], function () {
 
 
     //Brands
-
+    Route::get('brand/delete/{id}','BrandController@destroyBrand')->name('brands.destroyBrand');
     Route::resource('brands','BrandController');
 });

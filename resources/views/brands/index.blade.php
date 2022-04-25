@@ -43,7 +43,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @forelse($brands as $brand)
+                            @forelse($brandsAll as $brand)
                                 <tr data-entry-id="{{ $brand->id }}">
                                     <td>
 
@@ -62,10 +62,10 @@
                                             <a href="{{ route('brands.edit', [$brand->id]) }}"
                                                 class="btn btn-primary btn-sm">Edit</a>
                                         @endcan
-                                        {{-- @can('admin_access')
-                                            <a href="{{ route('brands.destroybrand', [$brand->id]) }}" class="btn btn-danger btn-sm"
+                                        @can('admin_access')
+                                            <a href="{{ route('brands.destroyBrand', [$brand->id]) }}" class="btn btn-danger btn-sm"
                                                 onclick="return confirm('Are you Sure?')">Delete</a>
-                                        @endcan --}}
+                                        @endcan
                                     </td>
                                 </tr>
                             @empty
@@ -128,12 +128,12 @@
                                         {{ $brand->name ?? '' }}
                                     </td>
                                     <td>
-                                        @can('admin_access')
+                                        @can('tb_access')
                                             <a href="{{ route('brands.edit', [$brand->id]) }}"
                                                 class="btn btn-primary btn-sm">Edit</a>
                                         @endcan
                                         @can('admin_access')
-                                            <a href="{{ route('brands.destroybrand', [$brand->id]) }}" class="btn btn-danger btn-sm"
+                                            <a href="{{ route('brands.destroyBrand', [$brand->id]) }}" class="btn btn-danger btn-sm"
                                                 onclick="return confirm('Are you Sure?')">Delete</a>
                                         @endcan
                                     </td>
@@ -203,12 +203,12 @@
                                         {{ $brand->client->name }}
                                     </td>
                                     <td>
-                                        @can('admin_access')
+                                        @can('client_access')
                                             <a href="{{ route('brands.edit', [$brand->id]) }}"
                                                 class="btn btn-primary btn-sm">Edit</a>
                                         @endcan
                                         @can('admin_access')
-                                            <a href="{{ route('brands.destroybrand', [$brand->id]) }}" class="btn btn-danger btn-sm"
+                                            <a href="{{ route('brands.destroyBrand', [$brand->id]) }}" class="btn btn-danger btn-sm"
                                                 onclick="return confirm('Are you Sure?')">Delete</a>
                                         @endcan
                                     </td>
