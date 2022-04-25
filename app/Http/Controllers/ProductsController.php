@@ -17,6 +17,7 @@ use DB;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\AssignMerchandise;
 use App\Models\Activity;
+use App\Models\Brand;
 use App\Models\IssueProduct;
 use App\Models\Reject;
 use App\Models\Storage;
@@ -105,9 +106,12 @@ class ProductsController extends Controller
         $categories = Category::where('client_id', null)->get();
         $categoriesClient = Category::where('client_id', Auth::user()->client_id)->get();
 
+
+        $brandsClient = Brand::where('client_id', Auth::user()->client_id)->get();
         $storages = Storage::where('client_id', null)->get();
         $storagesClient = Storage::where('client_id', Auth::user()->client_id)->get();
         $user_id = Auth::id();
+
 
         $brandAmbassadors =  User::where('role_id', 4)->where('teamleader_id', $user_id)->get();
         $batches = Product::select('batch_id', 'batch_code')->where('assigned_to', Auth::id())->join('batches', 'batches.id', 'products.batch_id')->groupBy('batch_id')->get();
@@ -120,7 +124,8 @@ class ProductsController extends Controller
             'brandAmbassadors',
             'batches',
             'storages',
-            'storagesClient'
+            'storagesClient',
+            'brandsClient'
         ));
     }
 
@@ -168,6 +173,9 @@ class ProductsController extends Controller
                 'client_id' => 'required|integer',
                 'category_id' => 'required|integer',
                 'storage_id' => 'required|integer',
+                'brand_id' => 'required|integer',
+                'size' => 'string|max:5',
+                'color' => 'string|max:20',
             ]);
             $productname = substr(\DB::table('categories')->where('id', $request->category_id)->value('title'), 0,);
             $productname = strtoupper($productname);
@@ -203,6 +211,9 @@ class ProductsController extends Controller
                         'category_id' => $request->category_id,
                         'client_id' => $request->client_id,
                         'batch_id' => $batch->id,
+                        'brand_id' => $request->brand_id,
+                        'size' => $request->size,
+                        'color' => $request->color,
                     ]);
                     Activity::create([
                         'title' => 'Merchandise Created',
@@ -224,13 +235,16 @@ class ProductsController extends Controller
                 }
             } else {
                 # Save Single  Product with no Batch
-                $product_code = $productname . $this->generateProductCode();
+                $product_code = $this->generateProductCode() . $productname;
                 $data = Product::create([
                     'product_code' => $product_code,
                     'user_id' => Auth::id(),
                     'owner_id' => $request->owner_id,
                     'category_id' => $request->category_id,
                     'client_id' => $request->client_id,
+                    'brand_id' => $request->brand_id,
+                    'size' => $request->size,
+                    'color' => $request->color,
                 ]);
                 Activity::create([
                     'title' => 'Merchandise Created',
@@ -249,6 +263,9 @@ class ProductsController extends Controller
             $request->validate([
                 'category_id' => 'required|integer',
                 'storage_id' => 'required|integer',
+                'brand_id' => 'required|integer',
+                'size' => 'required|string',
+                'color' => 'required|string',
             ]);
             $productname = substr(\DB::table('categories')->where('id', $request->category_id)->value('title'), 0, 2);
             $productname = strtoupper($productname);
@@ -284,6 +301,9 @@ class ProductsController extends Controller
                         'category_id' => $request->category_id,
                         'client_id' => Auth::user()->client_id,
                         'batch_id' => $batch->id,
+                        'brand_id' => $request->brand_id,
+                        'size' => $request->size,
+                        'color' => $request->color,
                     ]);
                     Activity::create([
                         'title' => 'Merchandise Created',

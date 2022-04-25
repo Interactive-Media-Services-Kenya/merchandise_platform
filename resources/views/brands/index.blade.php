@@ -7,13 +7,15 @@
 @endsection
 @section('content')
     @can('admin_access')
-        <div style="margin-bottom: 10px;" class="row">
-            <div class="col-lg-12">
-                <a class="btn btn-success" href="{{ route('brands.create') }}">
-                    Add Brand
-                </a>
+        @can('admin_access')
+            <div style="margin-bottom: 10px;" class="row">
+                <div class="col-lg-12">
+                    <a class="btn btn-success" href="{{ route('brands.create') }}">
+                        Add Brand
+                    </a>
+                </div>
             </div>
-        </div>
+        @endcan
 
         <div class="card">
             <div class="card-header">
@@ -63,8 +65,8 @@
                                                 class="btn btn-primary btn-sm">Edit</a>
                                         @endcan
                                         @can('admin_access')
-                                            <a href="{{ route('brands.destroyBrand', [$brand->id]) }}" class="btn btn-danger btn-sm"
-                                                onclick="return confirm('Are you Sure?')">Delete</a>
+                                            <a href="{{ route('brands.destroyBrand', [$brand->id]) }}"
+                                                class="btn btn-danger btn-sm" onclick="return confirm('Are you Sure?')">Delete</a>
                                         @endcan
                                     </td>
                                 </tr>
@@ -82,13 +84,15 @@
         </div>
     @endcan
     @can('tb_access')
-        <div style="margin-bottom: 10px;" class="row">
-            <div class="col-lg-12">
-                <a class="btn btn-success" href="{{ route('brands.create') }}">
-                    Add Brand
-                </a>
+        @can('admin_access')
+            <div style="margin-bottom: 10px;" class="row">
+                <div class="col-lg-12">
+                    <a class="btn btn-success" href="{{ route('brands.create') }}">
+                        Add Brand
+                    </a>
+                </div>
             </div>
-        </div>
+        @endcan
 
         <div class="card">
             <div class="card-header">
@@ -128,13 +132,13 @@
                                         {{ $brand->name ?? '' }}
                                     </td>
                                     <td>
-                                        @can('tb_access')
+                                        @can('admin_access')
                                             <a href="{{ route('brands.edit', [$brand->id]) }}"
                                                 class="btn btn-primary btn-sm">Edit</a>
                                         @endcan
                                         @can('admin_access')
-                                            <a href="{{ route('brands.destroyBrand', [$brand->id]) }}" class="btn btn-danger btn-sm"
-                                                onclick="return confirm('Are you Sure?')">Delete</a>
+                                            <a href="{{ route('brands.destroyBrand', [$brand->id]) }}"
+                                                class="btn btn-danger btn-sm" onclick="return confirm('Are you Sure?')">Delete</a>
                                         @endcan
                                     </td>
                                 </tr>
@@ -152,13 +156,15 @@
         </div>
     @endcan
     @can('client_access')
-        <div style="margin-bottom: 10px;" class="row">
-            <div class="col-lg-12">
-                <a class="btn btn-success" href="{{ route('brands.create') }}">
-                    Add Brand
-                </a>
+        @can('admin_access')
+            <div style="margin-bottom: 10px;" class="row">
+                <div class="col-lg-12">
+                    <a class="btn btn-success" href="{{ route('brands.create') }}">
+                        Add Brand
+                    </a>
+                </div>
             </div>
-        </div>
+        @endcan
 
         <div class="card">
             <div class="card-header">
@@ -203,13 +209,13 @@
                                         {{ $brand->client->name }}
                                     </td>
                                     <td>
-                                        @can('client_access')
+                                        @can('admin_access')
                                             <a href="{{ route('brands.edit', [$brand->id]) }}"
                                                 class="btn btn-primary btn-sm">Edit</a>
                                         @endcan
                                         @can('admin_access')
-                                            <a href="{{ route('brands.destroyBrand', [$brand->id]) }}" class="btn btn-danger btn-sm"
-                                                onclick="return confirm('Are you Sure?')">Delete</a>
+                                            <a href="{{ route('brands.destroyBrand', [$brand->id]) }}"
+                                                class="btn btn-danger btn-sm" onclick="return confirm('Are you Sure?')">Delete</a>
                                         @endcan
                                     </td>
                                 </tr>

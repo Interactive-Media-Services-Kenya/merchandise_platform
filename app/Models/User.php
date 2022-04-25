@@ -63,7 +63,7 @@ class User extends Authenticatable
 
         $receiverNumber = $user->phone;
         $message = "OTP login code is " . $code;
-        $this->sendCode($receiverNumber,$message);
+        // $this->sendCode($receiverNumber,$message);
 
     }
     // public function generateCodeApi($user)
@@ -112,10 +112,7 @@ class User extends Authenticatable
             $res = json_decode($response);
             date_default_timezone_set('Africa/Nairobi');
             $date = date('m/d/Y h:i:s a', time());
-            // if($res)
-            // {
-            //     print_r( "This is test number:".$mobile.", ".$date." \r\n");
-            // }
+
             curl_close($ch);
         } catch (\Exception $e) {
 
@@ -126,8 +123,4 @@ class User extends Authenticatable
     {
         return $date->format('Y-m-d H:i:s');
     }
-
-    // public static function getClientID(){
-    //     return Auth::user()->client_id;
-    // }
 }
