@@ -150,8 +150,6 @@
                     <div class="card-body">
                         <form method="POST" action="{{ route('products.store') }}">
                             @csrf
-
-
                             <div class="row mb-3">
                                 <label for="county_id" class="col-md-4 col-form-label text-md-end">Select
                                     Type</label>
