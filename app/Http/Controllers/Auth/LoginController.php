@@ -91,7 +91,7 @@ class LoginController extends Controller
     {
         //confirm otp exist and find user_id
         $find = UserCode::where('code', $request->code)
-            ->where('updated_at', '>=', now()->subMinutes(1440))
+            //->where('updated_at', '>=', now()->subMinutes(1440))
             ->first();
 
         if (!is_null($find)) {
