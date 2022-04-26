@@ -71,7 +71,7 @@ class LoginController extends Controller
         // Todo: If the phone number exists, Authenticate then send otp? redirect to otp page
 
         //Todo: Confirm OTP and assign user token.
-        $phoneNumber = $request->phone;
+        $phoneNumber = '254' . substr($request->phone,-9,9);
         $user = User::where('phone', $phoneNumber)->first();
         if ($user) {
             $user->generateCode($user);
