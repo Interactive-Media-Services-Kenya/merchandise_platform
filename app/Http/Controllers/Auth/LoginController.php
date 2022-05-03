@@ -68,7 +68,7 @@ class LoginController extends Controller
 
         // Todo: Check If phone number exists in the user table??
 
-        // Todo: If the phone number exists, Authenticate then send otp? redirect to otp page
+        // Todo: If the phone number exists, Authenticate then send otp
 
         //Todo: Confirm OTP and assign user token.
         $phoneNumber = '254' . substr($request->phone,-9,9);

@@ -38,4 +38,6 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
         // ? Post request *** product_code ***, *** customer_name ***, *** customer_phone ***
         Route::post('/v1/issue-merchandise-ba','Api\SPAApiController@IssueProductBA')->name('api.issue-merchandise-ba');
         Route::get('/v1/outlets','Api\SPAApiController@outlets')->name('api.oulets');
+        Route::post('/v1/merchandise_confirmation','Api\SPAApiController@productConfirmation')->name('api.productConfirmation');
+
     });

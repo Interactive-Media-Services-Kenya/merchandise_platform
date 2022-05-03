@@ -10,6 +10,7 @@ use App\Models\Outlet;
 use App\Models\Product;
 use App\Models\Productbas;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
 class SPAApiController extends Controller
@@ -69,6 +70,43 @@ class SPAApiController extends Controller
         //
     }
 
+    // ! Confirmation of Barcodes by SuperAdmin/Agency/Client
+
+    public function productConfirmation(Request $request)
+    {
+        if (Auth::user()->role_id == 1 || Auth::user()->role_id == 2 || Auth::user()->role_id == 5) {
+            $product_id = Product::where('product_code', $request->product_code)->value('id');
+
+            $product = Product::findOrFail($product_id);
+
+            $product->update([
+                'accept_status' => 1,
+            ]);
+
+            if ($product) {
+                Activity::create([
+                    'title' => 'Merchandise Comfirmed',
+                    'user_id' => Auth::id(),
+                    'description' => Auth::user()->name . ' have confirm merchandise: ' . $product->product_code,
+                ]);
+                return \Response::json([
+                    'message' => "Merchandise Confirmation is Successful",
+                    'status' => 1,
+                ]);
+            } else {
+                return \Response::json([
+                    'message' => "Failed, Merchandise is not confirmed or does not belong to this user",
+                    'status' => 0,
+                ]);
+            }
+        }else{
+            return \Response::json([
+                'message' => "Failed, User Is not Authorized to confirm Merchandise",
+                'status' => 0,
+            ]);
+        }
+    }
+
     //Brand Ambassadors
     public function IssueProductBA(Request $request)
     {
@@ -77,18 +115,18 @@ class SPAApiController extends Controller
         // return count($productBa);
         abort_if(auth()->user()->role_id != 4, Response::HTTP_FORBIDDEN, '403 Forbidden');
         $product_id = Product::select('id')->where('product_code', $request->product_code)->first();
-        if($product_id == null){
+        if ($product_id == null) {
             return \Response::json([
                 'message' => "Merchandise Is not Found",
-                'status'=>0,
+                'status' => 0,
             ]);
         }
-        $productBa = Productbas::where('assigned_to',auth()->user()->id)->whereIn('product_id',$product_id)->get();
+        $productBa = Productbas::where('assigned_to', auth()->user()->id)->whereIn('product_id', $product_id)->get();
         //Check if product is issued Out
-        if (count($productBa)==0) {
+        if (count($productBa) == 0) {
             return \Response::json([
                 'message' => "Merchandise Does not Belong to Brand Ambassador",
-                'status'=>0,
+                'status' => 0,
             ]);
         }
         $product = Product::where('product_code', $request->product_code)->first();
@@ -97,7 +135,7 @@ class SPAApiController extends Controller
         if ($issuedProduct) {
             return \Response::json([
                 'message' => "Merchandise Is Already Issued Out",
-                'status'=>1,
+                'status' => 1,
             ]);
         } else {
             $batch = $product->batch_id;
@@ -108,8 +146,8 @@ class SPAApiController extends Controller
                 'category_id' => $product->category->id,
             ]);
             // Save Customer Data through Api.
-            $productsIssued = IssueProduct::select('product_id')->where('ba_id',auth()->user()->id)->where('category_id',$product->category_id)->get();
-            $remainingProducts = Productbas::where('assigned_to',auth()->user()->id)->whereNotIn('product_id',$productsIssued)->get();
+            $productsIssued = IssueProduct::select('product_id')->where('ba_id', auth()->user()->id)->where('category_id', $product->category_id)->get();
+            $remainingProducts = Productbas::where('assigned_to', auth()->user()->id)->whereNotIn('product_id', $productsIssued)->get();
             if ($request->has('customer_phone') || $request->has('customer_name')) {
                 Customer::create([
                     'name' => $request->customer_name,
@@ -126,25 +164,24 @@ class SPAApiController extends Controller
 
                 return \Response::json([
                     'message' => "Merchandise Found and Issued Successfully",
-                    'merchandise_type'  => $product->category->title??'No Merchandise Type Registered for the Merchandise',
-                    'remaining_items' => $remainingProducts?count($remainingProducts):0,
-                    'issued_items' => $productsIssued?count($productsIssued):0,
+                    'merchandise_type'  => $product->category->title ?? 'No Merchandise Type Registered for the Merchandise',
+                    'remaining_items' => $remainingProducts ? count($remainingProducts) : 0,
+                    'issued_items' => $productsIssued ? count($productsIssued) : 0,
                     //Status success
-                    'status'=>1,
+                    'status' => 1,
                 ]);
             } else {
                 return \Response::json([
                     'message' => "Merchandise Not Found",
                     // Status Unsuccessful
-                    'status'=>0,
+                    'status' => 0,
                 ]);
             }
         }
-
-
     }
 
-    public function outlets(){
+    public function outlets()
+    {
         $outlets = Outlet::all();
 
         $data = [];
@@ -156,7 +193,7 @@ class SPAApiController extends Controller
                 'outlet_code' => $outlet->code,
                 'county' => $outlet->county->name,
             ];
-            array_push($data,$outl);
+            array_push($data, $outl);
         }
 
         return response()->json($data, 200);
