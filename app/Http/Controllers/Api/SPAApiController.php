@@ -187,13 +187,13 @@ class SPAApiController extends Controller
         $data = [];
 
         foreach ($outlets as $outlet) {
-            $outl = [
+            $outletData = [
                 'id' => $outlet->id,
                 'outlet_name' => $outlet->name,
                 'outlet_code' => $outlet->code,
                 'county' => $outlet->county->name,
             ];
-            array_push($data, $outl);
+            array_push($data, $outletData);
         }
 
         return response()->json($data, 200);
