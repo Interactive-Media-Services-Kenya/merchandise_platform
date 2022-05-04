@@ -135,7 +135,7 @@ class SPAApiController extends Controller
         if ($issuedProduct) {
             return \Response::json([
                 'message' => "Merchandise Is Already Issued Out",
-                'status' => 1,
+                'status' => 2,
             ]);
         } else {
             $batch = $product->batch_id;
