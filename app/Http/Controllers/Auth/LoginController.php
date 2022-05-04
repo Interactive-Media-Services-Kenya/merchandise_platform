@@ -106,6 +106,7 @@ class LoginController extends Controller
                 'name' => $user->name,
                 'email' =>$user->email,
                 'role' => $user->roles->title,
+                'status' => 1,
             ]);
         } else {
             return response()->json([
