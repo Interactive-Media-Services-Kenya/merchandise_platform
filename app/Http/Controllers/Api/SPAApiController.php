@@ -95,7 +95,7 @@ class SPAApiController extends Controller
                 ]);
             } else {
                 return \Response::json([
-                    'message' => "Failed, Merchandise is not confirmed or does not belong to this user",
+                    'message' => "Failed, Merchandise is not exist,confirmed or does not belong to this user",
                     'status' => 0,
                 ]);
             }
