@@ -79,8 +79,8 @@ class SPAApiController extends Controller
             $product_id = Product::where('product_code', $request->product_code)->value('id');
 
             $product = Product::where('id',$product_id)->first();
-            return response()->json($product,200);
-            if ($product) {
+
+            if ($product != null) {
                 $product->update([
                     'accept_status' => 1,
                 ]);
