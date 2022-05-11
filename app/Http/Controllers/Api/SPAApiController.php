@@ -78,7 +78,7 @@ class SPAApiController extends Controller
         if (Auth::user()->role_id == 1 || Auth::user()->role_id == 2 || Auth::user()->role_id == 5) {
             $product_id = Product::where('product_code', $request->product_code)->value('id');
 
-            $product = Product::select('*')->where('product_id',$product_id)->get();
+            $product = Product::select('*')->where('id',$product_id)->get();
 
             $product->update([
                 'accept_status' => 1,
