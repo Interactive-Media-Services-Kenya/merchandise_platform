@@ -33,6 +33,7 @@ class ProductsController extends Controller
     public function index()
     {
         $rejects = Reject::select('product_id')->get();
+        $productsAdmin = Product::all();
         $products = Product::where('owner_id', Auth::id())->get();
         $productsClient = Product::where('client_id', Auth::user()->client_id)->get();
         $productsIssuedOut = Productbas::all();
@@ -90,7 +91,8 @@ class ProductsController extends Controller
             'batchesAccepted',
             'clients',
             'clientsWithMerchandise',
-            'productsIssuedOut'
+            'productsIssuedOut',
+            'productsAdmin'
         ));
     }
 

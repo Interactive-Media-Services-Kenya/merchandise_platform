@@ -43,6 +43,9 @@
                                 <th>
                                     Serial Number
                                 </th>
+                                <th>
+                                    BarCode
+                                </th>
                                 @can('tb_access')
                                     <th>
                                         Team Leader
@@ -63,44 +66,49 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($products as $key => $product)
-                                <tr data-entry-id="{{ $product->id }}">
-                                    <td>
+                            @foreach ($productsAdmin as $key => $product)
+                            <tr data-entry-id="{{ $product->id }}">
+                                <td>
 
-                                    </td>
+                                </td>
+                                <td>
+                                    {{ $product->id ?? '' }}
+                                </td>
+                                <td>
+                                    {{ $product->category->title ?? '' }}
+                                </td>
+                                <td>
+                                    {{ $product->client->name ?? '' }}
+                                </td>
+                                <td>
+                                    {{ $product->product_code ?? '' }}
+                                </td>
+                                <td>@php
+                                    $generator = new Picqer\Barcode\BarcodeGeneratorHTML();
+                                @endphp
+                                    {!! $generator->getBarcode($product->product_code, $generator::TYPE_CODE_128) !!}
+                                </td>
+                                @can('tb_access')
                                     <td>
-                                        {{ $product->id ?? '' }}
+                                        {{ $product->assign->email ?? 'Not Assigned' }}
                                     </td>
+                                @endcan
+                                <td>
+                                    {{ $product->batch->batch_code ?? 'Single Product' }}
+                                </td>
+                                <td>
+                                    {{ $product->created_at ?? '' }}
+                                </td>
+                                @can('admin_access')
                                     <td>
-                                        {{ $product->category->title ?? '' }}
+                                        <a href="{{ route('products.edit', [$product->id]) }}"
+                                            class="btn btn-primary btn-sm">Edit</a>
+                                        <a href="{{ route('products.destroyProduct', [$product->id]) }}"
+                                            class="btn btn-danger btn-sm" onclick="return confirm('Are you Sure?')">Delete</a>
                                     </td>
-                                    <td>
-                                        {{ $product->client->name ?? '' }}
-                                    </td>
-                                    <td>
-                                        {{ $product->product_code ?? '' }}
-                                    </td>
-                                    @can('tb_access')
-                                        <td>
-                                            {{ $product->assign->email ?? '' }}
-                                        </td>
-                                    @endcan
-                                    <td>
-                                        {{ $product->batch->batch_code ?? 'Single Product' }}
-                                    </td>
-                                    <td>
-                                        {{ $product->created_at ?? '' }}
-                                    </td>
-                                    @can('admin_access')
-                                        <td>
-                                            {{-- <a href="{{ route('products.edit', [$product->id]) }}"
-                                                class="btn btn-primary btn-sm">Edit</a> --}}
-                                            <a href="{{ route('products.destroyProduct', [$product->id]) }}"
-                                                class="btn btn-danger btn-sm" onclick="return confirm('Are you Sure?')">Delete</a>
-                                        </td>
-                                    @endcan
+                                @endcan
 
-                                </tr>
+                            </tr>
                             @endforeach
                         </tbody>
                     </table>
