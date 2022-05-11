@@ -25,7 +25,7 @@
 
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class=" table table-bordered table-striped table-hover datatable" id="ProductTable">
+                    <table class=" table table-bordered table-striped table-hover datatable" id="ProductTableAdmin">
                         <thead>
                             <tr>
                                 <th width="10">
@@ -66,7 +66,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($productsAdmin as $key => $product)
+                            {{-- @foreach ($productsAdmin as $key => $product)
                             <tr data-entry-id="{{ $product->id }}">
                                 <td>
 
@@ -109,7 +109,7 @@
                                 @endcan
 
                             </tr>
-                            @endforeach
+                            @endforeach --}}
                         </tbody>
                     </table>
                 </div>
@@ -864,6 +864,77 @@
     <script>
         $(document).ready(function() {
             $('#ProductTable').DataTable({
+                dom: 'lBfrtip',
+                pageLength: 100,
+                buttons: [
+                    'copy',
+                    {
+                        extend: 'excelHtml5',
+                        title: 'Merchandise_list',
+                        exportOptions: {
+                            exportOptions: {
+                                columns: [0, 1, 2, 3, 4, 5, ':visible']
+                            }
+                        }
+                    },
+                    {
+                        extend: 'pdfHtml5',
+                        title: 'merchandise_list',
+                        exportOptions: {
+                            columns: [0, 1, 2, 3, 4, 5]
+                        }
+                    },
+                    'colvis'
+                ]
+            });
+        });
+    </script>
+    <script>
+        $(document).ready(function() {
+            $('#ProductTableAdmin').DataTable({
+                processing: true,
+                method:'GET',
+                serverSide: true,
+                ajax: "{{ route('products.index') }}",
+                columns: [
+                    {
+                        data: 'placeholder',
+                        name: 'placeholder'
+                    },
+
+                    {
+                        data: 'id',
+                        name: 'id'
+                    },
+                    {
+                        data: 'category',
+                        name: 'category.title'
+                    },
+                    {
+                        data: 'client',
+                        name: 'client.name'
+                    },
+                    {
+                        data: 'product_code',
+                        name: 'product_code'
+                    },
+                    {
+                        data: 'bar_code',
+                        name: 'bar_code'
+                    },
+                    {
+                        data: 'batch',
+                        name: 'batch.batch_code'
+                    },
+                    {
+                        data: 'created_at',
+                        name: 'created_at'
+                    },
+                    {
+                        data: 'action',
+                        name: 'action'
+                    },
+                ],
                 dom: 'lBfrtip',
                 pageLength: 100,
                 buttons: [

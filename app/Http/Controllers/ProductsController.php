@@ -22,6 +22,7 @@ use App\Models\IssueProduct;
 use App\Models\Reject;
 use App\Models\Storage;
 use Illuminate\Support\Facades\URL;
+use Yajra\DataTables\Facades\DataTables;
 
 class ProductsController extends Controller
 {
@@ -30,10 +31,11 @@ class ProductsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         $rejects = Reject::select('product_id')->get();
-        $productsAdmin = Product::all();
+        $productsAdmin = Product::with(['category','assign','batch','client'])->select('products.*')->take(2)->get();
+        // dd($productsAdmin);
         $products = Product::where('owner_id', Auth::id())->get();
         $productsClient = Product::where('client_id', Auth::user()->client_id)->get();
         $productsIssuedOut = Productbas::all();
@@ -73,7 +75,51 @@ class ProductsController extends Controller
         $batchesTl = Product::select('*')->where('assigned_to', Auth::id())->groupBy('batch_id')->get();
 
         $batchesBa = Batch::select('*')->whereIn('id', $productsBas)->get();
-        //dd($batchesBa);
+
+        //Ajax Datatables for products Admin
+
+        if ($request->ajax()) {
+            $query = Product::with(['category','assign','batch','client'])->select('products.*');
+            $table = Datatables::of($query);
+            $table->addColumn('placeholder', '&nbsp;');
+            $table->addColumn('action', 'action');
+            $table->editColumn('id', function ($row) {
+                return $row->id ? $row->id : '';
+            });
+            $table->editColumn('product_code', function ($row) {
+                return $row->product_code ? $row->product_code : '';
+            });
+            $table->editColumn('category', function ($row) {
+                return $row->category_id ? $row->category->title : '';
+            });
+            $table->editColumn('client', function ($row) {
+                return $row->client_id ? $row->client->name : '';
+            });
+            $table->editColumn('assign', function ($row) {
+                return $row->assigned_to ? $row->assign->email : '';
+            });
+            $table->editColumn('batch', function ($row) {
+                return $row->batch_id ? $row->batch->batch_code : '';
+            });
+
+            $table->editColumn('action', function ($row) {
+            //     return auth()->user()->role_id == 1 ? '<a href="products/'.$row->id.'/edit"
+            //     class="btn btn-primary btn-sm">Edit</a>
+            // <a href="delete/product/'.$row->id.'"
+            //     class="btn btn-danger btn-sm" onclick="return confirm("Are you Sure?")">Delete</a>':"";
+                return auth()->user()->role_id == 1 ? '<a href="products/'.$row->id.'/edit"
+                class="btn btn-primary btn-sm">Edit</a>':"";
+            });
+
+            $table->editColumn('bar_code', function ($row) {
+                $generator = new \Picqer\Barcode\BarcodeGeneratorHTML();
+                return  $generator->getBarcode($row->product_code, $generator::TYPE_CODE_128);
+            });
+
+            $table->rawColumns(['placeholder', 'id', 'product_code', 'category', 'client', 'assign', 'batch','bar_code','action']);
+
+            return $table->make(true);
+        }
         return view('products.index', compact(
             'products',
             'productsClient',
