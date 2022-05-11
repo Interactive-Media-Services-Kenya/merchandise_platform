@@ -80,11 +80,12 @@ class SPAApiController extends Controller
 
             $product = Product::where('id',$product_id)->first();
 
-            $product->update([
-                'accept_status' => 1,
-            ]);
 
-            if ($product) {
+
+            if (count($product)>0) {
+                $product->update([
+                    'accept_status' => 1,
+                ]);
                 Activity::create([
                     'title' => 'Merchandise Comfirmed',
                     'user_id' => Auth::id(),
