@@ -74,6 +74,7 @@ class SPAApiController extends Controller
 
     public function productConfirmation(Request $request)
     {
+        // ? SuperAdmin || Agency || Client Can confirm merchandise
         if (Auth::user()->role_id == 1 || Auth::user()->role_id == 2 || Auth::user()->role_id == 5) {
             $product_id = Product::where('product_code', $request->product_code)->value('id');
 
@@ -110,7 +111,7 @@ class SPAApiController extends Controller
     //Brand Ambassadors
     public function IssueProductBA(Request $request)
     {
-        //Chack if user is Brand Ambassador && product assigned to him/her
+        //Check if user is Brand Ambassador && product assigned to him/her
 
         // return count($productBa);
         abort_if(auth()->user()->role_id != 4, Response::HTTP_FORBIDDEN, '403 Forbidden');

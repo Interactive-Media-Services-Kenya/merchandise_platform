@@ -107,6 +107,7 @@ class LoginController extends Controller
                 'email' =>$user->email,
                 'role' => $user->roles->title,
                 'status' => 1,
+                'permissions' => $user->role_id == 1 || $user->role_id == 2 || $user->role_id == 5 ? ['can_issue_merchandise'=>true] : ['can_issue_merchandise'=>false],
             ]);
         } else {
             return response()->json([
