@@ -8,15 +8,13 @@
 @section('content')
     {{-- Admin and TB Access --}}
     @can('admin_access')
-        @can('tb_access')
-            <div style="margin-bottom: 10px;" class="row">
-                <div class="col-lg-12">
-                    <a class="btn btn-success" href="{{ route('products.create') }}">
-                        Add Merchandise
-                    </a>
-                </div>
+        <div style="margin-bottom: 10px;" class="row">
+            <div class="col-lg-12">
+                <a class="btn btn-success" href="{{ route('products.create') }}">
+                    Add Merchandise
+                </a>
             </div>
-        @endcan
+        </div>
 
         <div class="card">
             <div class="card-header">
@@ -25,7 +23,7 @@
 
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class=" table table-bordered table-striped table-hover datatable" id="ProductTableAdmin">
+                    <table class=" table table-bordered table-striped table-hover datatable" id="ProductTable">
                         <thead>
                             <tr>
                                 <th width="10">
@@ -46,70 +44,20 @@
                                 <th>
                                     BarCode
                                 </th>
-                                @can('tb_access')
-                                    <th>
-                                        Team Leader
-                                    </th>
-                                @endcan
                                 <th>
                                     Batch Code
                                 </th>
                                 <th>
                                     Date Added
                                 </th>
-                                @can('admin_access')
-                                    <th>
-                                        Actions
-                                    </th>
-                                @endcan
+                                <th>
+                                    Actions
+                                </th>
 
                             </tr>
                         </thead>
                         <tbody>
-                            {{-- @foreach ($productsAdmin as $key => $product)
-                            <tr data-entry-id="{{ $product->id }}">
-                                <td>
 
-                                </td>
-                                <td>
-                                    {{ $product->id ?? '' }}
-                                </td>
-                                <td>
-                                    {{ $product->category->title ?? '' }}
-                                </td>
-                                <td>
-                                    {{ $product->client->name ?? '' }}
-                                </td>
-                                <td>
-                                    {{ $product->product_code ?? '' }}
-                                </td>
-                                <td>@php
-                                    $generator = new Picqer\Barcode\BarcodeGeneratorHTML();
-                                @endphp
-                                    {!! $generator->getBarcode($product->product_code, $generator::TYPE_CODE_128) !!}
-                                </td>
-                                @can('tb_access')
-                                    <td>
-                                        {{ $product->assign->email ?? 'Not Assigned' }}
-                                    </td>
-                                @endcan
-                                <td>
-                                    {{ $product->batch->batch_code ?? 'Single Product' }}
-                                </td>
-                                <td>
-                                    {{ $product->created_at ?? '' }}
-                                </td>
-                                @can('admin_access')
-                                    <td>
-                                        <a href="{{ route('products.edit', [$product->id]) }}"
-                                            class="btn btn-primary btn-sm">Edit</a>
-                                        <a href="{{ route('products.destroyProduct', [$product->id]) }}"
-                                            class="btn btn-danger btn-sm" onclick="return confirm('Are you Sure?')">Delete</a>
-                                    </td>
-                                @endcan
-
-                            </tr>
-                            @endforeach --}}
                         </tbody>
                     </table>
                 </div>
@@ -130,13 +78,13 @@
                         </div>
                         <div class="text-end pt-1">
                             <p class="text-sm mb-0 text-capitalize">Total Merchandise</p>
-                            <h4 class="mb-0">{{ count($products) }}</h4>
+                            <h4 class="mb-0">{{ $products }}</h4>
                         </div>
                     </div>
                     <hr class="dark horizontal my-0">
                     <div class="card-footer p-3">
-                        <p class="mb-0 text-default text-sm font-weight-bolder">{{ count($productsIssuedOut) }} Issued Out
-                            &nbsp;&nbsp;&nbsp;&nbsp; {{ count($products) - count($productsIssuedOut) }} Remaining Merchandise
+                        <p class="mb-0 text-default text-sm font-weight-bolder">{{ $productsIssuedOut }} Issued Out
+                            &nbsp;&nbsp;&nbsp;&nbsp; {{ $products - $productsIssuedOut }} Remaining Merchandise
                         </p>
                     </div>
                 </div>
@@ -252,70 +200,20 @@
                                 <th>
                                     BarCode
                                 </th>
-                                @can('tb_access')
-                                    <th>
-                                        Team Leader
-                                    </th>
-                                @endcan
                                 <th>
                                     Batch Code
                                 </th>
                                 <th>
                                     Date Added
                                 </th>
-                                @can('admin_access')
-                                    <th>
-                                        Actions
-                                    </th>
-                                @endcan
+                                <th>
+                                    Actions
+                                </th>
 
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($products as $key => $product)
-                                <tr data-entry-id="{{ $product->id }}">
-                                    <td>
 
-                                    </td>
-                                    <td>
-                                        {{ $product->id ?? '' }}
-                                    </td>
-                                    <td>
-                                        {{ $product->category->title ?? '' }}
-                                    </td>
-                                    <td>
-                                        {{ $product->client->name ?? '' }}
-                                    </td>
-                                    <td>
-                                        {{ $product->product_code ?? '' }}
-                                    </td>
-                                    <td>@php
-                                        $generator = new Picqer\Barcode\BarcodeGeneratorHTML();
-                                    @endphp
-                                        {!! $generator->getBarcode($product->product_code, $generator::TYPE_CODE_128) !!}
-                                    </td>
-                                    @can('tb_access')
-                                        <td>
-                                            {{ $product->assign->email ?? 'Not Assigned' }}
-                                        </td>
-                                    @endcan
-                                    <td>
-                                        {{ $product->batch->batch_code ?? 'Single Product' }}
-                                    </td>
-                                    <td>
-                                        {{ $product->created_at ?? '' }}
-                                    </td>
-                                    @can('admin_access')
-                                        <td>
-                                            <a href="{{ route('products.edit', [$product->id]) }}"
-                                                class="btn btn-primary btn-sm">Edit</a>
-                                            <a href="{{ route('products.destroyProduct', [$product->id]) }}"
-                                                class="btn btn-danger btn-sm" onclick="return confirm('Are you Sure?')">Delete</a>
-                                        </td>
-                                    @endcan
-
-                                </tr>
-                            @endforeach
                         </tbody>
                     </table>
                 </div>
@@ -336,13 +234,13 @@
                         </div>
                         <div class="text-end pt-1">
                             <p class="text-sm mb-0 text-capitalize">Total Merchandise</p>
-                            <h4 class="mb-0">{{ count($productsClient) }}</h4>
+                            <h4 class="mb-0">{{ $productsClient }}</h4>
                         </div>
                     </div>
                     <hr class="dark horizontal my-0">
                     <div class="card-footer p-3">
-                        <p class="mb-0 text-default text-sm font-weight-bolder">{{ count($productsIssuedOut) }} Issued Out
-                            &nbsp;&nbsp;&nbsp;&nbsp; {{ count($productsClient) - count($productsIssuedOut) }} Remaining
+                        <p class="mb-0 text-default text-sm font-weight-bolder">{{ $productsIssuedOut }} Issued Out
+                            &nbsp;&nbsp;&nbsp;&nbsp; {{ $productsClient - $productsIssuedOut }} Remaining
                             Merchandise
                         </p>
                     </div>
@@ -458,70 +356,19 @@
                                 <th>
                                     BarCode
                                 </th>
-                                @can('tb_access')
-                                    <th>
-                                        Team Leader
-                                    </th>
-                                @endcan
                                 <th>
                                     Batch Code
                                 </th>
                                 <th>
                                     Date Added
                                 </th>
-                                @can('admin_access')
-                                    <th>
-                                        Actions
-                                    </th>
-                                @endcan
-
+                                <th>
+                                    Actions
+                                </th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($products as $key => $product)
-                                <tr data-entry-id="{{ $product->id }}">
-                                    <td>
 
-                                    </td>
-                                    <td>
-                                        {{ $product->id ?? '' }}
-                                    </td>
-                                    <td>
-                                        {{ $product->category->title ?? '' }}
-                                    </td>
-                                    <td>
-                                        {{ $product->client->name ?? '' }}
-                                    </td>
-                                    <td>
-                                        {{ $product->product_code ?? '' }}
-                                    </td>
-                                    <td>@php
-                                        $generator = new Picqer\Barcode\BarcodeGeneratorHTML();
-                                    @endphp
-                                        {!! $generator->getBarcode($product->product_code, $generator::TYPE_CODE_128) !!}
-                                    </td>
-                                    @can('tb_access')
-                                        <td>
-                                            {{ $product->assign->email ?? 'Not Assigned' }}
-                                        </td>
-                                    @endcan
-                                    <td>
-                                        {{ $product->batch->batch_code ?? 'Single Product' }}
-                                    </td>
-                                    <td>
-                                        {{ $product->created_at ?? '' }}
-                                    </td>
-                                    @can('admin_access')
-                                        <td>
-                                            <a href="{{ route('products.edit', [$product->id]) }}"
-                                                class="btn btn-primary btn-sm">Edit</a>
-                                            <a href="{{ route('products.destroyProduct', [$product->id]) }}"
-                                                class="btn btn-danger btn-sm" onclick="return confirm('Are you Sure?')">Delete</a>
-                                        </td>
-                                    @endcan
-
-                                </tr>
-                            @endforeach
                         </tbody>
                     </table>
                 </div>
@@ -542,13 +389,13 @@
                         </div>
                         <div class="text-end pt-1">
                             <p class="text-sm mb-0 text-capitalize">Total Merchandise</p>
-                            <h4 class="mb-0">{{ count($productsTls) }}</h4>
+                            <h4 class="mb-0">{{ $productsTls }}</h4>
                         </div>
                     </div>
                     <hr class="dark horizontal my-0">
                     <div class="card-footer p-3">
-                        <p class="mb-0 text-default text-sm font-weight-bolder">{{ count($productsIssuedOutTL) }} Assigned
-                            &nbsp;&nbsp;&nbsp;&nbsp; {{ count($productsTls) - count($productsIssuedOutTL) }} Remaining
+                        <p class="mb-0 text-default text-sm font-weight-bolder">{{ $productsIssuedOutTL }} Assigned
+                            &nbsp;&nbsp;&nbsp;&nbsp; {{ $productsTls - $productsIssuedOutTL }} Remaining
                             Merchandise
                         </p>
                     </div>
@@ -632,7 +479,9 @@
                                 <th width="10">
 
                                 </th>
-
+                                <th>
+                                    ID
+                                </th>
                                 <th>
                                     Merchandise Type
                                 </th>
@@ -646,61 +495,19 @@
                                     BarCode
                                 </th>
                                 <th>
-                                    Asigned To
-                                </th>
-                                <th>
-                                    Date Assigned
-                                </th>
-                                <th>
                                     Batch Code
                                 </th>
-                                @can('admin_access')
-                                    <th>
-                                        Actions
-                                    </th>
-                                @endcan
+                                <th>
+                                    Date Added
+                                </th>
+                                <th>
+                                    Actions
+                                </th>
+
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($productsTls as $product)
-                                <tr>
-                                    <td>
 
-                                    </td>
-                                    <td>
-                                        {{ $product->category->title ?? '' }}
-                                    </td>
-                                    <td>
-                                        {{ $product->client->name ?? '' }}
-                                    </td>
-                                    <td>
-                                        {{ $product->product_code ?? '' }}
-                                    </td>
-                                    <td>@php
-                                        $generator = new Picqer\Barcode\BarcodeGeneratorHTML();
-                                    @endphp
-                                        {!! $generator->getBarcode($product->product_code, $generator::TYPE_CODE_128) !!}
-                                    </td>
-                                    <td>
-                                        {{ $product->productBa->user->email ?? 'Not Assigned' }}
-                                    </td>
-                                    <td>
-                                        {{ $product->productBa->created_at ?? 'Not Assigned' }}
-                                    </td>
-                                    <td>
-                                        {{ $product->batch->batch_code ?? 'Single Product' }}
-                                    </td>
-                                    @can('admin_access')
-                                        <td>
-                                            <a href="{{ route('products.edit', [$product->id]) }}"
-                                                class="btn btn-primary btn-sm">Edit</a>
-                                            <a href="{{ route('products.destroyProduct', [$product->id]) }}"
-                                                class="btn btn-danger btn-sm" onclick="return confirm('Are you Sure?')">Delete</a>
-                                        </td>
-                                    @endcan
-
-                                </tr>
-                            @endforeach
                         </tbody>
                     </table>
                 </div>
@@ -795,42 +602,15 @@
                                     Batch Code
                                 </th>
                                 <th>
+                                    Date Added
+                                </th>
+                                <th>
                                     Actions
                                 </th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($productsBas as $key => $product)
-                                <tr data-entry-id="{{ $product->id }}">
-                                    <td>
 
-                                    </td>
-                                    <td>
-                                        {{ $product->id ?? '' }}
-                                    </td>
-                                    <td>
-                                        {{ $product->category->title ?? '' }}
-                                    </td>
-                                    <td>
-                                        {{ $product->client->name ?? '' }}
-                                    </td>
-                                    <td>
-                                        {{ $product->product_code ?? '' }}
-                                    </td>
-                                    <td>
-                                        @php
-                                            $generator = new Picqer\Barcode\BarcodeGeneratorHTML();
-                                        @endphp
-                                        {!! $generator->getBarcode($product->product_code, $generator::TYPE_CODE_128) !!}
-                                    </td>
-                                    <td>
-                                        {{ $product->batch->batch_code ?? 'Single Product' }}
-                                    </td>
-                                    <td><a href="/products/issue/product/{{ $product->id }}/{{ $product->batch->id }}"
-                                            class="btn btn-sm btn-warning">Issue Out</a></td>
-
-                                </tr>
-                            @endforeach
                         </tbody>
                     </table>
                 </div>
@@ -864,40 +644,11 @@
     <script>
         $(document).ready(function() {
             $('#ProductTable').DataTable({
-                dom: 'lBfrtip',
-                pageLength: 100,
-                buttons: [
-                    'copy',
-                    {
-                        extend: 'excelHtml5',
-                        title: 'Merchandise_list',
-                        exportOptions: {
-                            exportOptions: {
-                                columns: [0, 1, 2, 3, 4, 5, ':visible']
-                            }
-                        }
-                    },
-                    {
-                        extend: 'pdfHtml5',
-                        title: 'merchandise_list',
-                        exportOptions: {
-                            columns: [0, 1, 2, 3, 4, 5]
-                        }
-                    },
-                    'colvis'
-                ]
-            });
-        });
-    </script>
-    <script>
-        $(document).ready(function() {
-            $('#ProductTableAdmin').DataTable({
                 processing: true,
-                method:'GET',
+                method: 'GET',
                 serverSide: true,
                 ajax: "{{ route('products.index') }}",
-                columns: [
-                    {
+                columns: [{
                         data: 'placeholder',
                         name: 'placeholder'
                     },
@@ -920,7 +671,8 @@
                     },
                     {
                         data: 'bar_code',
-                        name: 'bar_code'
+                        name: 'bar_code',
+                        searchable: false
                     },
                     {
                         data: 'batch',

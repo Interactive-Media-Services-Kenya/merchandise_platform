@@ -15,7 +15,7 @@ class CreateProductsTable extends Migration
     {
         Schema::create('products', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('product_code');
+            $table->string('product_code')->nullable();
             $table->unsignedBigInteger('category_id')->nullable();
             $table->foreign('category_id', 'category_fk_5358227')->references('id')->on('categories')->constrained()
                 ->onUpdate('cascade');
@@ -35,6 +35,7 @@ class CreateProductsTable extends Migration
             $table->foreign('owner_id', 'user_fk_52278')->references('id')->on('users')->constrained()
                 ->onUpdate('cascade');
             $table->integer('accept_status')->default(0);
+            $table->integer('is_confirmed')->default(0);
             $table->timestamps();
             $table->softDeletes();
         });

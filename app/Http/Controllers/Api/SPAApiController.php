@@ -82,7 +82,7 @@ class SPAApiController extends Controller
 
             if ($product != null) {
                 $product->update([
-                    'accept_status' => 1,
+                    'is_confirmed' => 1,
                 ]);
                 Activity::create([
                     'title' => 'Merchandise Comfirmed',
@@ -95,7 +95,7 @@ class SPAApiController extends Controller
                 ]);
             } else {
                 return \Response::json([
-                    'message' => "Failed, Merchandise is not exist,confirmed or does not belong to this user",
+                    'message' => "Failed, Merchandise does not exist",
                     'status' => 0,
                 ]);
             }

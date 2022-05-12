@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddFieldsToProductsTable extends Migration
+class AddFieldsToBatchesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,10 @@ class AddFieldsToProductsTable extends Migration
      */
     public function up()
     {
-        Schema::table('products', function (Blueprint $table) {
-            $table->unsignedBigInteger('brand_id')->nullable();
-            $table->foreign('brand_id', 'brand_id_fk_52986527')->references('id')->on('brands')->constrained()
-                ->onUpdate('cascade');
+        Schema::table('batches', function (Blueprint $table) {
+            $table->string('size')->nullable();
+            $table->string('color')->nullable();
+
         });
     }
 
@@ -27,7 +27,7 @@ class AddFieldsToProductsTable extends Migration
      */
     public function down()
     {
-        Schema::table('products', function (Blueprint $table) {
+        Schema::table('batches', function (Blueprint $table) {
             //
         });
     }

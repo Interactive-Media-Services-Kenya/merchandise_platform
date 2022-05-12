@@ -76,6 +76,7 @@ Route::group(['middleware' => ['auth:web','otp']], function () {
 
     // Products
     Route::delete('products/destroy', 'ProductsController@massDestroy')->name('products.massDestroy');
+    Route::get('products/product-codes', 'ProductCodeController@index')->name('products.product-codes');
     Route::resource('products', 'ProductsController');
     Route::get('products/assignproducts/create', 'ProductsController@assignProductsCreate')->name('products.assign.create');
     Route::post('products/assignproducts/storeTL', 'ProductsController@storeTL')->name('products.storeTL');

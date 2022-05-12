@@ -124,7 +124,7 @@ class LoginController extends Controller
 
         return \Response::json([
             'message' => 'Successfully Logged Out',
-            200
+            'status' => 0,
         ]);
     }
 }
