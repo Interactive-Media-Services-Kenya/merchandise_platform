@@ -9,4 +9,8 @@ class Client extends Model
 {
     use HasFactory;
     protected $fillable = ['name','email','phone', 'address','created_by'];
+
+    public function brands(){
+        return $this->hasMany(Brand::class,'client_id');
+    }
 }

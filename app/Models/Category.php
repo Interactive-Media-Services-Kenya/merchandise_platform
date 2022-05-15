@@ -10,10 +10,10 @@ class Category extends Model
     use HasFactory;
     protected $guarded = [];
 
-    // public function product()
-    // {
-    //     return $this->hasMany('')
-    // }
+    public function products()
+    {
+        return $this->hasMany(Product::class);
+    }
     public function client(){
         return $this->belongsTo(Client::class, 'client_id');
     }

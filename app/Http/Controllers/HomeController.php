@@ -36,7 +36,7 @@ class HomeController extends Controller
     {
         //Admin data & TB Data
         $rejects = Reject::select('product_id')->get();
-
+        $productsAdmin = count(Product::with(['category', 'assign', 'batch', 'client'])->select('products.*')->cursor());
         //All products
         $products = Product::where('owner_id',Auth::id())->get();
         $batches = Batch::join('storages','storages.id','batches.storage_id')->where('storages.client_id',null)->get();
@@ -99,7 +99,7 @@ class HomeController extends Controller
         return view('home', compact('products','batches','batchesClient','clients','categoriesClient','bas','tls','salesreps',
                                     'productsbas','batchesbas','categories','batchesConfirmed',
                                     'productsTls', 'brandAmbassadors','batchesTl','activities','activityAdmin',
-                                    'productsIssuedOut','productsIssuedOutTL','clientsWithMerchandiseTL'));
+                                    'productsIssuedOut','productsIssuedOutTL','clientsWithMerchandiseTL','productsAdmin'));
     }
 
 }

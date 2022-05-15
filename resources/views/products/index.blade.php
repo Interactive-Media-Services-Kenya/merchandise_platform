@@ -12,6 +12,8 @@
             <div class="col-lg-12">
                 <a class="btn btn-success" href="{{ route('products.create') }}">
                     Add Merchandise
+                </a> <a class="btn btn-primary" href="{{ route('products.create-upload') }}">
+                    Upload Merchandise
                 </a>
             </div>
         </div>

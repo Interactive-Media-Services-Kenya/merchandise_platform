@@ -19,6 +19,7 @@ class CategoriesController extends Controller
         $categories = Category::where('client_id',null)->get();
         $categoriesClient = Category::where('client_id',Auth::user()->client_id)->get();
 
+
         return view('categories.index', compact('categories','categoriesClient'));
     }
 
@@ -122,13 +123,13 @@ class CategoriesController extends Controller
     }
     public function destroyCategory($id)
     {
-        $user = Category::findOrFail($id);
-
-        if($user->delete()){
-            Alert::success('Success', 'Merchandise Category Removed Successfully');
+        $category = Category::findOrFail($id);
+        if($category->products->count() != 0){
+            Alert::error('Failed', 'Merchandise Category Cannot be Deleted. Category Has Products');
             return back();
         }else{
-            Alert::error('Failed', 'Merchandise Category Not Deleted');
+            $category->delete();
+            Alert::success('Success', 'Merchandise Category Removed Successfully');
             return back();
         }
 

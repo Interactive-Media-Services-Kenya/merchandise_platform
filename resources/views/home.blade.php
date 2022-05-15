@@ -17,7 +17,7 @@
                         </div>
                         <div class="text-end pt-1">
                             <p class="text-sm mb-0 text-capitalize">Total Merchandise</p>
-                            <h4 class="mb-0">{{ count($products) }}</h4>
+                            <h4 class="mb-0">{{ $productsAdmin }}</h4>
                         </div>
                     </div>
                     <hr class="dark horizontal my-0">

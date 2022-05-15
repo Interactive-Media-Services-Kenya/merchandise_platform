@@ -9,8 +9,9 @@ use Yajra\DataTables\Facades\DataTables;
 class ProductCodeController extends Controller
 {
     public function index(Request $request){
+
         if ($request->ajax()) {
-            $query = ProductCode::all();
+            $query = ProductCode::select('*');
             $table = Datatables::of($query);
             $table->addColumn('placeholder', '&nbsp;');
             $table->editColumn('id', function ($row) {
@@ -24,6 +25,7 @@ class ProductCodeController extends Controller
                 $generator = new \Picqer\Barcode\BarcodeGeneratorHTML();
                 return  $generator->getBarcode($row->product_code, $generator::TYPE_CODE_128);
             });
+
 
             $table->rawColumns(['placeholder', 'id', 'product_code', 'bar_code']);
 

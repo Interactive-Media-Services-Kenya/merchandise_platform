@@ -4,6 +4,9 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Activity;
+use App\Models\Brand;
+use App\Models\Category;
+use App\Models\Client;
 use App\Models\Customer;
 use App\Models\IssueProduct;
 use App\Models\Outlet;
@@ -12,6 +15,7 @@ use App\Models\Productbas;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
+use DB;
 
 class SPAApiController extends Controller
 {
@@ -78,7 +82,7 @@ class SPAApiController extends Controller
         if (Auth::user()->role_id == 1 || Auth::user()->role_id == 2 || Auth::user()->role_id == 5) {
             $product_id = Product::where('product_code', $request->product_code)->value('id');
 
-            $product = Product::where('id',$product_id)->first();
+            $product = Product::where('id', $product_id)->first();
 
             if ($product != null) {
                 $product->update([
@@ -99,7 +103,7 @@ class SPAApiController extends Controller
                     'status' => 0,
                 ]);
             }
-        }else{
+        } else {
             return \Response::json([
                 'message' => "Failed, User Is not Authorized to confirm Merchandise",
                 'status' => 0,
@@ -184,7 +188,7 @@ class SPAApiController extends Controller
     }
 
 
-     // ? Get all the outlets registered in the database
+    // ? Get all the outlets registered in the database
     public function outlets()
     {
         $outlets = Outlet::all();
@@ -200,7 +204,73 @@ class SPAApiController extends Controller
             ];
             array_push($data, $outletData);
         }
+        if (count($data) == 0) {
+            return response()->json([
+                'message' => "No Registered Outlets",
+                'status' => 0,
+            ]);
+        } else {
+            return response()->json($data, 200);
+        }
+    }
 
-        return response()->json($data, 200);
+
+    public function merchandise_types()
+    {
+        $categories = Category::select('id', 'title')->get();
+        if ($categories->count() == 0) {
+            return response()->json([
+                'message' => "No Registered Merchandise Types",
+                'status' => 0,
+            ]);
+        } else {
+            return response()->json($categories, 200);
+        }
+    }
+
+    public function client_brands()
+    {
+        $clientBrands = Client::with('brands')->get();
+
+        return response()->json($clientBrands, 200);
+    }
+
+    public function uploadMerchandise(Request $request)
+    {
+        $assigned_product = DB::table('products')->where('product_code', $request->product_code)->get();
+        //dd($assigned_product->count());
+
+        if ($assigned_product->count() != 0) {
+            return response()->json([
+                'message' => "Product Code Is already Uploaded",
+                'status' => 0,
+            ]);
+        }
+        $product = DB::table('product_codes')->where('product_code', $request->product_code)->get();
+
+        if ($product != null) {
+            $product_upload = Product::where('category_id', $request->merchandise_type)->where('client_id', $request->client_id)->where('product_code', null)->first();
+
+            if ($product_upload != null) {
+                $product_upload->update([
+                    'product_code' => $request->product_code,
+                    'brand_id' => $request->brand_id
+                ]);
+                return response()->json([
+                    'message' => "Product Code Uploaded Successfully",
+                    'status' => 1,
+                ]);
+            } else {
+                return response()->json([
+                    'message' => "Product Code is not Uploaded",
+                    'status' => 0,
+                ]);
+            }
+        } else {
+            return response()->json([
+                'message' => "Product Code does not exist",
+                'status' => 0,
+            ]);
+        }
     }
 }

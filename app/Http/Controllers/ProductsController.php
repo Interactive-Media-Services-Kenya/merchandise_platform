@@ -35,7 +35,7 @@ class ProductsController extends Controller
     public function index(Request $request)
     {
         $rejects = Reject::select('product_id')->get();
-        $productsAdmin = Product::with(['category', 'assign', 'batch', 'client'])->select('products.*')->cursor();
+        $productsAdmin = count(Product::with(['category', 'assign', 'batch', 'client'])->select('products.*')->cursor());
         // dd($productsAdmin);
         $products = count(Product::where('owner_id', Auth::id())->cursor());
         $productsClient = count(Product::where('client_id', Auth::user()->client_id)->cursor());
@@ -83,17 +83,16 @@ class ProductsController extends Controller
             if (Auth::user()->role_id == 1) {
                 $query = Product::with(['category', 'assign', 'batch', 'client'])->select('products.*');
             } elseif (Auth::user()->role_id == 2) {
-                $query= Product::with(['category', 'assign', 'batch', 'client'])->where('products.owner_id', Auth::id())->select('products.*');
-            }elseif (Auth::user()->role_id == 3) {
+                $query = Product::with(['category', 'assign', 'batch', 'client'])->where('products.owner_id', Auth::id())->select('products.*');
+            } elseif (Auth::user()->role_id == 3) {
                 $query = Product::with(['category', 'assign', 'batch', 'client'])->where('products.assigned_to', Auth::id())
                     ->join('batches', 'batches.id', 'products.batch_id')
                     ->where('batches.tl_id_accept', Auth::id())->select('products.*');
-            }elseif (Auth::user()->role_id == 5) {
+            } elseif (Auth::user()->role_id == 5) {
                 $query = Product::with(['category', 'assign', 'batch', 'client'])->where('client_id', Auth::user()->client_id)->select('products.*');
-            }else {
+            } else {
 
                 $query = Product::with(['category', 'assign', 'batch', 'client'])->where('products.accept_status', 1)->whereIn('products.id', $productsBa)->whereNotIn('products.id', $issuedProducts)->select('products.*');
-
             }
 
             $table = Datatables::of($query);
@@ -121,14 +120,13 @@ class ProductsController extends Controller
             $table->editColumn('action', function ($row) {
                 if (Auth::user()->role_id == 1) {
                     return '<a href="products/' . $row->id . '/edit"
-                class="btn btn-primary btn-sm">Edit</a>';
-                } elseif(Auth::user()->role_id == 4) {
-                   return '<a href="/products/issue/product/'.$row->id.'/'.$row->batch->id.'"
+                                class="btn btn-primary btn-sm">Edit</a>';
+                } elseif (Auth::user()->role_id == 4) {
+                    return '<a href="/products/issue/product/' . $row->id . '/' . $row->batch->id . '"
                    class="btn btn-sm btn-warning">Issue Out</a>';
-                }else{
+                } else {
                     return "No Action";
                 }
-
             });
 
             $table->editColumn('bar_code', function ($row) {
@@ -178,9 +176,9 @@ class ProductsController extends Controller
         $categories = Category::where('client_id', null)->get();
         $categoriesClient = Category::where('client_id', Auth::user()->client_id)->get();
 
-
+        $brands = Brand::all();
         $brandsClient = Brand::where('client_id', Auth::user()->client_id)->get();
-        $storages = Storage::where('client_id', null)->get();
+        $storages = Storage::get();
         $storagesClient = Storage::where('client_id', Auth::user()->client_id)->get();
         $user_id = Auth::id();
 
@@ -197,7 +195,8 @@ class ProductsController extends Controller
             'batches',
             'storages',
             'storagesClient',
-            'brandsClient'
+            'brandsClient',
+            'brands'
         ));
     }
 
@@ -249,7 +248,7 @@ class ProductsController extends Controller
                 'size' => 'string|max:255',
                 'color' => 'string|max:255',
             ]);
-            $productname = substr(\DB::table('categories')->where('id', $request->category_id)->value('title'), 0,2);
+            $productname = substr(\DB::table('categories')->where('id', $request->category_id)->value('title'), 0, 2);
             $productname = strtoupper($productname);
             if ($request->quantity != null) {
                 $quantity = $request->quantity;
@@ -827,5 +826,65 @@ class ProductsController extends Controller
         ]);
         Alert::success('Success', 'Operation Successfull');
         return back();
+    }
+
+
+    public function createUpload()
+    {
+        $teamleaders = User::where('role_id', 3)->get();
+        $clients = Client::all();
+        $categories = Category::where('client_id', null)->get();
+        $categoriesClient = Category::where('client_id', Auth::user()->client_id)->get();
+
+        $brands = Brand::all();
+        $brandsClient = Brand::where('client_id', Auth::user()->client_id)->get();
+        $storages = Storage::get();
+        $storagesClient = Storage::where('client_id', Auth::user()->client_id)->get();
+        $user_id = Auth::id();
+
+
+        $brandAmbassadors =  User::where('role_id', 4)->where('teamleader_id', $user_id)->get();
+        $batches = Product::select('batch_id', 'batch_code')->where('assigned_to', Auth::id())->join('batches', 'batches.id', 'products.batch_id')->groupBy('batch_id')->get();
+        return view('products.create-upload', compact(
+            'teamleaders',
+            'categories',
+            'categoriesClient',
+            'clients',
+            'brandAmbassadors',
+            'batches',
+            'storages',
+            'storagesClient',
+            'brandsClient',
+            'brands'
+        ));
+    }
+
+    public function uploadMerchandise(Request $request)
+    {
+        $assigned_product = DB::table('products')->where('product_code', $request->code)->get();
+        //dd($assigned_product->count());
+
+        if ($assigned_product->count() != 0) {
+            Alert::error('Error', 'Merchandise Code Already Uploaded');
+            return back();
+        }
+        $product = DB::table('product_codes')->where('product_code', $request->code)->get();
+        if ($product->count() != 0) {
+            $product_upload = Product::where('category_id', $request->category_id)->where('client_id', $request->client_id)->where('product_code',null)->first();
+            if ($product_upload->count() != 0) {
+                $product_upload->update([
+                    'product_code' => $request->code,
+                    'brand_id' => $request->brand_id
+                ]);
+                Alert::success('Success', 'Operation Successfull');
+                return back();
+            } else {
+                Alert::error('Failed', 'No Merchandise Found');
+                return back();
+            }
+        } else {
+            Alert::error('Failed', 'No Merchandise Found with that code');
+            return back();
+        }
     }
 }
