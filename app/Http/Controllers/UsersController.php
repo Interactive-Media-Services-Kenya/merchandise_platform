@@ -12,6 +12,9 @@ use Illuminate\Validation\Rules\Password;
 use Session;
 use RealRashid\SweetAlert\Facades\Alert;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\UpdatePasswordUser;
+use Illuminate\Support\Facades\URL;
 
 class UsersController extends Controller
 {
@@ -112,6 +115,14 @@ class UsersController extends Controller
             'user_id' => Auth::id(),
         ]);
         if ($user) {
+            $url_login = URL::to('/');
+            $message = "Hello, You have been assigned an account at $url_login . Kindly Use the following details to login to your Account.     Email: $user->email and Password: $request->password ";
+                $details = [
+                    'title' => 'Mail from '.config('app.name'),
+                    'body' => $message,
+                ];
+
+                Mail::to($user->email)->send(new UpdatePasswordUser($details));
             Alert::success('Success', 'User Successfully Added');
             return back();
         } else {

@@ -32,6 +32,7 @@ Route::get('otp/reset', 'OTPController@resend')->name('otp.resend');
 
 Route::group(['middleware' => ['auth:web','otp']], function () {
     Route::get('/home', 'HomeController@index')->name('home');
+    Route::post('/password/update-first-time-login', 'HomeController@updatePassword')->name('password.update-first-time');
     Route::get('/users/get','HomeController@users')->name('users.register');
     // Permissions
     // Route::delete('permissions/destroy', 'PermissionsController@massDestroy')->name('permissions.massDestroy');

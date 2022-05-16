@@ -252,9 +252,15 @@ class SPAApiController extends Controller
             $product_upload = Product::where('category_id', $request->merchandise_type)->where('client_id', $request->client_id)->where('product_code', null)->first();
 
             if ($product_upload != null) {
+
                 $product_upload->update([
                     'product_code' => $request->product_code,
                     'brand_id' => $request->brand_id
+                ]);
+                Activity::create([
+                    'title' => 'Merchandise Uploaded',
+                    'user_id' => Auth::id(),
+                    'description' => Auth::user()->name . ' have uploaded merchandise: ' . $product_upload->product_code,
                 ]);
                 return response()->json([
                     'message' => "Product Code Uploaded Successfully",
