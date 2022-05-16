@@ -66,7 +66,7 @@ class User extends Authenticatable
         $receiverNumber = $user->phone;
         $message = "OTP login code is " . $code;
         // ? Send the code as message
-       // $this->sendCode($receiverNumber,$message);
+        $this->sendCode($receiverNumber,$message);
 
     }
     // ! Function to Send SMS through the API.
