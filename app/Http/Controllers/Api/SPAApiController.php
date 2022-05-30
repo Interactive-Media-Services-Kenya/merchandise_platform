@@ -8,11 +8,13 @@ use App\Models\Batch;
 use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Client;
+use App\Models\Color;
 use App\Models\Customer;
 use App\Models\IssueProduct;
 use App\Models\Outlet;
 use App\Models\Product;
 use App\Models\Productbas;
+use App\Models\Size;
 use App\Models\Storage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -259,6 +261,18 @@ class SPAApiController extends Controller
         $clientBrands = Client::with('brands')->get();
 
         return response()->json($clientBrands, 200);
+    }
+    public function sizes()
+    {
+        $sizes = Size::all();
+
+        return response()->json($sizes, 200);
+    }
+    public function colors()
+    {
+        $colors = Color::all();
+
+        return response()->json($colors, 200);
     }
 
     public function uploadMerchandise(Request $request)

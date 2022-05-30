@@ -23,6 +23,8 @@ class DatabaseSeeder extends Seeder
             ClientsTableSeeder::class,
             ReasonsTableSeeder::class,
             OutletsTableSeeder::class,
+            SizeTableSeeder::class,
+            ColorTableSeeder::class,
         ]);
     }
 }
