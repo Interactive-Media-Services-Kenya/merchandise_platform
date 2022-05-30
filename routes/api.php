@@ -41,6 +41,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
         Route::post('/v1/merchandise_confirmation','Api\SPAApiController@productConfirmation')->name('api.productConfirmation');
         Route::get('/v1/merchandise_types','Api\SPAApiController@merchandise_types')->name('api.merchandise_types');
         Route::get('/v1/client_brands','Api\SPAApiController@client_brands')->name('api.client_brands');
+        Route::get('/v1/storages','Api\SPAApiController@storages')->name('api.storages');
         Route::post('/v1/upload_merchandise','Api\SPAApiController@uploadMerchandise')->name('api.upload_merchandise');
 
     });

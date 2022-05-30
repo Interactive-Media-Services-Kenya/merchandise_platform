@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Activity;
+use App\Models\Batch;
 use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Client;
@@ -12,6 +13,7 @@ use App\Models\IssueProduct;
 use App\Models\Outlet;
 use App\Models\Product;
 use App\Models\Productbas;
+use App\Models\Storage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
@@ -73,6 +75,7 @@ class SPAApiController extends Controller
     {
         //
     }
+
 
     // ! Confirmation of Barcodes by SuperAdmin/Agency/Client
 
@@ -213,6 +216,29 @@ class SPAApiController extends Controller
             return response()->json($data, 200);
         }
     }
+    public function storages()
+    {
+        $data = Storage::with('client')->get();
+
+        // $data = [];
+
+        // foreach ($storages as $storage) {
+        //     $storageData = [
+        //         'id' => $storage->id,
+        //         'name' => $storage->title,
+        //         'client' => $storage->client->name??'',
+        //     ];
+        //     array_push($data, $storageData);
+        // }
+        if (count($data) == 0) {
+            return response()->json([
+                'message' => "No Registered Storages",
+                'status' => 0,
+            ]);
+        } else {
+            return response()->json($data, 200);
+        }
+    }
 
 
     public function merchandise_types()
@@ -249,13 +275,20 @@ class SPAApiController extends Controller
         $product = DB::table('product_codes')->where('product_code', $request->product_code)->get();
 
         if ($product != null) {
-            $product_upload = Product::where('category_id', $request->merchandise_type)->where('client_id', $request->client_id)->where('product_code', null)->first();
+            $product_upload = Product::where('product_code', null)->first();
 
             if ($product_upload != null) {
-
                 $product_upload->update([
                     'product_code' => $request->product_code,
-                    'brand_id' => $request->brand_id
+                    'category_id'=> $request->category_id,
+                    'client_id' => $request->client_id,
+                    'brand_id' => $request->brand_id,
+                ]);
+                $batch = Batch::where('id',$product_upload->batch_id)->first();
+                $batch->update([
+                    'storage_id' => $request->storage_id,
+                    'size' => $request->size,
+                    'color' => $request->color,
                 ]);
                 Activity::create([
                     'title' => 'Merchandise Uploaded',
