@@ -91,7 +91,8 @@
                     },
                     {
                         data: 'bar_code',
-                        name: 'bar_code'
+                        name: 'bar_code',
+                        searchable: false
                     },
                     {
                         data: 'created_at',

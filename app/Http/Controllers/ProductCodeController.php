@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Product;
 use App\Models\ProductCode;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
@@ -11,7 +12,8 @@ class ProductCodeController extends Controller
     public function index(Request $request){
 
         if ($request->ajax()) {
-            $query = ProductCode::select('*');
+            $productCodesUsed = Product::select('product_code')->where('product_code', '!=' ,null);
+            $query = ProductCode::select('*')->whereNotIn('product_code',$productCodesUsed);
             $table = Datatables::of($query);
             $table->addColumn('placeholder', '&nbsp;');
             $table->editColumn('id', function ($row) {
