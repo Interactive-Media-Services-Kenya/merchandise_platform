@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddFieldsToBatchesTable extends Migration
+class AddFieldsToProductsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,10 @@ class AddFieldsToBatchesTable extends Migration
      */
     public function up()
     {
-        Schema::table('batches', function (Blueprint $table) {
-            $table->string('size')->nullable();
-            $table->string('color')->nullable();
-
+        Schema::table('products', function (Blueprint $table) {
+            $table->integer('brand_id')->nullable();
+                $table->integer('size')->nullable();
+            $table->integer('color')->nullable();
         });
     }
 
@@ -27,7 +27,7 @@ class AddFieldsToBatchesTable extends Migration
      */
     public function down()
     {
-        Schema::table('batches', function (Blueprint $table) {
+        Schema::table('products', function (Blueprint $table) {
             //
         });
     }

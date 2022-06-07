@@ -6,6 +6,7 @@ use App\Models\Product;
 use App\Models\ProductCode;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
+use RealRashid\SweetAlert\Facades\Alert;
 
 class ProductCodeController extends Controller
 {
@@ -13,7 +14,7 @@ class ProductCodeController extends Controller
 
         if ($request->ajax()) {
             $productCodesUsed = Product::select('product_code')->where('product_code', '!=' ,null);
-            $query = ProductCode::select('*')->whereNotIn('product_code',$productCodesUsed);
+            $query = ProductCode::select('*')->orderBy('id','DESC')->whereNotIn('product_code',$productCodesUsed);
             $table = Datatables::of($query);
             $table->addColumn('placeholder', '&nbsp;');
             $table->editColumn('id', function ($row) {
@@ -35,5 +36,43 @@ class ProductCodeController extends Controller
         }
 
         return view('products.product_codes');
+    }
+
+    public function create(){
+        return view('products.create_product_codes');
+    }
+
+    public function store(Request $request){
+        $request->validate([
+            'quantity' => 'required|integer|max:1000',
+        ]);
+        $data = [];
+        for ($i=0; $i = $request->quantity; $i++) {
+           $product_code = $this->generateProductsCode();
+
+           $product = \DB::table('product_codes')->insert([
+               'product_code' => $product_code,
+               'created_at' => \Carbon\Carbon::now(),
+           ]);
+           array_push($data,$product);
+        }
+
+        if (count($data) == $request->quantity) {
+            Alert::success('Success', 'Merchandise Code Generation was Not Successful');
+            return back();
+        }else{
+            Alert::error('Failed', 'Merchandise Code Generation was Not Successful');
+            return back();
+        }
+
+
+    }
+    public function generateProductsCode()
+    {
+        $permitted_chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $permitted_chars = substr(str_shuffle($permitted_chars), 0, 6);
+        $code = mt_rand(100000, 999999) . $permitted_chars;
+
+        return $code;
     }
 }

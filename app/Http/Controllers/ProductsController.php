@@ -18,9 +18,11 @@ use Illuminate\Support\Facades\Mail;
 use App\Mail\AssignMerchandise;
 use App\Models\Activity;
 use App\Models\Brand;
+use App\Models\Color;
 use App\Models\IssueProduct;
 use App\Models\ProductCode;
 use App\Models\Reject;
+use App\Models\Size;
 use App\Models\Storage;
 use Illuminate\Support\Facades\URL;
 use Yajra\DataTables\Facades\DataTables;
@@ -81,9 +83,9 @@ class ProductsController extends Controller
 
         if ($request->ajax()) {
             if (Auth::user()->role_id == 1) {
-                $query = Product::with(['category', 'assign', 'batch', 'client'])->select('products.*');
+                $query = Product::with(['category', 'assign', 'batch', 'client'])->select('products.*')->where('product_code','!=',null);
             } elseif (Auth::user()->role_id == 2) {
-                $query = Product::with(['category', 'assign', 'batch', 'client'])->where('products.owner_id', Auth::id())->select('products.*');
+                $query = Product::with(['category', 'assign', 'batch', 'client'])->where('products.owner_id', Auth::id())->select('products.*')->where('product_code','!=',null);
             } elseif (Auth::user()->role_id == 3) {
                 $query = Product::with(['category', 'assign', 'batch', 'client'])->where('products.assigned_to', Auth::id())
                     ->join('batches', 'batches.id', 'products.batch_id')
@@ -175,6 +177,8 @@ class ProductsController extends Controller
         $clients = Client::all();
         $categories = Category::where('client_id', null)->get();
         $categoriesClient = Category::where('client_id', Auth::user()->client_id)->get();
+        $colors = Color::all();
+        $sizes = Size::all();
 
         $brands = Brand::all();
         $brandsClient = Brand::where('client_id', Auth::user()->client_id)->get();
@@ -196,7 +200,9 @@ class ProductsController extends Controller
             'storages',
             'storagesClient',
             'brandsClient',
-            'brands'
+            'brands',
+            'sizes',
+            'colors'
         ));
     }
 
@@ -239,193 +245,47 @@ class ProductsController extends Controller
      */
     public function store(Request $request)
     {
-        if (Auth::user()->client_id == null) {
-            $request->validate([
-                'client_id' => 'required|integer',
-                'category_id' => 'required|integer',
-                'storage_id' => 'required|integer',
-                'brand_id' => 'integer',
-                'size' => 'string|max:255',
-                'color' => 'string|max:255',
+
+        $productCodeAssigned = Product::where('product_code', $request->product_code)->first();
+        if ($productCodeAssigned) {
+            return response()->json([
+                'status' => 503,
+                'message' => 'Merchandise Code Already Assigned'
             ]);
-            $productname = substr(\DB::table('categories')->where('id', $request->category_id)->value('title'), 0, 2);
-            $productname = strtoupper($productname);
-            if ($request->quantity != null) {
-                $quantity = $request->quantity;
+        }
+        $productCodeNotFound = ProductCode::where('product_code', $request->product_code)->first();
 
-                //Generate BatchCode
-                $batchcode = $this->generateBatchCode();
-
-                //Save Batch Code
-                $batch = Batch::create([
-                    'batch_code' => $batchcode,
-                    'tl_id_accept' => $request->assigned_to,
-                    'accept_status' => 0,
-                    'storage_id' => $request->storage_id,
-                    'size' => strtolower($request->size),
-                    'color' => strtolower($request->color),
-                ]);
-                Activity::create([
-                    'title' => 'Batch Created',
-                    'user_id' => Auth::id(),
-                    'description' => Auth::user()->name . ' Added Batch:' . $batchcode,
-                ]);
-                //dd($batch->batch_code);
-                $merchandises = [];
-                //loop through creating products with the same batch code using quantity
-                for ($i = 0; $i < $quantity; $i++) {
-                    //generate productCode
-                    $product_code = $this->generateProductCode() . $productname;
-                    ProductCode::create([
-                        'product_code' => $product_code,
-                    ]);
-                    $data = Product::create([
-                        // 'product_code' => $product_code,
-                        'user_id' => Auth::id(),
-                        'owner_id' => $request->owner_id,
-                        'category_id' => $request->category_id,
-                        'client_id' => $request->client_id,
-                        'batch_id' => $batch->id,
-                        'brand_id' => $request->brand_id,
-                    ]);
-                    Activity::create([
-                        'title' => 'Merchandise Created',
-                        'user_id' => Auth::id(),
-                        'description' => Auth::user()->name . ' Added Merchandise:' . $product_code,
-                    ]);
-                    if (!$data) {
-                        Alert::error('Failed', 'Merchandises Not Added');
-                        return back();
-                    }
-                    array_push($merchandises, $data);
-                }
-                if (count($merchandises) == $quantity) {
-                    Alert::success('Success', $quantity . 'Merchandises Added Successfully of Batch Code:' . $batchcode);
-                    return back();
-                } else {
-                    Alert::error('Failed', 'Merchandises Not Added');
-                    return back();
-                }
-            } else {
-                # Save Single  Product with no Batch
-                $product_code = $this->generateProductCode() . $productname;
-                ProductCode::create([
-                    'product_code' => $product_code,
-                ]);
-                $data = Product::create([
-                    // 'product_code' => $product_code,
-                    'user_id' => Auth::id(),
-                    'owner_id' => $request->owner_id,
-                    'category_id' => $request->category_id,
-                    'client_id' => $request->client_id,
-                    'brand_id' => $request->brand_id,
-                ]);
-                Activity::create([
-                    'title' => 'Merchandise Created',
-                    'user_id' => Auth::id(),
-                    'description' => Auth::user()->name . ' Added Merchandise:' . $product_code,
-                ]);
-                if ($data) {
-                    Alert::success('Success', 'Merchandises: ' . $product_code . ' Added Successfully');
-                    return back();
-                } else {
-                    Alert::error('Failed', 'Merchandise Not Added');
-                    return back();
-                }
-            }
+        if ($productCodeNotFound == null) {
+            return response()->json([
+                'status' => 504,
+                'message' => 'Merchandise Code is Invalid'
+            ]);
+        }
+        $data = Product::create([
+            'product_code' => $request->product_code,
+            'user_id' => Auth::id(),
+            // 'owner_id' => $request->owner_id,
+            'category_id' => $request->category_id,
+            'client_id' => $request->client_id,
+            'brand_id' => $request->brand_id,
+            'size' => $request->size,
+            'color' => $request->color,
+        ]);
+        Activity::create([
+            'title' => 'Merchandise Created',
+            'user_id' => Auth::id(),
+            'description' => Auth::user()->name . ' Added Merchandise:' . $request->product_code,
+        ]);
+        if ($data) {
+            return response()->json([
+                'status' => 200,
+                'message' => 'Merchandise Code Uploaded'
+            ]);
         } else {
-            $request->validate([
-                'category_id' => 'required|integer',
-                'storage_id' => 'required|integer',
-                'brand_id' => 'integer',
-                'size' => 'string|max:255',
-                'color' => 'string|max:255',
+            return response()->json([
+                'status' => 500,
+                'message' => 'An Error Occurred'
             ]);
-            $productname = substr(\DB::table('categories')->where('id', $request->category_id)->value('title'), 0, 2);
-            $productname = strtoupper($productname);
-            if ($request->quantity != null) {
-                $quantity = $request->quantity;
-
-                //Generate BatchCode
-                $batchcode = $this->generateBatchCode() . $productname;
-
-                //Save Batch Code
-                $batch = Batch::create([
-                    'batch_code' => $batchcode,
-                    'tl_id_accept' => $request->assigned_to,
-                    'accept_status' => 0,
-                    'storage_id' => $request->storage_id,
-                    'size' => strtolower($request->size),
-                    'color' => strtolower($request->color),
-                ]);
-                Activity::create([
-                    'title' => 'Batch Created',
-                    'user_id' => Auth::id(),
-                    'description' => Auth::user()->name . ' Added Batch:' . $batchcode,
-                ]);
-                //dd($batch->batch_code);
-                $merchandises = [];
-                //loop through creating products with the same batch code using quantity
-                for ($i = 0; $i < $quantity; $i++) {
-                    //generate productCode
-                    $product_code = $this->generateProductCode() . $productname;
-                    ProductCode::create([
-                        'product_code' => $product_code,
-                    ]);
-                    $data = Product::create([
-                        // 'product_code' => $product_code,
-                        'user_id' => Auth::id(),
-                        'owner_id' => $request->owner_id,
-                        'category_id' => $request->category_id,
-                        'client_id' => Auth::user()->client_id,
-                        'batch_id' => $batch->id,
-                        'brand_id' => $request->brand_id,
-                    ]);
-                    Activity::create([
-                        'title' => 'Merchandise Created',
-                        'user_id' => Auth::id(),
-                        'description' => Auth::user()->name . ' Added Merchandise:' . $product_code,
-                    ]);
-                    if (!$data) {
-                        Alert::error('Failed', 'Merchandises Not Added');
-                        return back();
-                    }
-                    array_push($merchandises, $data);
-                }
-                if (count($merchandises) == $quantity) {
-                    Alert::success('Success', $quantity . 'Merchandises Added Successfully of Batch Code:' . $batchcode);
-                    return back();
-                } else {
-                    Alert::error('Failed', 'Merchandises Not Added');
-                    return back();
-                }
-            } else {
-                # Save Single  Product with no Batch
-                $product_code = $this->generateProductCode() . $productname;
-                ProductCode::create([
-                    'product_code' => $product_code,
-                ]);
-                $data = Product::create([
-                    // 'product_code' => $product_code,
-                    'user_id' => Auth::id(),
-                    'owner_id' => $request->owner_id,
-                    'category_id' => $request->category_id,
-                    'client_id' => Auth::user()->client_id,
-                ]);
-
-                Activity::create([
-                    'title' => 'Merchandise Created',
-                    'user_id' => Auth::id(),
-                    'description' => Auth::user()->name . ' Added Merchandise:' . $product_code,
-                ]);
-                if ($data) {
-                    Alert::success('Success', 'Merchandises: ' . $product_code . ' Added Successfully');
-                    return back();
-                } else {
-                    Alert::error('Failed', 'Merchandise Not Added');
-                    return back();
-                }
-            }
         }
     }
 
@@ -870,7 +730,7 @@ class ProductsController extends Controller
         }
         $product = DB::table('product_codes')->where('product_code', $request->code)->get();
         if ($product->count() != 0) {
-            $product_upload = Product::where('category_id', $request->category_id)->where('client_id', $request->client_id)->where('product_code',null)->first();
+            $product_upload = Product::where('category_id', $request->category_id)->where('client_id', $request->client_id)->where('product_code', null)->first();
             if ($product_upload->count() != 0) {
                 $product_upload->update([
                     'product_code' => $request->code,

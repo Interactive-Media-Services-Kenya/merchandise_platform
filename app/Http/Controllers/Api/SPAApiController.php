@@ -277,53 +277,73 @@ class SPAApiController extends Controller
 
     public function uploadMerchandise(Request $request)
     {
-        $assigned_product = DB::table('products')->where('product_code', $request->product_code)->get();
+        $data = json_decode($request->getContent(), true);
+
+       // $productsData = $data->data;
+
+        $assignedProductsData = [];
+        $uploadedData = [];
+        foreach ($data as $pr) {
+            $product_code = $pr['product_code'];
+            $client_id = $pr['client_id'];
+            $category_id = $pr['category_id'];
+            $storage_id = $pr['storage_id'];
+            $brand_id = $pr['brand_id'];
+            $size = $pr['size'];
+            $color = $pr['color'];
+
+
+            $assigned_product = DB::table('products')->where('product_code', $product_code)->first();
         //dd($assigned_product->count());
-
-        if ($assigned_product->count() != 0) {
-            return response()->json([
-                'message' => "Product Code Is already Uploaded",
-                'status' => 0,
-            ]);
-        }
-        $product = DB::table('product_codes')->where('product_code', $request->product_code)->get();
-
-        if ($product != null) {
-            $product_upload = Product::where('product_code', null)->first();
-
-            if ($product_upload != null) {
-                $product_upload->update([
-                    'product_code' => $request->product_code,
-                    'category_id'=> $request->category_id,
-                    'client_id' => $request->client_id,
-                    'brand_id' => $request->brand_id,
-                ]);
-                $batch = Batch::where('id',$product_upload->batch_id)->first();
-                $batch->update([
-                    'storage_id' => $request->storage_id,
-                    'size' => $request->size,
-                    'color' => $request->color,
-                ]);
-                Activity::create([
-                    'title' => 'Merchandise Uploaded',
-                    'user_id' => Auth::id(),
-                    'description' => Auth::user()->name . ' have uploaded merchandise: ' . $product_upload->product_code,
-                ]);
-                return response()->json([
-                    'message' => "Product Code Uploaded Successfully",
-                    'status' => 1,
-                ]);
-            } else {
-                return response()->json([
-                    'message' => "Product Code is not Uploaded",
-                    'status' => 0,
-                ]);
+            if ($assigned_product != null) {
+                array_push($assigned_product->product_code,$assignedProductsData);
             }
-        } else {
-            return response()->json([
-                'message' => "Product Code does not exist",
-                'status' => 0,
-            ]);
+
+
+        // if ($assigned_product->count() != 0) {
+        //     return response()->json([
+        //         'message' => "Product Code Is already Uploaded",
+        //         'status' => 0,
+        //     ]);
+        // }
+        // $product = DB::table('product_codes')->where('product_code', $product_code)->get();
+
+        // if ($product != null) {
+        //     $product_upload = Product::where('product_code', null)->first();
+
+        //     if ($product_upload != null) {
+        //         $product_upload->update([
+        //             'product_code' => $product_code,
+        //             'category_id'=> $category_id,
+        //             'client_id' => $client_id,
+        //             'brand_id' => $brand_id,
+        //         ]);
+        //         $batch = Batch::where('id',$product_upload->batch_id)->first();
+        //         $batch->update([
+        //             'storage_id' => $request->storage_id,
+        //             'size' => $size,
+        //             'color' => $color,
+        //         ]);
+        //         Activity::create([
+        //             'title' => 'Merchandise Uploaded',
+        //             'user_id' => Auth::id(),
+        //             'description' => Auth::user()->name . ' have uploaded merchandise: ' . $product_code,
+        //         ]);
+        //     //    array_push($product_upload,)
+        //     } else {
+        //         return response()->json([
+        //             'message' => "Product Code is not Uploaded",
+        //             'status' => 0,
+        //         ]);
+        //     }
+        // } else {
+        //     return response()->json([
+        //         'message' => "Product Code does not exist",
+        //         'status' => 0,
+        //     ]);
+        // }
+
         }
+        return $assignedProductsData;
     }
 }
