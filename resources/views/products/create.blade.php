@@ -25,7 +25,7 @@
 
                                 <div class="col-md-6">
                                     <select name="category_id" id="category_id" class="form-control"
-                                        style="border: 1px solid; border-radius:10px;">
+                                        style="border: 1px solid; border-radius:10px;" required>
                                         <option selected disabled>--- Select Merchandise Type ---</option>
                                         @forelse ($categories as $category)
                                             <option value="{{ $category->id }}">{{ strtoupper($category->title) }}</option>
@@ -42,7 +42,7 @@
                                 </div>
                             </div>
                             <div class="row mb-3">
-                                <label for="brand_id" class="col-md-4 col-form-label text-md-end">Select
+                                <label for="client_id" class="col-md-4 col-form-label text-md-end">Select
                                     Client</label>
 
                                 <div class="col-md-6">
@@ -159,7 +159,7 @@
                                         class="form-control @error('product_code') is-invalid @enderror  input"
                                         style="border: 1px solid; border-radius:10px;" name="product_code"
                                         value="{{ old('product_code') }}" autocomplete="product_code" autofocus
-                                        placeholder="XXXXXXXXXXXXXX">
+                                        placeholder="XXXXXXXXXXXXXX" required>
 
                                     <span class="invalid-feedback" role="alert" id="invalidProductCode">
                                         <strong>Invalid Merchandise Code</strong>
@@ -177,42 +177,6 @@
                                     @enderror
                                 </div>
                             </div>
-                            {{-- <div class="row mb-3">
-                                <div class="col-md-4 mx-auto">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="flexRadioDefault"
-                                            id="flexRadioDefault2" checked>
-                                        <label class="form-check-label" for="flexRadioDefault2">
-                                            Single Merchandise
-                                        </label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="flexRadioDefault"
-                                            id="flexRadioDefault1" value="2">
-                                        <label class="form-check-label" for="flexRadioDefault1">
-                                            Batch Merchandise
-                                        </label>
-                                    </div>
-                                </div>
-
-                            </div> --}}
-                            {{-- <div class="row mb-3" id="batch">
-                                <label for="quantity" class="col-md-4 col-form-label text-md-end">Quantity</label>
-
-                                <div class="col-md-6">
-                                    <input id="quantity" type="number"
-                                        class="form-control @error('quantity') is-invalid @enderror input"
-                                        style="border: 1px solid; border-radius:10px;" name="quantity" autocomplete="number"
-                                        placeholder="200">
-
-                                    @error('quantity')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                    @enderror
-                                </div>
-                            </div> --}}
-
                             <div class="row mb-0">
                                 <div class="col-md-6 offset-md-4" id="submitQuery">
                                     <button type="submit" class="btn btn-success">
@@ -224,7 +188,6 @@
                     </div>
                 </div>
             </div>
-            {{-- End of registered Users --}}
         </div>
     @endcan
     @can('tb_access')
@@ -287,7 +250,7 @@
                             </div>
                             <div class="row mb-3">
                                 <label for="county_id" class="col-md-4 col-form-label text-md-end">Select
-                                    Client</label>
+                                    Storage</label>
 
                                 <div class="col-md-6">
                                     <select name="storage_id" id="" class="form-control"

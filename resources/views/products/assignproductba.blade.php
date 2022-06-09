@@ -11,10 +11,10 @@
     @can('admin_access')
         <div style="margin-bottom: 10px;" class="row">
             <div class="col-lg-12">
-                <a class="btn btn-success" href="{{ route('products.assign.teamleader') }}">
-                    Assign Merchandise To Team Leaders
-                </a> <a class="btn btn-primary" href="{{ route('products.assign.brandambbassador') }}">
-                    Assign Merchandise To BrandAmbassadors
+                <a class="btn btn-success" href="{{ route('products.assign.create') }}">
+                    Assign Merchandise To Agency
+                </a> <a class="btn btn-primary" href="{{ route('products.assign.teamleader') }}">
+                    Assign Merchandise To TeamLeader
                 </a>
             </div>
         </div>
@@ -22,7 +22,7 @@
             <div class="col-sm-8 offset-2">
                 <div class="card">
                     <div class="card-header">
-                        <h4 class="text-center">Assign Merchandise To Agency</h4>
+                        <h4 class="text-center">Assign Merchandise To BrandAmbassador</h4>
                     </div>
 
                     <div class="card-body">
@@ -401,7 +401,6 @@
                     </div>
                 </div>
             </div>
-            {{-- End of registered Users --}}
         </div>
     @endcan
 @endsection

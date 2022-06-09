@@ -83,9 +83,9 @@ class ProductsController extends Controller
 
         if ($request->ajax()) {
             if (Auth::user()->role_id == 1) {
-                $query = Product::with(['category', 'assign', 'batch', 'client'])->select('products.*')->where('product_code','!=',null);
+                $query = Product::with(['category', 'assign', 'batch', 'client'])->select('products.*')->where('product_code', '!=', null);
             } elseif (Auth::user()->role_id == 2) {
-                $query = Product::with(['category', 'assign', 'batch', 'client'])->where('products.owner_id', Auth::id())->select('products.*')->where('product_code','!=',null);
+                $query = Product::with(['category', 'assign', 'batch', 'client'])->where('products.owner_id', Auth::id())->select('products.*')->where('product_code', '!=', null);
             } elseif (Auth::user()->role_id == 3) {
                 $query = Product::with(['category', 'assign', 'batch', 'client'])->where('products.assigned_to', Auth::id())
                     ->join('batches', 'batches.id', 'products.batch_id')
@@ -210,13 +210,14 @@ class ProductsController extends Controller
     {
         $teamleaders = User::where('role_id', 3)->where('client_id', null)->get();
         $salesreps = User::where('role_id', 3)->where('client_id', Auth::user()->client_id)->get();
-
+        $agencies = User::whererole_id(2)->cursor();
         $clients = Client::all();
         $categories = Category::all();
-
+        $colors = Color::all();
+        $sizes = Size::all();
         $storages = Storage::all();
         $user_id = Auth::id();
-
+        $brands = Brand::with('client')->get();
         $brandAmbassadors =  User::where('role_id', 4)->where('teamleader_id', $user_id)->get();
         $batches = Product::select('batch_id', 'batch_code')->where('assigned_to', Auth::id())->join('batches', 'batches.id', 'products.batch_id')->groupBy('batch_id')->get();
         //dd($batches);
@@ -233,10 +234,87 @@ class ProductsController extends Controller
             'batchesClient',
             'brandAmbassadors',
             'batches',
-            'storages'
+            'storages',
+            'brands',
+            'sizes',
+            'colors',
+            'agencies',
         ));
     }
 
+    public function assignProductsCreateBA()
+    {
+        $teamleaders = User::where('role_id', 3)->where('client_id', null)->get();
+        $salesreps = User::where('role_id', 3)->where('client_id', Auth::user()->client_id)->get();
+        $agencies = User::whererole_id(2)->cursor();
+        $clients = Client::all();
+        $categories = Category::all();
+        $colors = Color::all();
+        $sizes = Size::all();
+        $storages = Storage::all();
+        $user_id = Auth::id();
+        $brands = Brand::with('client')->get();
+        $brandAmbassadors =  User::where('role_id', 4)->where('teamleader_id', $user_id)->get();
+        $batches = Product::select('batch_id', 'batch_code')->where('assigned_to', Auth::id())->join('batches', 'batches.id', 'products.batch_id')->groupBy('batch_id')->get();
+        //dd($batches);
+
+        $batchesAll = Batch::select('batches.*')->join('storages', 'batches.storage_id', 'storages.id')->where('storages.client_id', null)->get();
+        $batchesClient = Batch::select('batches.*')->join('storages', 'batches.storage_id', 'storages.id')->where('storages.client_id', Auth::user()->client_id)->get();
+
+        return view('products.assignproductba', compact(
+            'teamleaders',
+            'salesreps',
+            'categories',
+            'clients',
+            'batchesAll',
+            'batchesClient',
+            'brandAmbassadors',
+            'batches',
+            'storages',
+            'brands',
+            'sizes',
+            'colors',
+            'agencies',
+        ));
+    }
+
+
+
+    public function assignProductsCreateTL()
+    {
+        $teamleaders = User::where('role_id', 3)->where('client_id', null)->get();
+        $salesreps = User::where('role_id', 3)->where('client_id', Auth::user()->client_id)->get();
+        $agencies = User::whererole_id(2)->cursor();
+        $clients = Client::all();
+        $categories = Category::all();
+        $colors = Color::all();
+        $sizes = Size::all();
+        $storages = Storage::all();
+        $user_id = Auth::id();
+        $brands = Brand::with('client')->get();
+        $brandAmbassadors =  User::where('role_id', 4)->where('teamleader_id', $user_id)->get();
+        $batches = Product::select('batch_id', 'batch_code')->where('assigned_to', Auth::id())->join('batches', 'batches.id', 'products.batch_id')->groupBy('batch_id')->get();
+        //dd($batches);
+
+        $batchesAll = Batch::select('batches.*')->join('storages', 'batches.storage_id', 'storages.id')->where('storages.client_id', null)->get();
+        $batchesClient = Batch::select('batches.*')->join('storages', 'batches.storage_id', 'storages.id')->where('storages.client_id', Auth::user()->client_id)->get();
+
+        return view('products.assignproducttl', compact(
+            'teamleaders',
+            'salesreps',
+            'categories',
+            'clients',
+            'batchesAll',
+            'batchesClient',
+            'brandAmbassadors',
+            'batches',
+            'storages',
+            'brands',
+            'sizes',
+            'colors',
+            'agencies',
+        ));
+    }
     /**
      * Store a newly created resource in storage.
      *
@@ -297,6 +375,200 @@ class ProductsController extends Controller
         ]);
         $url_login = URL::to('/login');
 
+        $batchcode = Batch::where('id', $request->batch_id)->value('batch_code');
+
+        $products = Product::where('batch_id', $request->batch_id)->whereNull('assigned_to')->get();
+        $quantity = count($products);
+        $merchandises = [];
+        //loop through creating products with the same batch code using quantity
+        if (count($products) > 0) {
+            $receiver_email = User::where('id', $request->assigned_to)->value('email');
+            $products = Product::where('batch_id', $request->batch_id)->get();
+            $batch = Batch::findOrFail($request->batch_id);
+            $batch->update([
+                'tl_id_accept' => $request->assigned_to
+            ]);
+            foreach ($products as $product) {
+                $data = $product;
+                $product->update([
+                    'assigned_to' => $request->assigned_to,
+                ]);
+
+                Activity::create([
+                    'title' => 'Merchandise Assigned',
+                    'user_id' => Auth::id(),
+                    'description' => Auth::user()->name . ' Assigned Merchandise:' . $product->product_code . 'To : ' . $receiver_email,
+                ]);
+                array_push($merchandises, $data);
+            }
+
+            $receiver_email = User::where('id', $request->assigned_to)->value('email');
+            $sender_email = Auth::user()->email;
+            //Add Message for assigning merchandises : includes merchandise type, batch_code quantity
+            $merchandise = array_pop($merchandises);
+            $merchandise_type = $merchandise->category->title;
+            // dd($merchandise_type);
+            $message = "Hello, You have been assigned $quantity Merchandises ($merchandise_type) from Batch-Code $batchcode. Kindly Confirm through the portal: $url_login";
+            $details = [
+                'title' => 'Mail from ' . $sender_email,
+                'body' => $message,
+            ];
+            // dd($details);
+            Mail::to($receiver_email)->send(new AssignMerchandise($details));
+            Alert::success('Success', $quantity . 'Merchandises Added Successfully of Batch Code:' . $batchcode);
+            return back();
+        } else {
+            Alert::error('Failed', 'Batch is Already Assigned');
+            return back();
+        }
+    }
+
+
+    public function storeAgency(Request $request)
+    {
+        $request->validate([
+            'category_id' => 'required|integer',
+            'client_id' => 'required|integer',
+            'brand_id' => 'integer',
+            'size' => 'integer',
+            'color' => 'integer',
+            'quantity' => 'integer',
+        ]);
+        $url_login = URL::to('/login');
+        //if quantity is  0ne
+        if ($request->quantity == 1) {
+            //when Both size & brand is set
+            if ($request->size != null && $request->brand_id != null) {
+                $product = Product::where('category_id', $request->category_id)
+                    ->where('client_id', $request->client_id)
+                    ->where('brand_id', $request->brand_id)
+                    ->where('category_id', $request->category_id)
+                    ->where('size', $request->size)
+                    ->where('color', $request->color)->whereowner_id(0)->first();
+                if ($product == null) {
+                    Alert::error('Failed', 'No Merchandise Found! Kindly Add the Merchandise Before Assigning');
+                    return back();
+                }
+                $product->update([
+                    'owner_id' => $request->owner_id,
+                ]);
+            }
+            if ($request->size == null) {
+                $product = Product::where('category_id', $request->category_id)
+                    ->where('client_id', $request->client_id)
+                    ->where('brand_id', $request->brand_id)
+                    ->where('category_id', $request->category_id)
+                    ->where('color', $request->color)->whereowner_id(0)->first();
+                if ($product == null) {
+                    Alert::error('Failed', 'No Merchandise Found with no size! Kindly Add the Merchandise Before Assigning');
+                    return back();
+                }
+                $product->update([
+                    'owner_id' => $request->owner_id,
+                ]);
+            }
+
+            if ($request->brand_id == null) {
+                $product = Product::where('category_id', $request->category_id)
+                    ->where('client_id', $request->client_id)
+                    ->where('category_id', $request->category_id)
+                    ->where('size', $request->size)
+                    ->where('color', $request->color)->whereowner_id(0)->first();
+                if ($product == null) {
+                    Alert::error('Failed', 'No Merchandise Found with no brand! Kindly Add the Merchandise Before Assigning');
+                    return back();
+                }
+                $product->update([
+                    'owner_id' => $request->owner_id,
+                ]);
+            }
+
+            Alert::success('Success', 'Operation Successful');
+            return back();
+        }
+        if ($request->quantity > 1) {
+            //Create Batch for the product Group
+            $batch_code = $this->generateBatchCode().'-AG-'.$request->owner_id;
+            $batch = Batch::create([
+                'batch_code' => $batch_code,
+            ]);
+            for ($i = 0; $i <= $request->quantity; $i++) {
+                //when Both size & brand is set
+                if ($request->size != null && $request->brand_id != null) {
+                    $product = Product::where('category_id', $request->category_id)
+                        ->where('client_id', $request->client_id)
+                        ->where('brand_id', $request->brand_id)
+                        ->where('category_id', $request->category_id)
+                        ->where('size', $request->size)
+                        ->where('color', $request->color)->whereowner_id(0)->first();
+
+                    if ($product == null) {
+                        Alert::error('Failed', 'No Merchandise Found! Kindly Add the Merchandise Before Assigning');
+                        return back();
+                    }
+                    if ($product->count() < $request->quantity) {
+                        Alert::error('Failed', 'Merchandise Available is less than requested Quantity');
+                        return back();
+                    }
+                    $product->update([
+                        'owner_id' => $request->owner_id,
+                        'batch_id' => $batch->id,
+                    ]);
+                }
+                if ($request->size == null) {
+                    $product = Product::where('category_id', $request->category_id)
+                        ->where('client_id', $request->client_id)
+                        ->where('brand_id', $request->brand_id)
+                        ->where('category_id', $request->category_id)
+                        ->where('color', $request->color)->whereowner_id(0)->first();
+
+                    if ($product == null) {
+                        Alert::error('Failed', 'No Merchandise Found! Kindly Add the Merchandise Before Assigning');
+                        return back();
+                    }
+                    if ($product->count() != $request->quantity) {
+                        Alert::error('Failed', 'No Merchandise Found with no size! Kindly Add the Merchandise Before Assigning');
+                        return back();
+                    }
+                    $product->update([
+                        'owner_id' => $request->owner_id,
+                        'batch_id' => $batch->id,
+                    ]);
+                }
+
+                if ($request->brand_id == null) {
+                    $product = Product::where('category_id', $request->category_id)
+                        ->where('client_id', $request->client_id)
+                        ->where('category_id', $request->category_id)
+                        ->where('size', $request->size)
+                        ->where('color', $request->color)->whereowner_id(0)->first();
+                    if ($product == null) {
+                        Alert::error('Failed', 'No Merchandise Found! Kindly Add the Merchandise Before Assigning');
+                        return back();
+                    }
+                    if ($product->count() != $request->quantity) {
+                        Alert::error('Failed', 'No Merchandise Found with no brand! Kindly Add the Merchandise Before Assigning');
+                        return back();
+                    }
+                    $product->update([
+                        'owner_id' => $request->owner_id,
+                        'batch_id' => $batch->id,
+                    ]);
+                }
+
+
+            }
+            Alert::success('Success', 'Operation Successful');
+            return back();
+        } else {
+            Alert::error('Failed', 'Invalid Merchandise Quantity');
+            return back();
+        }
+        //If size is set
+
+        //if color is set
+
+        //if both color and size is set
         $batchcode = Batch::where('id', $request->batch_id)->value('batch_code');
 
         $products = Product::where('batch_id', $request->batch_id)->whereNull('assigned_to')->get();

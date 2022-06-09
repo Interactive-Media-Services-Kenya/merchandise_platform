@@ -84,7 +84,10 @@ Route::group(['middleware' => ['auth:web','otp']], function () {
     Route::post('products/upload-merchandise', 'ProductsController@uploadMerchandise')->name('products.upload-merchandise');
     Route::resource('products', 'ProductsController');
     Route::get('products/assignproducts/create', 'ProductsController@assignProductsCreate')->name('products.assign.create');
+    Route::get('products/assignproducts/createba', 'ProductsController@assignProductsCreateBA')->name('products.assign.brandambbassador');
+    Route::get('products/assignproducts/createtl', 'ProductsController@assignProductsCreateTL')->name('products.assign.teamleader');
     Route::post('products/assignproducts/storeTL', 'ProductsController@storeTL')->name('products.storeTL');
+    Route::post('products/assignproducts/storeagency', 'ProductsController@storeAgency')->name('products.storeagency');
     Route::post('product/reject/{product}','ProductsController@reject')->name('product.reject');
     Route::get('product/confirm/{product}','ProductsController@confirm')->name('product.confirm');
     Route::get('products/confirm/batch/{batch_code}','ProductsController@confirmBatch')->name('products.confirm.batch');
