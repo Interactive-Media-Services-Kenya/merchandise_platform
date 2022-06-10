@@ -16,11 +16,7 @@ class CreateBatchTeamleadersTable extends Migration
         Schema::create('batch_teamleaders', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('team_leader_id')->nullable();
-            $table->foreign('team_leader_id', 'team_leader_id_fk_5206527')->references('id')->on('users')->constrained()
-                ->onUpdate('cascade');
-                $table->unsignedBigInteger('batch_id')->nullable();
-            $table->foreign('batch_id', 'batch_id_fk_99096527')->references('id')->on('users')->constrained()
-                ->onUpdate('cascade');
+            $table->string('batch_code')->nullable();
             $table->timestamps();
         });
     }

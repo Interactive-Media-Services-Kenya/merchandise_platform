@@ -17,6 +17,9 @@ class AddFieldsToProductsTable extends Migration
             $table->integer('brand_id')->nullable();
                 $table->integer('size')->nullable();
             $table->integer('color')->nullable();
+            $table->integer('ba_id')->nullable();
+            $table->integer('batch_tl_id')->nullable();
+            $table->integer('batch_ba_id')->nullable();
         });
     }
 

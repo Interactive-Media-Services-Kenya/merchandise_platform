@@ -26,7 +26,7 @@
                     </div>
 
                     <div class="card-body">
-                        <form method="POST" action="{{ route('products.storeagency') }}">
+                        <form method="POST" action="{{ route('products.storeBA') }}">
                             @csrf
                             <div class="row mb-3">
                                 <label for="batch_id" class="col-md-4 col-form-label text-md-end">Select
@@ -140,20 +140,20 @@
                                 </div>
                             </div>
                             <div class="row mb-3">
-                                <label for="owner_id" class="col-md-4 col-form-label text-md-end">Select
-                                    Agency User</label>
+                                <label for="ba_id" class="col-md-4 col-form-label text-md-end">Select
+                                    BrandAmbassador User</label>
 
                                 <div class="col-md-6">
-                                    <select name="owner_id" id="" class="form-control"
+                                    <select name="ba_id" id="" class="form-control"
                                         style="border: 1px solid; border-radius:10px;">
-                                        <option selected disabled>--- Select Agency Email ---</option>
-                                        @forelse ($agencies as $agency)
-                                            <option value="{{ $agency->id }}">{{ strtoupper($agency->email) }}</option>
+                                        <option selected disabled>--- Select BrandAmbassador Email ---</option>
+                                        @forelse ($brandambassadors as $ba)
+                                            <option value="{{ $ba->id }}">{{ strtoupper($ba->email) }}</option>
                                         @empty
-                                            <option disabled> No Agencies To Select Yet</option>
+                                            <option disabled> No BrandAmbassadors Registered</option>
                                         @endforelse
                                     </select>
-                                    @error('owner_id')
+                                    @error('ba_id')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>
                                         </span>
