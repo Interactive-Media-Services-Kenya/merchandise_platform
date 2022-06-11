@@ -691,7 +691,7 @@ class ProductsController extends Controller
             'quantity' => 'integer',
         ]);
         if (FacadesGate::allows('admin_access')) {
-            //Store Products on count Not Assigned to any Agency.
+            //Store Products on count Not Assigned to any brandAmbassador.
             $url_login = URL::to('/login');
             //if quantity is  0ne
             if ($request->quantity == 1) {

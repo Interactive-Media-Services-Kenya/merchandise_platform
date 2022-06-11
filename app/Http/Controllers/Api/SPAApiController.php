@@ -283,6 +283,7 @@ class SPAApiController extends Controller
 
         $assignedProductsData = [];
         $uploadedData = [];
+        $productCodesInvalid = [];
         foreach ($data as $pr) {
             $product_code = $pr['product_code'];
             $client_id = $pr['client_id'];
@@ -296,7 +297,9 @@ class SPAApiController extends Controller
             $assigned_product = DB::table('products')->where('product_code', $product_code)->first();
         //dd($assigned_product->count());
             if ($assigned_product != null) {
-                array_push($assigned_product->product_code,$assignedProductsData);
+                array_push($assignedProductsData,$product_code);
+            }else{
+                array_push($productCodesInvalid,$product_code);
             }
 
 
@@ -344,6 +347,13 @@ class SPAApiController extends Controller
         // }
 
         }
-        return $assignedProductsData;
+        return response()->json([
+            'status' => 1,
+            'uploaded_merchandise' => count($assignedProductsData). ' Merchandises Found and Uploaded Successfully',
+            'failed_merchandise' => [
+                'list' =>$productCodesInvalid,
+                'count' => count($productCodesInvalid),
+            ]
+        ]);
     }
 }
