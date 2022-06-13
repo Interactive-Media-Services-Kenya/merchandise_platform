@@ -17,6 +17,8 @@ class CreateBatchBrandambassadorsTable extends Migration
             $table->id();
             $table->unsignedBigInteger('brand_ambassador_id')->nullable();
             $table->string('batch_code')->nullable();
+            $table->integer('accept_status')->default(0);
+            $table->integer('reject_status')->default(0);
             $table->timestamps();
         });
     }

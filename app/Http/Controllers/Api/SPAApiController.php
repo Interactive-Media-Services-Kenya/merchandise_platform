@@ -14,6 +14,7 @@ use App\Models\IssueProduct;
 use App\Models\Outlet;
 use App\Models\Product;
 use App\Models\Productbas;
+use App\Models\Reason;
 use App\Models\Size;
 use App\Models\Storage;
 use Illuminate\Http\Request;
@@ -116,6 +117,302 @@ class SPAApiController extends Controller
         }
     }
 
+    // Batch Confirmation  Agency, TLs, and BAs,
+    public function batchAccept(Request $request)
+    {
+
+        // ? Agency || TeamLeader || BrandAmbassador Can confirm merchandise
+        //Batches for Agency
+        if (Auth::user()->role_id == 2) {
+            $batchConfirmed = Batch::wherebatch_code($request->batch_code)->whereaccept_status(1)->first();
+            if ($batchConfirmed) {
+                return response()->json([
+                    'status' => 0,
+                    'message' => 'Batch Is Already Confirmed',
+                ]);
+            }
+            $batch = Batch::wherebatch_code($request->batch_code)->whereaccept_status(0)->first();
+
+            if($batch == null){
+                return response()->json([
+                    'status' => 0,
+                    'message' => 'No Batches Found',
+                ]);
+            }
+
+            $batch->update([
+                'accept_status' => 1,
+            ]);
+
+            //Send A confirmation sms to user
+
+            //return response message
+            return response()->json([
+                'status' => 1,
+                'message' => 'Batch Confirmation was Successful'
+            ]);
+        }
+
+        // Batches TeamLeaders
+        if (Auth::user()->role_id == 3) {
+            $batchConfirmed = DB::table('batch_teamleaders')->wherebatch_code($request->batch_code)->whereaccept_status(1)->whereteam_leader_id(Auth::id())->first();
+            if ($batchConfirmed) {
+                return response()->json([
+                    'status' => 0,
+                    'message' => 'Batch Is Already Confirmed',
+                ]);
+            }
+            $batch = DB::table('batch_teamleaders')->wherebatch_code($request->batch_code)->whereaccept_status(0)->whereteam_leader_id(Auth::id())->first();
+
+            if($batch == null){
+                return response()->json([
+                    'status' => 0,
+                    'message' => 'No Batches Found',
+                ]);
+            }
+
+            DB::table('batch_teamleaders')->wherebatch_code($request->batch_code)->update([ 'accept_status' => 1]);
+
+            //Send A confirmation sms to user
+
+            //return response message
+            return response()->json([
+                'status' => 1,
+                'message' => 'Batch Confirmation was Successful'
+            ]);
+        }
+        // Batches BrandAmbassadors
+        if (Auth::user()->role_id == 4) {
+            $batchConfirmed = DB::table('batch_brandambassadors')->wherebatch_code($request->batch_code)->whereaccept_status(1)->wherebrand_ambassador_id(Auth::id())->first();
+            if ($batchConfirmed) {
+                return response()->json([
+                    'status' => 0,
+                    'message' => 'Batch Is Already Confirmed',
+                ]);
+            }
+            $batch = DB::table('batch_brandambassadors')->wherebatch_code($request->batch_code)->whereaccept_status(0)->wherebrand_ambassador_id(Auth::id())->first();
+
+            if($batch == null){
+                return response()->json([
+                    'status' => 0,
+                    'message' => 'No Batches Found',
+                ]);
+            }
+
+            DB::table('batch_brandambassadors')->wherebatch_code($request->batch_code)->update([ 'accept_status' => 1]);
+
+            //Send A confirmation sms to user
+
+            //return response message
+            return response()->json([
+                'status' => 1,
+                'message' => 'Batch Confirmation was Successful'
+            ]);
+        }
+    }
+
+
+    //? Get All reject Reasons
+    public function rejectReasons(){
+        $rejectReasons = Reason::all();
+        return response()->json([
+            $rejectReasons,200
+        ]);
+    }
+    public function batchReject(Request $request)
+    {
+
+        // ? Agency || TeamLeader || BrandAmbassador Can confirm merchandise
+        //Batches for Agency
+        if (Auth::user()->role_id == 2) {
+            $batchRejected = Batch::wherebatch_code($request->batch_code)->whereaccept_status(2)->first();
+            if ($batchRejected) {
+                return response()->json([
+                    'status' => 0,
+                    'message' => 'Batch Is Already Confirmed',
+                ]);
+            }
+            $batch = Batch::wherebatch_code($request->batch_code)->where('accept_status','!=',1)->first();
+
+            if($batch == null){
+                return response()->json([
+                    'status' => 0,
+                    'message' => 'No Batches Found',
+                ]);
+            }
+
+            $batch->update([
+                'accept_status' => 2,
+            ]);
+
+            //Add the reject + Reason
+            DB::table('batch_rejects')->insert([
+                'user_id'=> Auth::id(),
+                'batch_agency_id' => $batch->id,
+                'reason_id' => $request->reason_id,
+                'description' => $request->description,
+                'created_at' => \Carbon\Carbon::now(),
+            ]);
+
+            //Send A confirmation sms to user
+
+            //return response message
+            return response()->json([
+                'status' => 1,
+                'message' => 'Batch Reject was Successful'
+            ]);
+        }
+
+        // Batches TeamLeaders
+        if (Auth::user()->role_id == 3) {
+            $batchRejected = DB::table('batch_teamleaders')->wherebatch_code($request->batch_code)->wherereject_status(1)->whereteam_leader_id(Auth::id())->first();
+            if ($batchRejected) {
+                return response()->json([
+                    'status' => 0,
+                    'message' => 'Batch Is Already Rejected',
+                ]);
+            }
+            $batch = DB::table('batch_teamleaders')->wherebatch_code($request->batch_code)->where('accept_status', '!=', 1)->whereteam_leader_id(Auth::id())->first();
+
+            if($batch == null){
+                return response()->json([
+                    'status' => 0,
+                    'message' => 'No Batches Found',
+                ]);
+            }
+
+            DB::table('batch_teamleaders')->wherebatch_code($request->batch_code)->update([ 'reject_status' => 1]);
+
+            //Add the reject + Reason
+            DB::table('batch_rejects')->insert([
+                'user_id'=> Auth::id(),
+                'batch_teamleader_id' => DB::table('batch_teamleaders')->wherebatch_code($request->batch_code)->value('id'),
+                'reason_id' => $request->reason_id,
+                'description' => $request->description,
+                'created_at' => \Carbon\Carbon::now(),
+            ]);
+
+            //Send A confirmation sms to user
+
+            //return response message
+            return response()->json([
+                'status' => 1,
+                'message' => 'Batch Rejection was Successful'
+            ]);
+        }
+        // Batches BrandAmbassadors
+        if (Auth::user()->role_id == 4) {
+            $batchRejected = DB::table('batch_brandambassadors')->wherebatch_code($request->batch_code)->wherereject_status(1)->wherebrand_ambassador_id(Auth::id())->first();
+            if ($batchRejected) {
+                return response()->json([
+                    'status' => 0,
+                    'message' => 'Batch Is Already Rejected',
+                ]);
+            }
+            $batch = DB::table('batch_brandambassadors')->wherebatch_code($request->batch_code)->where('accept_status', '!=', 1)->wherebrand_ambassador_id(Auth::id())->first();
+
+            if($batch == null){
+                return response()->json([
+                    'status' => 0,
+                    'message' => 'No Batches Found',
+                ]);
+            }
+
+            DB::table('batch_brandambassadors')->wherebatch_code($request->batch_code)->update([ 'reject_status' => 1]);
+
+            //Add the reject + Reason
+            DB::table('batch_rejects')->insert([
+                'user_id'=> Auth::id(),
+                'batch_brandambassador_id' => DB::table('batch_brandambassadors')->wherebatch_code($request->batch_code)->value('id'),
+                'reason_id' => $request->reason_id,
+                'description' => $request->description,
+                'created_at' => \Carbon\Carbon::now(),
+            ]);
+
+            //Send A confirmation sms to user
+
+            //return response message
+            return response()->json([
+                'status' => 1,
+                'message' => 'Batch Rejection was Successful'
+            ]);
+        }
+    }
+
+    // ? Get all batches for Agency, TLs, and BAs,
+    public function batches()
+    {
+        //Batches for Agency
+        if (Auth::user()->role_id == 2) {
+            $productBatch = Product::whereowner_id(Auth::id())->groupBy('batch_id')->get();
+            if($productBatch->count() == 0){
+                return response()->json([
+                    'status' => 0,
+                    'message' => 'No Batches Found',
+                ]);
+            }
+            $data = [];
+            foreach ($productBatch as $pb) {
+                $batch = Batch::whereid($pb->batch_id)->get();
+                foreach ($batch as $bch) {
+                    $item = [
+                        'batch' => $bch->batch_code,
+                        'confirm_status' => $pb->accept_status == 1 ? true : false,
+                    ];
+                    array_push($data, $item);
+                }
+            }
+            return response()->json($data, 200);
+        }
+        //Batches for TL
+        if (Auth::user()->role_id == 3) {
+            $batch = DB::table('batch_teamleaders')->select('*')->whereteam_leader_id(Auth::id())->get();
+            if($batch->count() == 0){
+                return response()->json([
+                    'status' => 0,
+                    'message' => 'No Batches Found',
+                ]);
+            }
+            $data = [];
+            foreach ($batch as $pb) {
+                $item = [
+                    'batch' => $pb->batch_code,
+                    'confirm_status' => $pb->accept_status == 1 ? true : false,
+                    'product_count' => DB::table('products')->wherebatch_tl_id($pb->id)->count(),
+                ];
+                array_push($data, $item);
+            }
+            $count= ['batch_count' => DB::table('batch_teamleaders')->select('*')->whereteam_leader_id(Auth::id())->count()];
+
+            array_push($data, $count);
+
+            return response()->json($data, 200);
+        }
+        // Batches For BAs
+        if (Auth::user()->role_id == 4) {
+            $batch = DB::table('batch_brandambassadors')->select('*')->wherebrand_ambassador_id(Auth::id())->get();
+            if($batch->count() == 0){
+                return response()->json([
+                    'status' => 0,
+                    'message' => 'No Batches Found',
+                ]);
+            }
+            $data = [];
+            foreach ($batch as $pb) {
+                $item = [
+                    'batch' => $pb->batch_code,
+                    'confirm_status' => $pb->accept_status == 1 ? true : false,
+                    'product_count' => DB::table('products')->wherebatch_ba_id($pb->id)->count(),
+                ];
+                array_push($data, $item);
+            }
+            $count= ['batch_count' => DB::table('batch_brandambassadors')->select('*')->wherebrand_ambassador_id(Auth::id())->count()];
+
+            array_push($data, $count);
+
+            return response()->json($data, 200);
+        }
+    }
     //Brand Ambassadors
     public function IssueProductBA(Request $request)
     {
@@ -279,7 +576,7 @@ class SPAApiController extends Controller
     {
         $data = json_decode($request->getContent(), true);
 
-       // $productsData = $data->data;
+        // $productsData = $data->data;
 
         $assignedProductsData = [];
         $uploadedData = [];
@@ -295,63 +592,63 @@ class SPAApiController extends Controller
 
 
             $assigned_product = DB::table('products')->where('product_code', $product_code)->first();
-        //dd($assigned_product->count());
+            //dd($assigned_product->count());
             if ($assigned_product != null) {
-                array_push($assignedProductsData,$product_code);
-            }else{
-                array_push($productCodesInvalid,$product_code);
+                array_push($assignedProductsData, $product_code);
+            } else {
+                array_push($productCodesInvalid, $product_code);
             }
 
 
-        // if ($assigned_product->count() != 0) {
-        //     return response()->json([
-        //         'message' => "Product Code Is already Uploaded",
-        //         'status' => 0,
-        //     ]);
-        // }
-        // $product = DB::table('product_codes')->where('product_code', $product_code)->get();
+            // if ($assigned_product->count() != 0) {
+            //     return response()->json([
+            //         'message' => "Product Code Is already Uploaded",
+            //         'status' => 0,
+            //     ]);
+            // }
+            // $product = DB::table('product_codes')->where('product_code', $product_code)->get();
 
-        // if ($product != null) {
-        //     $product_upload = Product::where('product_code', null)->first();
+            // if ($product != null) {
+            //     $product_upload = Product::where('product_code', null)->first();
 
-        //     if ($product_upload != null) {
-        //         $product_upload->update([
-        //             'product_code' => $product_code,
-        //             'category_id'=> $category_id,
-        //             'client_id' => $client_id,
-        //             'brand_id' => $brand_id,
-        //         ]);
-        //         $batch = Batch::where('id',$product_upload->batch_id)->first();
-        //         $batch->update([
-        //             'storage_id' => $request->storage_id,
-        //             'size' => $size,
-        //             'color' => $color,
-        //         ]);
-        //         Activity::create([
-        //             'title' => 'Merchandise Uploaded',
-        //             'user_id' => Auth::id(),
-        //             'description' => Auth::user()->name . ' have uploaded merchandise: ' . $product_code,
-        //         ]);
-        //     //    array_push($product_upload,)
-        //     } else {
-        //         return response()->json([
-        //             'message' => "Product Code is not Uploaded",
-        //             'status' => 0,
-        //         ]);
-        //     }
-        // } else {
-        //     return response()->json([
-        //         'message' => "Product Code does not exist",
-        //         'status' => 0,
-        //     ]);
-        // }
+            //     if ($product_upload != null) {
+            //         $product_upload->update([
+            //             'product_code' => $product_code,
+            //             'category_id'=> $category_id,
+            //             'client_id' => $client_id,
+            //             'brand_id' => $brand_id,
+            //         ]);
+            //         $batch = Batch::where('id',$product_upload->batch_id)->first();
+            //         $batch->update([
+            //             'storage_id' => $request->storage_id,
+            //             'size' => $size,
+            //             'color' => $color,
+            //         ]);
+            //         Activity::create([
+            //             'title' => 'Merchandise Uploaded',
+            //             'user_id' => Auth::id(),
+            //             'description' => Auth::user()->name . ' have uploaded merchandise: ' . $product_code,
+            //         ]);
+            //     //    array_push($product_upload,)
+            //     } else {
+            //         return response()->json([
+            //             'message' => "Product Code is not Uploaded",
+            //             'status' => 0,
+            //         ]);
+            //     }
+            // } else {
+            //     return response()->json([
+            //         'message' => "Product Code does not exist",
+            //         'status' => 0,
+            //     ]);
+            // }
 
         }
         return response()->json([
             'status' => 1,
-            'uploaded_merchandise' => count($assignedProductsData). ' Merchandises Found and Uploaded Successfully',
+            'uploaded_merchandise' => count($assignedProductsData) . ' Merchandises Found and Uploaded Successfully',
             'failed_merchandise' => [
-                'list' =>$productCodesInvalid,
+                'list' => $productCodesInvalid,
                 'count' => count($productCodesInvalid),
             ]
         ]);

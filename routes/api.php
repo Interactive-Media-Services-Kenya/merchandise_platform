@@ -43,6 +43,10 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
         Route::get('/v1/client_brands','Api\SPAApiController@client_brands')->name('api.client_brands');
         Route::get('/v1/storages','Api\SPAApiController@storages')->name('api.storages');
         Route::get('/v1/colors','Api\SPAApiController@colors')->name('api.colors');
+        Route::get('/v1/batches','Api\SPAApiController@batches')->name('api.batches');
+        Route::get('/v1/reject_reasons','Api\SPAApiController@rejectReasons')->name('api.reject_reasons');
+        Route::post('/v1/batch_accept','Api\SPAApiController@batchAccept')->name('api.batch_accept');
+        Route::post('/v1/batch_reject','Api\SPAApiController@batchReject')->name('api.batch_reject');
         Route::get('/v1/sizes','Api\SPAApiController@sizes')->name('api.sizes');
         Route::post('/v1/upload_merchandise','Api\SPAApiController@uploadMerchandise')->name('api.upload_merchandise');
 
