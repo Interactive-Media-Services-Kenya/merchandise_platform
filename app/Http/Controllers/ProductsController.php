@@ -393,7 +393,7 @@ class ProductsController extends Controller
                         ->where('brand_id', $request->brand_id)
                         ->where('category_id', $request->category_id)
                         ->where('size', $request->size)
-                        ->where('color', $request->color)->whereassigned_to(null)->whereowner_id(0)->first();
+                        ->where('color', $request->color)->whereassigned_to(null)->first();
                     if ($product == null) {
                         Alert::error('Failed', 'No Merchandise Found! Kindly Add the Merchandise Before Assigning');
                         return back();
@@ -407,7 +407,7 @@ class ProductsController extends Controller
                         ->where('client_id', $request->client_id)
                         ->where('brand_id', $request->brand_id)
                         ->where('category_id', $request->category_id)
-                        ->where('color', $request->color)->whereassigned_to(null)->whereowner_id(0)->first();
+                        ->where('color', $request->color)->whereassigned_to(null)->first();
                     if ($product == null) {
                         Alert::error('Failed', 'No Merchandise Found with no size! Kindly Add the Merchandise Before Assigning');
                         return back();
@@ -422,7 +422,7 @@ class ProductsController extends Controller
                         ->where('client_id', $request->client_id)
                         ->where('category_id', $request->category_id)
                         ->where('size', $request->size)
-                        ->where('color', $request->color)->whereassigned_to(null)->whereowner_id(0)->first();
+                        ->where('color', $request->color)->whereassigned_to(null)->first();
                     if ($product == null) {
                         Alert::error('Failed', 'No Merchandise Found with no brand! Kindly Add the Merchandise Before Assigning');
                         return back();
@@ -431,7 +431,15 @@ class ProductsController extends Controller
                         'assigned_to' => $request->team_leader_id,
                     ]);
                 }
+                //! Sending to the Assignee (Super Admin)
+                $assigneePhone = Auth::user()->phone;
+                $assigneeMessage = 'Merchandise ' . $product->product_code . ' assigned to ' . User::whereid($request->team_leader_id)->value('name') . ' Phone: ' . User::whereid($request->team_leader_id)->value('phone');
+                $this->sendSMS($assigneePhone, $assigneeMessage);
 
+                //! Sending to the Assigned User (Agency)
+                $assignedPhone = User::whereid($request->team_leader_id)->value('phone');
+                $assignedMessage = 'You have been assigned Merchandise ('. DB::table('categories')->whereid($request->category_id)->value('title') .'): ' . $product->product_code . ' by ' . Auth::user()->name . ' of Phone: ' . Auth::user()->phone . ' Kindly Login to the App by clicking the link : ' . $url_login;
+                $this->sendSMS($assignedPhone, $assignedMessage);
                 Alert::success('Success', 'Operation Successful');
                 return back();
             }
@@ -443,7 +451,7 @@ class ProductsController extends Controller
                     ->where('brand_id', $request->brand_id)
                     ->where('category_id', $request->category_id)
                     ->where('size', $request->size)
-                    ->where('color', $request->color)->whereassigned_to(null)->whereowner_id(0)->count();
+                    ->where('color', $request->color)->whereassigned_to(null)->count();
 
                 if ($productCount < $request->quantity) {
                     Alert::error('Failed', 'Quantity Exceeds Expected Amount. Remaining: ' . $productCount);
@@ -464,7 +472,7 @@ class ProductsController extends Controller
                             ->where('brand_id', $request->brand_id)
                             ->where('category_id', $request->category_id)
                             ->where('size', $request->size)
-                            ->where('color', $request->color)->whereassigned_to(null)->whereowner_id(0)->first();
+                            ->where('color', $request->color)->whereassigned_to(null)->first();
 
                         if ($product == null) {
                             Alert::error('Failed', 'No Merchandise Found! Kindly Add the Merchandise Before Assigning');
@@ -484,7 +492,7 @@ class ProductsController extends Controller
                             ->where('client_id', $request->client_id)
                             ->where('brand_id', $request->brand_id)
                             ->where('category_id', $request->category_id)
-                            ->where('color', $request->color)->whereassigned_to(null)->whereowner_id(0)->first();
+                            ->where('color', $request->color)->whereassigned_to(null)->first();
 
                         if ($product == null) {
                             Alert::error('Failed', 'No Merchandise Found! Kindly Add the Merchandise Before Assigning');
@@ -505,7 +513,7 @@ class ProductsController extends Controller
                             ->where('client_id', $request->client_id)
                             ->where('category_id', $request->category_id)
                             ->where('size', $request->size)
-                            ->where('color', $request->color)->whereassigned_to(null)->whereowner_id(0)->first();
+                            ->where('color', $request->color)->whereassigned_to(null)->first();
                         if ($product == null) {
                             Alert::error('Failed', 'No Merchandise Found! Kindly Add the Merchandise Before Assigning');
                             return back();
@@ -520,6 +528,16 @@ class ProductsController extends Controller
                         ]);
                     }
                 }
+
+                //! Sending SMS to the Assignee (Super Admin)
+                $assigneePhone = Auth::user()->phone;
+                $assigneeMessage = 'Batch: ' . $batch_code . ' of ' . $request->quantity . ' ' . DB::table('categories')->whereid($request->category_id)->value('title') . ' assigned to ' . User::whereid($request->team_leader_id)->value('name') . ' Phone: ' . User::whereid($request->team_leader_id)->value('phone');
+                $this->sendSMS($assigneePhone, $assigneeMessage);
+
+                //! Sending SMS to the Assigned User (Agency)
+                $assignedPhone = User::whereid($request->team_leader_id)->value('phone');
+                $assignedMessage = 'You have been assigned Merchandise (' . DB::table('categories')->whereid($request->category_id)->value('title') . ') Batch Code: ' . $batch_code . ' by ' . Auth::user()->name . ' of Phone: ' . Auth::user()->phone . ' Kindly Login to the App by clicking the link : ' . $url_login;
+                $this->sendSMS($assignedPhone, $assignedMessage);
                 Alert::success('Success', 'Operation Successful');
                 return back();
             } else {
@@ -529,7 +547,7 @@ class ProductsController extends Controller
         }
         // ? Agency Assigns to Team Leader
         if (FacadesGate::allows('tb_access')) {
-            //Store Products on count Not Assigned to any Agency.
+            //Store Products on count  Assigned to an Agency.
             $url_login = URL::to('/login');
             //if quantity is  0ne
             if ($request->quantity == 1) {
@@ -578,7 +596,15 @@ class ProductsController extends Controller
                         'assigned_to' => $request->team_leader_id,
                     ]);
                 }
+                //! Sending to the Assignee (Agency)
+                $assigneePhone = Auth::user()->phone;
+                $assigneeMessage = 'Merchandise (' . DB::table('categories')->whereid($request->category_id)->value('title') .') ' . $product->product_code . ' assigned to ' . User::whereid($request->team_leader_id)->value('name') . ' Phone: ' . User::whereid($request->team_leader_id)->value('phone');
+                $this->sendSMS($assigneePhone, $assigneeMessage);
 
+                //! Sending to the Assigned User (TeamLeader)
+                $assignedPhone = User::whereid($request->team_leader_id)->value('phone');
+                $assignedMessage = 'You have been assigned Merchandise (' . DB::table('categories')->whereid($request->category_id)->value('title') .'): ' . $product->product_code . ' by ' . Auth::user()->name . ' of Phone: ' . Auth::user()->phone . ' Kindly Login to the App by clicking the link : ' . $url_login;
+                $this->sendSMS($assignedPhone, $assignedMessage);
                 Alert::success('Success', 'Operation Successful');
                 return back();
             }
@@ -667,6 +693,15 @@ class ProductsController extends Controller
                         ]);
                     }
                 }
+                //! Sending to the Assignee (Agency)
+                $assigneePhone = Auth::user()->phone;
+                $assigneeMessage = 'Batch: ' . $batch_code . ' of ' . $request->quantity . ' ' . DB::table('categories')->whereid($request->category_id)->value('title') . ' assigned to ' . User::whereid($request->team_leader_id)->value('name') . ' Phone: ' . User::whereid($request->team_leader_id)->value('phone');
+                $this->sendSMS($assigneePhone, $assigneeMessage);
+
+                //! Sending to the Assigned User (Team Leader)
+                $assignedPhone = User::whereid($request->team_leader_id)->value('phone');
+                $assignedMessage = 'You have been assigned Merchandise (' . $request->quantity . ' ' . DB::table('categories')->whereid($request->category_id)->value('title') . ') Batch Code: ' . $batch->batch_code . ' by ' . Auth::user()->name . ' of Phone: ' . Auth::user()->phone . ' Kindly Login to the App by clicking the link : ' . $url_login;
+                $this->sendSMS($assignedPhone, $assignedMessage);
                 Alert::success('Success', 'Operation Successful');
                 return back();
             } else {
@@ -675,7 +710,7 @@ class ProductsController extends Controller
             }
         }
 
-        Alert::error('Failed','Unauthorized!');
+        Alert::error('Failed', 'Unauthorized!');
         return back();
     }
 
@@ -740,7 +775,15 @@ class ProductsController extends Controller
                         'ba_id' => $request->ba_id,
                     ]);
                 }
+                //! Sending to the Assignee (Assignee)
+                $assigneePhone = Auth::user()->phone;
+                $assigneeMessage = 'Merchandise ' . $product->product_code . ' assigned to ' . User::whereid($request->ba_id)->value('name') . ' Phone: ' . User::whereid($request->ba_id)->value('phone');
+                $this->sendSMS($assigneePhone, $assigneeMessage);
 
+                //! Sending to the Assigned User (Brand Ambassador)
+                $assignedPhone = User::whereid($request->ba_id)->value('phone');
+                $assignedMessage = 'You have been assigned Merchandise: ' . $product->product_code . ' by ' . Auth::user()->name . ' of Phone: ' . Auth::user()->phone . ' Kindly Login to the App by clicking the link : ' . $url_login;
+                $this->sendSMS($assignedPhone, $assignedMessage);
                 Alert::success('Success', 'Operation Successful');
                 return back();
             }
@@ -828,6 +871,15 @@ class ProductsController extends Controller
                         ]);
                     }
                 }
+                 //! Sending SMS to the Assignee
+                 $assigneePhone = Auth::user()->phone;
+                 $assigneeMessage = 'Batch: ' . $batch_code . ' of ' . $request->quantity . ' ' . DB::table('categories')->whereid($request->category_id)->value('title') . ' assigned to ' . User::whereid($request->ba_id)->value('name') . ' Phone: ' . User::whereid($request->ba_id)->value('phone');
+                 $this->sendSMS($assigneePhone, $assigneeMessage);
+
+                 //! Sending SMS to the Assigned User (Brand Ambassador)
+                 $assignedPhone = User::whereid($request->ba_id)->value('phone');
+                 $assignedMessage = 'You have been assigned Merchandise (' . DB::table('categories')->whereid($request->category_id)->value('title') . ') Batch Code: ' . $batch_code . ' by ' . Auth::user()->name . ' of Phone: ' . Auth::user()->phone . ' Kindly Login to the App by clicking the link : ' . $url_login;
+                 $this->sendSMS($assignedPhone, $assignedMessage);
                 Alert::success('Success', 'Operation Successful');
                 return back();
             } else {
@@ -981,9 +1033,8 @@ class ProductsController extends Controller
                 return back();
             }
         }
-        Alert::error('Failed','Unauthorized!');
+        Alert::error('Failed', 'Unauthorized!');
         return back();
-
     }
 
     public function storeAgency(Request $request)
@@ -998,63 +1049,8 @@ class ProductsController extends Controller
         ]);
         $url_login = URL::to('/login');
         //if quantity is  0ne
-        if ($request->quantity == 1) {
-            //when Both size & brand is set
-            if ($request->size != null && $request->brand_id != null) {
-                $product = Product::where('category_id', $request->category_id)
-                    ->where('client_id', $request->client_id)
-                    ->where('brand_id', $request->brand_id)
-                    ->where('category_id', $request->category_id)
-                    ->where('size', $request->size)
-                    ->where('color', $request->color)->whereowner_id(0)->first();
-                if ($product == null) {
-                    Alert::error('Failed', 'No Merchandise Found! Kindly Add the Merchandise Before Assigning');
-                    return back();
-                }
-                $product->update([
-                    'owner_id' => $request->owner_id,
-                ]);
-            }
-            if ($request->size == null) {
-                $product = Product::where('category_id', $request->category_id)
-                    ->where('client_id', $request->client_id)
-                    ->where('brand_id', $request->brand_id)
-                    ->where('category_id', $request->category_id)
-                    ->where('color', $request->color)->whereowner_id(0)->first();
-                if ($product == null) {
-                    Alert::error('Failed', 'No Merchandise Found with no size! Kindly Add the Merchandise Before Assigning');
-                    return back();
-                }
-                $product->update([
-                    'owner_id' => $request->owner_id,
-                ]);
-            }
-
-            if ($request->brand_id == null) {
-                $product = Product::where('category_id', $request->category_id)
-                    ->where('client_id', $request->client_id)
-                    ->where('category_id', $request->category_id)
-                    ->where('size', $request->size)
-                    ->where('color', $request->color)->whereowner_id(0)->first();
-                if ($product == null) {
-                    Alert::error('Failed', 'No Merchandise Found with no brand! Kindly Add the Merchandise Before Assigning');
-                    return back();
-                }
-                $product->update([
-                    'owner_id' => $request->owner_id,
-                ]);
-            }
-
-            Alert::success('Success', 'Operation Successful');
-            return back();
-        }
-        if ($request->quantity > 1) {
-            //Create Batch for the product Group
-            $batch_code = $this->generateBatchCode() . '-AG-' . $request->owner_id;
-            $batch = Batch::create([
-                'batch_code' => $batch_code,
-            ]);
-            for ($i = 0; $i <= $request->quantity; $i++) {
+        if (FacadesGate::allows('admin_access')) {
+            if ($request->quantity == 1) {
                 //when Both size & brand is set
                 if ($request->size != null && $request->brand_id != null) {
                     $product = Product::where('category_id', $request->category_id)
@@ -1063,18 +1059,12 @@ class ProductsController extends Controller
                         ->where('category_id', $request->category_id)
                         ->where('size', $request->size)
                         ->where('color', $request->color)->whereowner_id(0)->first();
-
                     if ($product == null) {
                         Alert::error('Failed', 'No Merchandise Found! Kindly Add the Merchandise Before Assigning');
                         return back();
                     }
-                    if ($product->count() < $request->quantity) {
-                        Alert::error('Failed', 'Merchandise Available is less than requested Quantity');
-                        return back();
-                    }
                     $product->update([
                         'owner_id' => $request->owner_id,
-                        'batch_id' => $batch->id,
                     ]);
                 }
                 if ($request->size == null) {
@@ -1083,18 +1073,12 @@ class ProductsController extends Controller
                         ->where('brand_id', $request->brand_id)
                         ->where('category_id', $request->category_id)
                         ->where('color', $request->color)->whereowner_id(0)->first();
-
                     if ($product == null) {
-                        Alert::error('Failed', 'No Merchandise Found! Kindly Add the Merchandise Before Assigning');
-                        return back();
-                    }
-                    if ($product->count() != $request->quantity) {
                         Alert::error('Failed', 'No Merchandise Found with no size! Kindly Add the Merchandise Before Assigning');
                         return back();
                     }
                     $product->update([
                         'owner_id' => $request->owner_id,
-                        'batch_id' => $batch->id,
                     ]);
                 }
 
@@ -1105,25 +1089,116 @@ class ProductsController extends Controller
                         ->where('size', $request->size)
                         ->where('color', $request->color)->whereowner_id(0)->first();
                     if ($product == null) {
-                        Alert::error('Failed', 'No Merchandise Found! Kindly Add the Merchandise Before Assigning');
-                        return back();
-                    }
-                    if ($product->count() != $request->quantity) {
                         Alert::error('Failed', 'No Merchandise Found with no brand! Kindly Add the Merchandise Before Assigning');
                         return back();
                     }
                     $product->update([
                         'owner_id' => $request->owner_id,
-                        'batch_id' => $batch->id,
                     ]);
                 }
+                //Send SMS On Assigning Merchandise to Both Parties (Super Admin and The Agency User)
+
+                //! Sending to the Assignee (Super Admin)
+                $assigneePhone = Auth::user()->phone;
+                $assigneeMessage = 'Merchandise ' . $product->product_code . ' assigned to ' . User::whereid($request->owner_id)->value('name') . ' Phone: ' . User::whereid($request->owner_id)->value('phone');
+                $this->sendSMS($assigneePhone, $assigneeMessage);
+
+                //! Sending to the Assigned User (Agency)
+                $assignedPhone = User::whereid($request->owner_id)->value('phone');
+                $assignedMessage = 'You have been assigned Merchandise: ' . $product->product_code . ' by ' . Auth::user()->name . ' of Phone: ' . Auth::user()->phone . ' Kindly Login to the App by clicking the link : ' . $url_login;
+                $this->sendSMS($assignedPhone, $assignedMessage);
+
+                Alert::success('Success', 'Operation Successful');
+                return back();
             }
-            Alert::success('Success', 'Operation Successful');
-            return back();
-        } else {
-            Alert::error('Failed', 'Invalid Merchandise Quantity');
-            return back();
+            if ($request->quantity > 1) {
+                //Create Batch for the product Group
+                $batch_code = $this->generateBatchCode() . '-AG-' . $request->owner_id;
+                $batch = Batch::create([
+                    'batch_code' => $batch_code,
+                ]);
+                for ($i = 0; $i <= $request->quantity; $i++) {
+                    //when Both size & brand is set
+                    if ($request->size != null && $request->brand_id != null) {
+                        $product = Product::where('category_id', $request->category_id)
+                            ->where('client_id', $request->client_id)
+                            ->where('brand_id', $request->brand_id)
+                            ->where('category_id', $request->category_id)
+                            ->where('size', $request->size)
+                            ->where('color', $request->color)->whereowner_id(0)->first();
+
+                        if ($product == null) {
+                            Alert::error('Failed', 'No Merchandise Found! Kindly Add the Merchandise Before Assigning');
+                            return back();
+                        }
+                        if ($product->count() < $request->quantity) {
+                            Alert::error('Failed', 'Merchandise Available is less than requested Quantity');
+                            return back();
+                        }
+                        $product->update([
+                            'owner_id' => $request->owner_id,
+                            'batch_id' => $batch->id,
+                        ]);
+                    }
+                    if ($request->size == null) {
+                        $product = Product::where('category_id', $request->category_id)
+                            ->where('client_id', $request->client_id)
+                            ->where('brand_id', $request->brand_id)
+                            ->where('category_id', $request->category_id)
+                            ->where('color', $request->color)->whereowner_id(0)->first();
+
+                        if ($product == null) {
+                            Alert::error('Failed', 'No Merchandise Found! Kindly Add the Merchandise Before Assigning');
+                            return back();
+                        }
+                        if ($product->count() != $request->quantity) {
+                            Alert::error('Failed', 'No Merchandise Found with no size! Kindly Add the Merchandise Before Assigning');
+                            return back();
+                        }
+                        $product->update([
+                            'owner_id' => $request->owner_id,
+                            'batch_id' => $batch->id,
+                        ]);
+                    }
+
+                    if ($request->brand_id == null) {
+                        $product = Product::where('category_id', $request->category_id)
+                            ->where('client_id', $request->client_id)
+                            ->where('category_id', $request->category_id)
+                            ->where('size', $request->size)
+                            ->where('color', $request->color)->whereowner_id(0)->first();
+                        if ($product == null) {
+                            Alert::error('Failed', 'No Merchandise Found! Kindly Add the Merchandise Before Assigning');
+                            return back();
+                        }
+                        if ($product->count() != $request->quantity) {
+                            Alert::error('Failed', 'No Merchandise Found with no brand! Kindly Add the Merchandise Before Assigning');
+                            return back();
+                        }
+                        $product->update([
+                            'owner_id' => $request->owner_id,
+                            'batch_id' => $batch->id,
+                        ]);
+                    }
+                }
+                //! Sending to the Assignee (Super Admin)
+                $assigneePhone = Auth::user()->phone;
+                $assigneeMessage = 'Batch: ' . $batch->batch_code . ' of ' . $request->quantity . ' ' . DB::table('categories')->whereid($request->category_id)->value('title') . ' assigned to ' . User::whereid($request->owner_id)->value('name') . ' Phone: ' . User::whereid($request->owner_id)->value('phone');
+                $this->sendSMS($assigneePhone, $assigneeMessage);
+
+                //! Sending to the Assigned User (Agency)
+                $assignedPhone = User::whereid($request->owner_id)->value('phone');
+                $assignedMessage = 'You have been assigned Merchandise (' . DB::table('categories')->whereid($request->category_id)->value('title') . ') Batch Code: ' . $batch->batch_code . ' by ' . Auth::user()->name . ' of Phone: ' . Auth::user()->phone . ' Kindly Login to the App by clicking the link : ' . $url_login;
+                $this->sendSMS($assignedPhone, $assignedMessage);
+
+                Alert::success('Success', 'Operation Successful');
+                return back();
+            } else {
+                Alert::error('Failed', 'Invalid Merchandise Quantity');
+                return back();
+            }
         }
+
         //If size is set
 
         //if color is set
@@ -1577,6 +1652,47 @@ class ProductsController extends Controller
         } else {
             Alert::error('Failed', 'No Merchandise Found with that code');
             return back();
+        }
+    }
+
+    //FUnction to Send SMS
+
+    public function sendSMS($receiverNumber, $message)
+    {
+
+        try {
+
+
+            $headers = [
+                'Cookie: ci_session=ttdhpf95lap45hq8t3h255af90npbb3ql'
+            ];
+
+            $encodMessage = rawurlencode($message);
+
+            $url = 'https://3.229.54.57/expresssms/Api/send_bulk_api?action=send-sms&api_key=Snh2SGFQT0dIZmFtcRGU9ZXBlcEQ=&to=' . $receiverNumber . '&from=IMS&sms=' . $encodMessage . '&response=json&unicode=0&bulkbalanceuser=voucher';
+
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_ENCODING, "");
+            curl_setopt($ch, CURLOPT_MAXREDIRS, 10);
+            curl_setopt($ch, CURLOPT_TIMEOUT, 0);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true,);
+            curl_setopt($ch, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+
+            $response = curl_exec($ch);
+            $res = json_decode($response);
+            date_default_timezone_set('Africa/Nairobi');
+            $date = date('m/d/Y h:i:s a', time());
+
+            curl_close($ch);
+        } catch (\Exception $e) {
+
+            return redirect()->back()->with("error", $e);
         }
     }
 }

@@ -358,6 +358,8 @@ class SPAApiController extends Controller
                     $item = [
                         'batch' => $bch->batch_code,
                         'confirm_status' => $pb->accept_status == 1 ? true : false,
+                        'product_count' => DB::table('products')->wherebatch_tl_id($pb->id)->count(),
+                        'merchandise_type' => DB::table('categories')->whereid(Product::wherebatch_ba_id($pb->id)->value('category_id'))->value('title'),
                     ];
                     array_push($data, $item);
                 }
@@ -379,6 +381,7 @@ class SPAApiController extends Controller
                     'batch' => $pb->batch_code,
                     'confirm_status' => $pb->accept_status == 1 ? true : false,
                     'product_count' => DB::table('products')->wherebatch_tl_id($pb->id)->count(),
+                    'merchandise_type' => DB::table('categories')->whereid(Product::wherebatch_ba_id($pb->id)->value('category_id'))->value('title'),
                 ];
                 array_push($data, $item);
             }
@@ -403,6 +406,7 @@ class SPAApiController extends Controller
                     'batch' => $pb->batch_code,
                     'confirm_status' => $pb->accept_status == 1 ? true : false,
                     'product_count' => DB::table('products')->wherebatch_ba_id($pb->id)->count(),
+                    'merchandise_type' => DB::table('categories')->whereid(Product::wherebatch_ba_id($pb->id)->value('category_id'))->value('title'),
                 ];
                 array_push($data, $item);
             }
