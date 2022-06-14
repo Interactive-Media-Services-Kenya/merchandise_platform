@@ -7,6 +7,17 @@
 @endsection
 @section('content')
     @can('tb_access')
+        <div style="margin-bottom: 10px;" class="row">
+            <div class="col-lg-12">
+                <div class="row">
+                    <div class="col-md-6">
+                        <a class="btn btn-success" href="{{ route('users.create') }}">
+                            Add Sales Representative
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="card">
             <div class="card-header">
                 Team Leaders
@@ -41,7 +52,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($teamleaders as $key => $teamleader)
+                            @foreach ($salesreps as $key => $teamleader)
                                 <tr data-entry-id="{{ $teamleader->id }}">
                                     <td>
 

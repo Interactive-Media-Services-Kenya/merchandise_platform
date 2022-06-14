@@ -238,7 +238,7 @@ class SPAApiController extends Controller
             if ($batchRejected) {
                 return response()->json([
                     'status' => 0,
-                    'message' => 'Batch Is Already Confirmed',
+                    'message' => 'Batch Is Already Rejected',
                 ]);
             }
             $batch = Batch::wherebatch_code($request->batch_code)->where('accept_status', '!=', 1)->first();
@@ -263,7 +263,6 @@ class SPAApiController extends Controller
                 'created_at' => \Carbon\Carbon::now(),
             ]);
 
-            //Send A confirmation sms to user
             //Send A confirmation sms to user
             $phoneNumber = Auth::user()->phone;
             $rejectMessage = 'You have successfull rejected Merchandise of Batch: ' . $request->batch_code;

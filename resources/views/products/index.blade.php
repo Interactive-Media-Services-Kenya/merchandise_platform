@@ -154,10 +154,10 @@
             <div class="col-lg-12">
                 <div class="row">
                     <div class="col-md-6">
-                        <a class="btn btn-success" href="{{ route('products.create') }}">
-                            Add Merchandise
-                        </a> &nbsp; <a class="btn btn-primary text-end" href="{{ route('products.assign.create') }}">
-                            Assign Merchandise To Team Leader
+                        <a class="btn btn-success" href="{{ route('products.assign.teamleader') }}">
+                            Assign to Team Leaders
+                        </a> &nbsp; </a> <a class="btn btn-primary" href="{{ route('products.assign.brandambbassador') }}">
+                            Assign to BrandAmbassador
                         </a>
                     </div>
                     <div class="col-md-6">

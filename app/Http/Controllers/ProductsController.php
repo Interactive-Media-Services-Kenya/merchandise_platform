@@ -286,7 +286,7 @@ class ProductsController extends Controller
     public function assignProductsCreateTL()
     {
         $teamleaders = User::where('role_id', 3)->get();
-        $salesreps = User::where('role_id', 3)->where('client_id', Auth::user()->client_id)->get();
+        $salesreps = User::where('role_id', 3)->where('client_id', Auth::user()->client_id)->whereNotNull('client_id')->get();
         $agencies = User::whererole_id(2)->cursor();
         $clients = Client::all();
         $categories = Category::all();
@@ -901,6 +901,7 @@ class ProductsController extends Controller
                         ->where('category_id', $request->category_id)
                         ->where('size', $request->size)
                         ->where('color', $request->color)->whereowner_id(Auth::id())->whereba_id(null)->first();
+                        // dd($product);
                     if ($product == null) {
                         Alert::error('Failed', 'No Merchandise Found! Kindly Add the Merchandise Before Assigning');
                         return back();
@@ -938,7 +939,15 @@ class ProductsController extends Controller
                         'ba_id' => $request->ba_id,
                     ]);
                 }
+                //! Sending to the Assignee (Super Admin)
+                $assigneePhone = Auth::user()->phone;
+                $assigneeMessage = 'Merchandise ' . $product->product_code . ' assigned to ' . User::whereid($request->ba_id)->value('name') . ' Phone: ' . User::whereid($request->ba_id)->value('phone');
+                $this->sendSMS($assigneePhone, $assigneeMessage);
 
+                //! Sending to the Assigned User (Agency)
+                $assignedPhone = User::whereid($request->ba_id)->value('phone');
+                $assignedMessage = 'You have been assigned Merchandise ('. DB::table('categories')->whereid($request->category_id)->value('title') .'): ' . $product->product_code . ' by ' . Auth::user()->name . ' of Phone: ' . Auth::user()->phone . ' Kindly Login to the App by clicking the link : ' . $url_login;
+                $this->sendSMS($assignedPhone, $assignedMessage);
                 Alert::success('Success', 'Operation Successful');
                 return back();
             }
@@ -1026,6 +1035,15 @@ class ProductsController extends Controller
                         ]);
                     }
                 }
+                //! Sending to the Assignee (Agency)
+                $assigneePhone = Auth::user()->phone;
+                $assigneeMessage = 'Batch: ' . $batch_code . ' of ' . $request->quantity . ' ' . DB::table('categories')->whereid($request->category_id)->value('title') . ' assigned to ' . User::whereid($request->ba_id)->value('name') . ' Phone: ' . User::whereid($request->ba_id)->value('phone');
+                $this->sendSMS($assigneePhone, $assigneeMessage);
+
+                //! Sending to the Assigned User (Team Leader)
+                $assignedPhone = User::whereid($request->ba_id)->value('phone');
+                $assignedMessage = 'You have been assigned Merchandise (' . $request->quantity . ' ' . DB::table('categories')->whereid($request->category_id)->value('title') . ') Batch Code: ' . $batch_code . ' by ' . Auth::user()->name . ' of Phone: ' . Auth::user()->phone . ' Kindly Login to the App by clicking the link : ' . $url_login;
+                $this->sendSMS($assignedPhone, $assignedMessage);
                 Alert::success('Success', 'Operation Successful');
                 return back();
             } else {
