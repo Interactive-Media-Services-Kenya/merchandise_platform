@@ -14,6 +14,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\Facades\DataTables;
 use Carbon\Carbon;
+use DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
 use RealRashid\SweetAlert\Facades\Alert;
@@ -62,8 +63,8 @@ class HomeController extends Controller
             //? Clients with Merchandise Team Leaders
             $clientsWithMerchandiseTL = Product::select('client_id')->where('assigned_to', Auth::id())->groupBy('client_id')->get();
 
-            //True Blaq
-            $batchesConfirmed = Batch::orderBy('updated_at', 'DESC')->where('accept_status', 1)->take(5)->get();
+            //True Blaq by Teamleaders
+            $batchesConfirmed = DB::table('batch_teamleaders')->whereaccept_status(1)->whereteam_leader_id(Auth::id())->take(5)->get();
             //dd($batchesConfirmed);
             // ? Team Leader Data
             // ? Product for a team leader

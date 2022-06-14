@@ -133,7 +133,7 @@ class SPAApiController extends Controller
             }
             $batch = Batch::wherebatch_code($request->batch_code)->whereaccept_status(0)->first();
 
-            if($batch == null){
+            if ($batch == null) {
                 return response()->json([
                     'status' => 0,
                     'message' => 'No Batches Found',
@@ -145,7 +145,9 @@ class SPAApiController extends Controller
             ]);
 
             //Send A confirmation sms to user
-
+            $phoneNumber = Auth::user()->phone;
+            $rejectMessage = 'You have successfully Accepted Merchandise of Batch: ' . $request->batch_code;
+            $this->sendSMS($phoneNumber, $rejectMessage);
             //return response message
             return response()->json([
                 'status' => 1,
@@ -164,17 +166,20 @@ class SPAApiController extends Controller
             }
             $batch = DB::table('batch_teamleaders')->wherebatch_code($request->batch_code)->whereaccept_status(0)->whereteam_leader_id(Auth::id())->first();
 
-            if($batch == null){
+            if ($batch == null) {
                 return response()->json([
                     'status' => 0,
                     'message' => 'No Batches Found',
                 ]);
             }
 
-            DB::table('batch_teamleaders')->wherebatch_code($request->batch_code)->update([ 'accept_status' => 1]);
+            DB::table('batch_teamleaders')->wherebatch_code($request->batch_code)->update(['accept_status' => 1, 'updated_at' => \Carbon\Carbon::now()]);
 
             //Send A confirmation sms to user
-
+            //Send A confirmation sms to user
+            $phoneNumber = Auth::user()->phone;
+            $rejectMessage = 'You have successfull Accepted Merchandise of Batch: ' . $request->batch_code;
+            $this->sendSMS($phoneNumber, $rejectMessage);
             //return response message
             return response()->json([
                 'status' => 1,
@@ -192,17 +197,20 @@ class SPAApiController extends Controller
             }
             $batch = DB::table('batch_brandambassadors')->wherebatch_code($request->batch_code)->whereaccept_status(0)->wherebrand_ambassador_id(Auth::id())->first();
 
-            if($batch == null){
+            if ($batch == null) {
                 return response()->json([
                     'status' => 0,
                     'message' => 'No Batches Found',
                 ]);
             }
 
-            DB::table('batch_brandambassadors')->wherebatch_code($request->batch_code)->update([ 'accept_status' => 1]);
+            DB::table('batch_brandambassadors')->wherebatch_code($request->batch_code)->update(['accept_status' => 1]);
 
             //Send A confirmation sms to user
-
+            //Send A confirmation sms to user
+            $phoneNumber = Auth::user()->phone;
+            $rejectMessage = 'You have successfully Accepted Merchandise of Batch: ' . $request->batch_code;
+            $this->sendSMS($phoneNumber, $rejectMessage);
             //return response message
             return response()->json([
                 'status' => 1,
@@ -213,10 +221,11 @@ class SPAApiController extends Controller
 
 
     //? Get All reject Reasons
-    public function rejectReasons(){
+    public function rejectReasons()
+    {
         $rejectReasons = Reason::all();
         return response()->json([
-            $rejectReasons,200
+            $rejectReasons, 200
         ]);
     }
     public function batchReject(Request $request)
@@ -232,9 +241,9 @@ class SPAApiController extends Controller
                     'message' => 'Batch Is Already Confirmed',
                 ]);
             }
-            $batch = Batch::wherebatch_code($request->batch_code)->where('accept_status','!=',1)->first();
+            $batch = Batch::wherebatch_code($request->batch_code)->where('accept_status', '!=', 1)->first();
 
-            if($batch == null){
+            if ($batch == null) {
                 return response()->json([
                     'status' => 0,
                     'message' => 'No Batches Found',
@@ -247,7 +256,7 @@ class SPAApiController extends Controller
 
             //Add the reject + Reason
             DB::table('batch_rejects')->insert([
-                'user_id'=> Auth::id(),
+                'user_id' => Auth::id(),
                 'batch_agency_id' => $batch->id,
                 'reason_id' => $request->reason_id,
                 'description' => $request->description,
@@ -255,7 +264,10 @@ class SPAApiController extends Controller
             ]);
 
             //Send A confirmation sms to user
-
+            //Send A confirmation sms to user
+            $phoneNumber = Auth::user()->phone;
+            $rejectMessage = 'You have successfull rejected Merchandise of Batch: ' . $request->batch_code;
+            $this->sendSMS($phoneNumber, $rejectMessage);
             //return response message
             return response()->json([
                 'status' => 1,
@@ -274,18 +286,18 @@ class SPAApiController extends Controller
             }
             $batch = DB::table('batch_teamleaders')->wherebatch_code($request->batch_code)->where('accept_status', '!=', 1)->whereteam_leader_id(Auth::id())->first();
 
-            if($batch == null){
+            if ($batch == null) {
                 return response()->json([
                     'status' => 0,
                     'message' => 'No Batches Found',
                 ]);
             }
 
-            DB::table('batch_teamleaders')->wherebatch_code($request->batch_code)->update([ 'reject_status' => 1]);
+            DB::table('batch_teamleaders')->wherebatch_code($request->batch_code)->update(['reject_status' => 1]);
 
             //Add the reject + Reason
             DB::table('batch_rejects')->insert([
-                'user_id'=> Auth::id(),
+                'user_id' => Auth::id(),
                 'batch_teamleader_id' => DB::table('batch_teamleaders')->wherebatch_code($request->batch_code)->value('id'),
                 'reason_id' => $request->reason_id,
                 'description' => $request->description,
@@ -293,7 +305,10 @@ class SPAApiController extends Controller
             ]);
 
             //Send A confirmation sms to user
-
+            //Send A confirmation sms to user
+            $phoneNumber = Auth::user()->phone;
+            $rejectMessage = 'You have successfull rejected Merchandise of Batch: '.$request->batch_code;
+            $this->sendSMS($phoneNumber,$rejectMessage);
             //return response message
             return response()->json([
                 'status' => 1,
@@ -311,18 +326,18 @@ class SPAApiController extends Controller
             }
             $batch = DB::table('batch_brandambassadors')->wherebatch_code($request->batch_code)->where('accept_status', '!=', 1)->wherebrand_ambassador_id(Auth::id())->first();
 
-            if($batch == null){
+            if ($batch == null) {
                 return response()->json([
                     'status' => 0,
                     'message' => 'No Batches Found',
                 ]);
             }
 
-            DB::table('batch_brandambassadors')->wherebatch_code($request->batch_code)->update([ 'reject_status' => 1]);
+            DB::table('batch_brandambassadors')->wherebatch_code($request->batch_code)->update(['reject_status' => 1]);
 
             //Add the reject + Reason
             DB::table('batch_rejects')->insert([
-                'user_id'=> Auth::id(),
+                'user_id' => Auth::id(),
                 'batch_brandambassador_id' => DB::table('batch_brandambassadors')->wherebatch_code($request->batch_code)->value('id'),
                 'reason_id' => $request->reason_id,
                 'description' => $request->description,
@@ -330,7 +345,10 @@ class SPAApiController extends Controller
             ]);
 
             //Send A confirmation sms to user
-
+            //Send A confirmation sms to user
+            $phoneNumber = Auth::user()->phone;
+            $rejectMessage = 'You have successfull rejected Merchandise of Batch: '.$request->batch_code;
+            $this->sendSMS($phoneNumber,$rejectMessage);
             //return response message
             return response()->json([
                 'status' => 1,
@@ -345,7 +363,7 @@ class SPAApiController extends Controller
         //Batches for Agency
         if (Auth::user()->role_id == 2) {
             $productBatch = Product::whereowner_id(Auth::id())->groupBy('batch_id')->get();
-            if($productBatch->count() == 0){
+            if ($productBatch->count() == 0) {
                 return response()->json([
                     'status' => 0,
                     'message' => 'No Batches Found',
@@ -369,7 +387,7 @@ class SPAApiController extends Controller
         //Batches for TL
         if (Auth::user()->role_id == 3) {
             $batch = DB::table('batch_teamleaders')->select('*')->whereteam_leader_id(Auth::id())->get();
-            if($batch->count() == 0){
+            if ($batch->count() == 0) {
                 return response()->json([
                     'status' => 0,
                     'message' => 'No Batches Found',
@@ -385,16 +403,16 @@ class SPAApiController extends Controller
                 ];
                 array_push($data, $item);
             }
-            $count= ['batch_count' => DB::table('batch_teamleaders')->select('*')->whereteam_leader_id(Auth::id())->count()];
+            //$count = ['batch_count' => DB::table('batch_teamleaders')->select('*')->whereteam_leader_id(Auth::id())->count()];
 
-            array_push($data, $count);
+           // array_push($data, $count);
 
             return response()->json($data, 200);
         }
         // Batches For BAs
         if (Auth::user()->role_id == 4) {
             $batch = DB::table('batch_brandambassadors')->select('*')->wherebrand_ambassador_id(Auth::id())->get();
-            if($batch->count() == 0){
+            if ($batch->count() == 0) {
                 return response()->json([
                     'status' => 0,
                     'message' => 'No Batches Found',
@@ -410,12 +428,17 @@ class SPAApiController extends Controller
                 ];
                 array_push($data, $item);
             }
-            $count= ['batch_count' => DB::table('batch_brandambassadors')->select('*')->wherebrand_ambassador_id(Auth::id())->count()];
+            // $count = ['batch_count' => DB::table('batch_brandambassadors')->select('*')->wherebrand_ambassador_id(Auth::id())->count()];
 
-            array_push($data, $count);
+            // array_push($data, $count);
 
             return response()->json($data, 200);
         }
+
+        return response()->json([
+            'status' => 0,
+            'message' => 'Unauthorised User'
+        ]);
     }
     //Brand Ambassadors
     public function IssueProductBA(Request $request)
@@ -656,5 +679,47 @@ class SPAApiController extends Controller
                 'count' => count($productCodesInvalid),
             ]
         ]);
+    }
+
+
+    //FUnction to Send SMS
+
+    public function sendSMS($receiverNumber, $message)
+    {
+
+        try {
+
+
+            $headers = [
+                'Cookie: ci_session=ttdhpf95lap45hq8t3h255af90npbb3ql'
+            ];
+
+            $encodMessage = rawurlencode($message);
+
+            $url = 'https://3.229.54.57/expresssms/Api/send_bulk_api?action=send-sms&api_key=Snh2SGFQT0dIZmFtcRGU9ZXBlcEQ=&to=' . $receiverNumber . '&from=IMS&sms=' . $encodMessage . '&response=json&unicode=0&bulkbalanceuser=voucher';
+
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_ENCODING, "");
+            curl_setopt($ch, CURLOPT_MAXREDIRS, 10);
+            curl_setopt($ch, CURLOPT_TIMEOUT, 0);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true,);
+            curl_setopt($ch, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+
+            $response = curl_exec($ch);
+            $res = json_decode($response);
+            date_default_timezone_set('Africa/Nairobi');
+            $date = date('m/d/Y h:i:s a', time());
+
+            curl_close($ch);
+        } catch (\Exception $e) {
+
+            return redirect()->back()->with("error", $e);
+        }
     }
 }

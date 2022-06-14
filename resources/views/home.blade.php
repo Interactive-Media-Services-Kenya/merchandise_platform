@@ -408,7 +408,7 @@
                                                 {{ $batch->batch_code }}
                                             </td>
                                             <td>
-                                                {{ $batch->teamleader->name }} ({{ $batch->teamleader->email }})
+                                                {{ \App\Models\User::whereid($batch->team_leader_id)->value('name')??'' }} {{ \App\Models\User::whereid($batch->team_leader_id)->value('email')??'' }}
                                             </td>
 
                                             {{-- <td class="text-center">
@@ -1086,7 +1086,7 @@
                                                 {{ $batch->batch_code }}
                                             </td>
                                             <td>
-                                                {{ $batch->teamleader->name }} ({{ $batch->teamleader->email }})
+                                                {{ $batch->teamleader->name ?? '' }} ({{ $batch->teamleader->email?? '' }})
                                             </td>
 
                                             {{-- <td class="text-center">
