@@ -306,8 +306,8 @@ class SPAApiController extends Controller
             //Send A confirmation sms to user
             //Send A confirmation sms to user
             $phoneNumber = Auth::user()->phone;
-            $rejectMessage = 'You have successfull rejected Merchandise of Batch: '.$request->batch_code;
-            $this->sendSMS($phoneNumber,$rejectMessage);
+            $rejectMessage = 'You have successfull rejected Merchandise of Batch: ' . $request->batch_code;
+            $this->sendSMS($phoneNumber, $rejectMessage);
             //return response message
             return response()->json([
                 'status' => 1,
@@ -346,8 +346,8 @@ class SPAApiController extends Controller
             //Send A confirmation sms to user
             //Send A confirmation sms to user
             $phoneNumber = Auth::user()->phone;
-            $rejectMessage = 'You have successfull rejected Merchandise of Batch: '.$request->batch_code;
-            $this->sendSMS($phoneNumber,$rejectMessage);
+            $rejectMessage = 'You have successfull rejected Merchandise of Batch: ' . $request->batch_code;
+            $this->sendSMS($phoneNumber, $rejectMessage);
             //return response message
             return response()->json([
                 'status' => 1,
@@ -404,7 +404,7 @@ class SPAApiController extends Controller
             }
             //$count = ['batch_count' => DB::table('batch_teamleaders')->select('*')->whereteam_leader_id(Auth::id())->count()];
 
-           // array_push($data, $count);
+            // array_push($data, $count);
 
             return response()->json($data, 200);
         }
@@ -617,6 +617,19 @@ class SPAApiController extends Controller
             $color = $pr['color'];
 
 
+            $alreadyUploadedCode = DB::table('products')->whereproduct_code($product_code)->value('product_code');
+            $validCode = DB::table('product_codes')->whereproduct_code($product_code)->where('product_code', '!=', $alreadyUploadedCode)->value('product_code');
+            if ($validCode == $product_code) {
+                DB::table('products')->insert([
+                    'product_code' => $product_code,
+                    'client_id' => $client_id,
+                    'category_id' => $category_id,
+                    // 'storage_id'=>$storage_id,
+                    'brand_id' => $brand_id,
+                    'size' => $size,
+                    'color' => $color,
+                ]);
+            }
             $assigned_product = DB::table('products')->where('product_code', $product_code)->first();
             //dd($assigned_product->count());
             if ($assigned_product != null) {
@@ -624,51 +637,6 @@ class SPAApiController extends Controller
             } else {
                 array_push($productCodesInvalid, $product_code);
             }
-
-
-            // if ($assigned_product->count() != 0) {
-            //     return response()->json([
-            //         'message' => "Product Code Is already Uploaded",
-            //         'status' => 0,
-            //     ]);
-            // }
-            // $product = DB::table('product_codes')->where('product_code', $product_code)->get();
-
-            // if ($product != null) {
-            //     $product_upload = Product::where('product_code', null)->first();
-
-            //     if ($product_upload != null) {
-            //         $product_upload->update([
-            //             'product_code' => $product_code,
-            //             'category_id'=> $category_id,
-            //             'client_id' => $client_id,
-            //             'brand_id' => $brand_id,
-            //         ]);
-            //         $batch = Batch::where('id',$product_upload->batch_id)->first();
-            //         $batch->update([
-            //             'storage_id' => $request->storage_id,
-            //             'size' => $size,
-            //             'color' => $color,
-            //         ]);
-            //         Activity::create([
-            //             'title' => 'Merchandise Uploaded',
-            //             'user_id' => Auth::id(),
-            //             'description' => Auth::user()->name . ' have uploaded merchandise: ' . $product_code,
-            //         ]);
-            //     //    array_push($product_upload,)
-            //     } else {
-            //         return response()->json([
-            //             'message' => "Product Code is not Uploaded",
-            //             'status' => 0,
-            //         ]);
-            //     }
-            // } else {
-            //     return response()->json([
-            //         'message' => "Product Code does not exist",
-            //         'status' => 0,
-            //     ]);
-            // }
-
         }
         return response()->json([
             'status' => 1,
@@ -678,6 +646,50 @@ class SPAApiController extends Controller
                 'count' => count($productCodesInvalid),
             ]
         ]);
+    }
+
+
+    //Fetch Products In Batch
+    public function batchProducts($batch_code)
+    {
+        // Batch for Agency
+        if (Auth::user()->role_id == 2) {
+            $batch = DB::table('batches')->wherebatch_code($batch_code)->value('id');
+            $products = Product::select('product_code',)->wherebatch_id($batch)->cursor();
+            $batchProducts = [];
+            foreach ($products as $product) {
+                array_push($batchProducts,$product->product_code);
+            }
+        }
+        //Batch for TeamLeader
+        if (Auth::user()->role_id == 3) {
+            $batch = DB::table('batch_teamleaders')->wherebatch_code($batch_code)->value('id');
+            $products = Product::select('product_code',)->wherebatch_tl_id($batch)->cursor();
+            $batchProducts = [];
+            foreach ($products as $product) {
+                array_push($batchProducts, $product->product_code);
+            }
+        }
+        //Batch for BrandAmbassador
+        if (Auth::user()->role_id == 4) {
+            $batch = DB::table('batch_brandambassadors')->wherebatch_code($batch_code)->value('id');
+            $products = Product::select('product_code',)->wherebatch_ba_id($batch)->cursor();
+            $batchProducts = [];
+            foreach ($products as $product) {
+                array_push($batchProducts, $product->product_code);
+            }
+        }
+        if ($batchProducts != null) {
+            return response()->json([
+                'status'=>1,
+                'products' => $batchProducts,
+            ]);
+        }else{
+            return response()->json([
+                'status' => 0,
+                'message' => 'No Products In Batch'
+            ]);
+        }
     }
 
 

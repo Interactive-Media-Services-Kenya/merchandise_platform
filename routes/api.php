@@ -46,6 +46,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
         Route::get('/v1/batches','Api\SPAApiController@batches')->name('api.batches');
         Route::get('/v1/reject_reasons','Api\SPAApiController@rejectReasons')->name('api.reject_reasons');
         Route::post('/v1/batch_accept','Api\SPAApiController@batchAccept')->name('api.batch_accept');
+        Route::get('/v1/batch_products/{batch}','Api\SPAApiController@batchProducts')->name('api.batch_products');
         Route::post('/v1/batch_reject','Api\SPAApiController@batchReject')->name('api.batch_reject');
         Route::get('/v1/sizes','Api\SPAApiController@sizes')->name('api.sizes');
         Route::post('/v1/upload_merchandise','Api\SPAApiController@uploadMerchandise')->name('api.upload_merchandise');
