@@ -22,7 +22,7 @@ class BatchController extends Controller
 {
     public function index()
     {
-        $batchesTls = DB::table('batch_teamleaders')->whereteam_leader_id(Auth::id())->cursor();
+        $batchesTls = DB::table('batch_teamleaders')->whereteam_leader_id(Auth::id())->orderBy('created_at','DESC')->cursor();
 
         $batchesbas = DB::table('batch_brandambassadors')->wherebrand_ambassador_id(Auth::id())->cursor();
 

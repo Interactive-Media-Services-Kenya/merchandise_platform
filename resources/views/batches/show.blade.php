@@ -399,7 +399,7 @@
                                             <th>
                                                 Batch Code
                                             </th>
-                                            <th>Status (Confirm)</th>
+                                            {{-- <th>Status (Confirm)</th> --}}
                                             <th>
                                                 Actions
                                             </th>
@@ -412,27 +412,27 @@
                                                     {{ $product->id ?? '' }}
                                                 </td>
                                                 <td>
-                                                    {{ $product->product->category->title ?? '' }}
+                                                    {{ $product->category->title ?? '' }}
                                                 </td>
                                                 <td>
-                                                    {{ $product->product->client->name ?? '' }}
+                                                    {{ $product->client->name ?? '' }}
                                                 </td>
                                                 <td>
-                                                    {{ $product->product->product_code ?? '' }}
+                                                    {{ $product->product_code ?? '' }}
                                                 </td>
 
                                                 <td>
                                                     {{ $product->batch->batch_code ?? 'Single Product' }}
                                                 </td>
-                                                <td> {{ $product->product->accept_status == 1 ? 'Confirmed' : 'Not Confirmed' }}
+                                                <td> {{ $product->accept_status == 1 ? 'Confirmed' : 'Not Confirmed' }}
                                                 </td>
                                                 <td>
-                                                    <a href="{{ route('product.confirm', [$product->product->id]) }}"
+                                                    <a href="{{ route('product.confirm', [$product->id]) }}"
                                                         class="btn btn-success btn-sm"
                                                         onclick="return confirm('Are you Sure?')">Confirm</a>
                                                     <!-- Button trigger modal -->
                                                     <a class="btn btn-sm btn-primary" data-toggle="modal"
-                                                        data-target="#staticBackdrop{{ $product->product->id }}">
+                                                        data-target="#staticBackdrop{{ $product->id }}">
                                                         Reject
                                                     </a>
 
@@ -440,14 +440,14 @@
                                                 </td>
                                             </tr>
                                             <!-- Modal -->
-                                            <div class="modal fade" id="staticBackdrop{{ $product->product->id }}"
+                                            <div class="modal fade" id="staticBackdrop{{ $product->id }}"
                                                 data-backdrop="static" data-keyboard="false" tabindex="-1"
                                                 aria-labelledby="staticBackdropLabel" aria-hidden="true">
                                                 <div class="modal-dialog">
                                                     <div class="modal-content">
                                                         <div class="modal-header">
                                                             <h5 class="modal-title" id="staticBackdropLabel">
-                                                                {{ $product->product->product_code }}
+                                                                {{ $product->product_code }}
                                                             </h5>
                                                             <button type="button" class="close"
                                                                 data-dismiss="modal" aria-label="Close">
@@ -455,7 +455,7 @@
                                                             </button>
                                                         </div>
                                                         <form
-                                                            action="{{ route('product.reject', [$product->product->id]) }}"
+                                                            action="{{ route('product.reject', [$product->id]) }}"
                                                             method="post">
                                                             @csrf
                                                             <div class="modal-body">

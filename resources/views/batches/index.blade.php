@@ -92,13 +92,13 @@
                                             </td>
                                             <td class="align-middle text-center text-sm">
                                                 <span class="text-xs font-weight-bold">
-                                                    {{ count(
-                                                        \DB::table('products')->where('assigned_to', Auth::id())->where('batch_id', $batch->id)->get(),
-                                                    ) }}</span>
+                                                    {{
+                                                        \DB::table('products')->where('assigned_to', Auth::id())->where('batch_id', $batch->id)->count(),
+                                                     }}</span>
                                             </td>
                                             <td class="align-middle text-center text-sm">
                                                 <span class="text-xs font-weight-bold">
-                                                    {{ count(\DB::table('productbas')->where('batch_id',$batch->id)->get()) ?? '' }}</span>
+                                                    {{ \DB::table('products')->whereassigned_to(Auth::id())->wherebatch_ba_id($batch->id)->where('ba_id','!=', null)->count() }}</span>
                                             </td>
                                             <td class="align-middle text-center text-sm">
                                                 <span class="text-xs font-weight-bold">
