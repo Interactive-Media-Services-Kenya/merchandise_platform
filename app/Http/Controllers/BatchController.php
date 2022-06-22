@@ -8,6 +8,7 @@ use App\Models\Product;
 use App\Models\Productbas;
 use App\Models\Reason;
 use App\Models\Reject;
+use Gate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use RealRashid\SweetAlert\Facades\Alert;
@@ -15,38 +16,58 @@ use App\Mail\AssignMerchandise;
 use App\Models\Activity;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Mail;
+use DB;
 
 class BatchController extends Controller
 {
     public function index()
     {
-        $batchesTls = Product::select('*')->where('assigned_to',Auth::id())->groupBy('batch_id')->get();
+        $batchesTls = DB::table('batch_teamleaders')->whereteam_leader_id(Auth::id())->cursor();
 
-        $batchesbas = Productbas::select('*')->where('assigned_to', Auth::id())->groupBy('batch_id')->get();
+        $batchesbas = DB::table('batch_brandambassadors')->wherebrand_ambassador_id(Auth::id())->cursor();
 
-        return view('batches.index', compact('batchesbas','batchesTls'));
+
+        return view('batches.index', compact('batchesbas', 'batchesTls'));
     }
-
 
     public function show($id)
     {
-        $batch = Batch::findOrFail($id);
-        // ? Products Brand Ambassodors
-        $productaccepted = Product::select('id')->where('batch_id', $id)->where('accept_status', 0)->get();
-        $productRejects = Reject::select('product_id')->where('user_id', Auth::id())->whereIn('product_id', $productaccepted)->get();
-        $products = Productbas::select('*')->whereIn('batch_id', $batch)->whereIn('product_id', $productaccepted)->whereNotIn('product_id', $productRejects)->where('assigned_to', Auth::id())->get();
+        if (Gate::allows('tb_access')) {
+            $batch = DB::table('batches')->whereid($id)->first();
+            if($batch == null){
+                Alert::error('Failed','No Batch Found!');
+                return back();
+            }
+            $products = Product::whereowner_id(Auth::id())->cursor();
 
-        // ? Products Team Leaders
-        // $productsTl = Product::where('products.batch_id', $id)->where('products.assigned_to',Auth::id())
-        //     ->join('batches', 'batches.id', 'products.batch_id')
-        //     ->where('batches.tl_id_accept', Auth::id())->get();
-        $productsTl = Product::where('products.batch_id', $id)
-            ->join('batches', 'batches.id', 'products.batch_id')->where('batches.accept_status', 0)->get();
-        //dd($productsTl);
-        // ? Rejecting Reasons
-        $reasons = Reason::all();
-        return view('batches.show', compact('batch', 'products', 'reasons', 'productsTl'));
+            $reasons = Reason::all();
+            return view('batches.show', compact('batch', 'products', 'reasons'));
+        }
+        if (Gate::allows('team_leader_access')) {
+            $batch = DB::table('batch_teamleaders')->whereid($id)->first();
+            if($batch == null){
+                Alert::error('Failed','No Batch Found!');
+                return back();
+            }
+            $products = Product::whereassigned_to(Auth::id())->cursor();
+
+            $reasons = Reason::all();
+            return view('batches.show', compact('batch', 'products', 'reasons'));
+        }
+
+        if (Gate::allows('brand_ambassador_access')) {
+            $batch = DB::table('batch_brandambassadors')->whereid($id)->first();
+            if($batch == null){
+                Alert::error('Failed','No Batch Found!');
+                return back();
+            }
+            $products = Product::whereba_id(Auth::id())->cursor();
+
+            $reasons = Reason::all();
+            return view('batches.show', compact('batch', 'products', 'reasons'));
+        }
     }
+
     public function confirmBatch($id)
     {
 
@@ -60,11 +81,11 @@ class BatchController extends Controller
                 'accept_status' => 1,
             ]);
             Activity::create([
-                'title'=> 'Confirm Batch',
+                'title' => 'Confirm Batch',
                 'user_id' => Auth::id(),
-                'description' => Auth::user()->name.' have confirmed Batch: '.$batch->batch_code ,
+                'description' => Auth::user()->name . ' have confirmed Batch: ' . $batch->batch_code,
             ]);
-            Alert::success('Success','Operation Successfull');
+            Alert::success('Success', 'Operation Successfull');
             return back();
         } else {
             Alert::error('Failed', 'Batch is Already Confirmed');
@@ -77,8 +98,8 @@ class BatchController extends Controller
     {
 
         $productsTl = Product::where('products.batch_id', $id)
-                            ->join('batches', 'batches.id', 'products.batch_id')
-                            ->where('batches.tl_id_accept', Auth::id())->where('batches.accept_status', 0)->get();
+            ->join('batches', 'batches.id', 'products.batch_id')
+            ->where('batches.tl_id_accept', Auth::id())->where('batches.accept_status', 0)->get();
         if (count($productsTl) > 0) {
             foreach ($productsTl as $product) {
                 $batch = Batch::findOrFail($id);

@@ -36,7 +36,7 @@
                         </div>
                         <div class="text-end pt-1">
                             <p class="text-sm mb-0 text-capitalize">Registered Brand Ambassadors</p>
-                            <h4 class="mb-0">{{ count($bas) }}</h4>
+                            <h4 class="mb-0">{{ $bas }}</h4>
                         </div>
                     </div>
                     <hr class="dark horizontal my-0">
@@ -822,29 +822,28 @@
                                             <td>
                                                 <div class="d-flex px-2 py-1">
                                                     <div class="d-flex flex-column justify-content-center">
-                                                        <h6 class="mb-0 text-sm">{{ $batch->batch->batch_code }}</h6>
+                                                        <h6 class="mb-0 text-sm">{{ $batch->batch_code }}</h6>
                                                     </div>
                                                 </div>
                                             </td>
                                             <td>
                                                 <div class="avatar-group mt-2">
-                                                    <h6>{{ $batch->product->category->title }}</h6>
+                                                    @php
+                                                        $productCat = \App\Models\Product::wherebatch_ba_id($batch->id)->first();
+                                                    @endphp
+                                                    <h6>{{ $productCat->category->title ?? '' }}</h6>
                                                 </div>
                                             </td>
                                             <td class="align-middle text-center text-sm">
                                                 <span class="text-xs font-weight-bold">
-                                                    {{ count(
-                                                        \DB::table('products')->where('products.batch_id', $batch->batch->id)->join('productbas', 'productbas.product_id', 'products.id')->where('productbas.assigned_to', Auth::id())->get(),
-                                                    ) }}</span>
+                                                    </span>
                                             </td>
                                             <td class="align-middle text-center text-sm">
                                                 <span class="text-xs font-weight-bold">
-                                                    {{ count(
-                                                        \DB::table('issue_products')->where('batch_id', $batch->batch->id)->where('ba_id', Auth::id())->get(),
-                                                    ) }}</span>
+                                                     </span>
                                             </td>
                                             <td class="align-middle text-center text-sm"><a
-                                                    href="{{ route('batch.show', [$batch->batch_id]) }}"
+                                                    href="{{ route('batch.show', [$batch->id]) }}"
                                                     class="btn btn-sm btn-info">View</a>
                                                 {{-- <a href="#"
                                                 class="btn btn-sm btn-success">Confirm</a> &nbsp;

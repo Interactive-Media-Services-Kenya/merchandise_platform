@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\Facades\DataTables;
 use Carbon\Carbon;
 use DB;
+use Gate;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
 use RealRashid\SweetAlert\Facades\Alert;
@@ -41,91 +42,155 @@ class HomeController extends Controller
         if (auth()->user()->password_changed_at == null) {
             return view('auth.first_login.reset');
         } else {
-            //Admin data & TB Data
-            $rejects = Reject::select('product_id')->get();
-            $productsAdmin = count(Product::with(['category', 'assign', 'batch', 'client'])->select('products.*')->cursor());
-            //All products
-            $products = Product::where('owner_id', Auth::id())->get();
-            $batches = Batch::join('storages', 'storages.id', 'batches.storage_id')->where('storages.client_id', null)->get();
-            //Batches for a client
-            $batchesClient = Batch::join('storages', 'storages.id', 'batches.storage_id')->where('storages.client_id', Auth::user()->client_id)->get();
-            $clients = Client::all();
-            $categoriesClient = Category::where('client_id', Auth::user()->client_id)->get();
 
-            $bas = User::where('role_id', 4)->get();
-            $categories = Category::where('client_id', null)->get();
-            $tls = User::where('role_id', 3)->where('client_id', null)->get();
-            $salesreps = User::where('role_id', 3)->where('client_id', Auth::user()->client_id)->get();
-            // ? Products issued Out
-            $productsIssuedOut = Productbas::all();
-            $productsIssuedOutTL = Productbas::join('batches', 'batches.id', 'productbas.batch_id')
-                ->where('batches.tl_id_accept', Auth::id())->get();
-            //? Clients with Merchandise Team Leaders
-            $clientsWithMerchandiseTL = Product::select('client_id')->where('assigned_to', Auth::id())->groupBy('client_id')->get();
+            //Admin Data
+            if (Gate::allows('admin_access')) {
 
-            //True Blaq by Teamleaders
-            $batchesConfirmed = DB::table('batch_teamleaders')->whereaccept_status(1)->whereteam_leader_id(Auth::id())->take(5)->get();
-            //dd($batchesConfirmed);
-            // ? Team Leader Data
-            // ? Product for a team leader
-            $productsTls = Product::where('assigned_to', Auth::id())->whereNotIn('product_id', $rejects)->get();
-            $batchesTl = Product::select('*')->where('assigned_to', Auth::id())->groupBy('batch_id')->get();
-            // dd($batchesTl);
-            //Get Bas under a team leader
-            $user_id = Auth::id();
-            $brandAmbassadors =  User::where('role_id', 4)->where('teamleader_id', $user_id)->get();
+                $productsAdmin = Product::with(['category', 'assign', 'batch', 'client'])->select('products.*')->count();
+                $batches = Batch::join('storages', 'storages.id', 'batches.storage_id')->where('storages.client_id', null)->cursor();
+                $activityAdmin = Activity::select('*')->latest()->take(9)->cursor();
+                $bas = User::where('role_id', 4)->count();
+                $clients = Client::all();
+               // $tls = User::where('role_id', 3)->where('client_id', null)->cursor();
+                if ($request->ajax()) {
+
+                    $model = User::orderBy('id', 'DESC')->with('roles');
+
+                    return DataTables::eloquent($model)
+
+                        ->addColumn('role', function (User $user) {
+
+                            return $user->roles->title;
+                        })
+                        ->toJson();
+                }
 
 
-            // ? Brand Ambassador Data
-            // ? Products for a Ba
-            $productsbas = Productbas::where('assigned_to', Auth::id())->whereNotIn('product_id', $rejects)->get();
-            // Batches ba
 
-            $batchesbas = Productbas::select('*')->where('assigned_to', Auth::id())->groupBy('batch_id')->get();
-            $activityAdmin = Activity::select('*')->latest()->take(5)->get();
-            //dd($activityAdmin);
-
-            //user activity data
-            $activities = Activity::orderBy('created_at', 'DESC')->where('user_id', Auth::id())->take(5)->get();
-            // dd($activities);
-            if ($request->ajax()) {
-
-                $model = User::orderBy('id', 'DESC')->with('roles');
-
-                return DataTables::eloquent($model)
-
-                    ->addColumn('role', function (User $user) {
-
-                        return $user->roles->title;
-                    })
-                    ->toJson();
+                return view('home', compact(
+                    'productsAdmin',
+                    'batches',
+                    //'tls',
+                    'clients',
+                    'batches',
+                    'activityAdmin',
+                    'bas',
+                ));
             }
 
+            //Agency Data
+            if (Gate::allows('tb_access')) {
+                $rejects = Reject::select('product_id')->cursor();
+                $products = Product::where('owner_id', Auth::id())->cursor();
+                $batches = Batch::join('storages', 'storages.id', 'batches.storage_id')->where('storages.client_id', null)->cursor();
+                $tls = User::where('role_id', 3)->where('client_id', null)->cursor();
+                $clients = Client::all();
+                $batchesConfirmed = DB::table('batch_teamleaders')->whereaccept_status(1)->whereteam_leader_id(Auth::id())->take(5)->cursor();
+                $activities = Activity::orderBy('created_at', 'DESC')->where('user_id', Auth::id())->take(5)->cursor();
+
+                if ($request->ajax()) {
+
+                    $model = User::orderBy('id', 'DESC')->with('roles');
+
+                    return DataTables::eloquent($model)
+
+                        ->addColumn('role', function (User $user) {
+
+                            return $user->roles->title;
+                        })
+                        ->toJson();
+                }
 
 
-            return view('home', compact(
-                'products',
-                'batches',
-                'batchesClient',
-                'clients',
-                'categoriesClient',
-                'bas',
-                'tls',
-                'salesreps',
-                'productsbas',
-                'batchesbas',
-                'categories',
-                'batchesConfirmed',
-                'productsTls',
-                'brandAmbassadors',
-                'batchesTl',
-                'activities',
-                'activityAdmin',
-                'productsIssuedOut',
-                'productsIssuedOutTL',
-                'clientsWithMerchandiseTL',
-                'productsAdmin'
-            ));
+
+                return view('home', compact(
+                    'products',
+                    'rejects',
+                    'batches',
+                    'tls',
+                    'clients',
+                    'batchesConfirmed',
+                    'activities',
+                ));
+            }
+            //TeamLeader Data
+            if (Gate::allows('team_leader_access')) {
+                $rejects = Reject::select('product_id')->cursor();
+                $productsTls = Product::where('assigned_to', Auth::id())->whereNotIn('product_id', $rejects)->cursor();
+                $batchesTl = Product::select('*')->where('assigned_to', Auth::id())->groupBy('batch_id')->cursor();
+                $productsIssuedOut = Productbas::all();
+                $productsIssuedOutTL = Productbas::join('batches', 'batches.id', 'productbas.batch_id')
+                    ->where('batches.tl_id_accept', Auth::id())->cursor();
+                $user_id = Auth::id();
+                $brandAmbassadors =  User::where('role_id', 4)->where('teamleader_id', $user_id)->cursor();
+                $clientsWithMerchandiseTL = Product::select('client_id')->where('assigned_to', Auth::id())->groupBy('client_id')->cursor();
+                $activities = Activity::orderBy('created_at', 'DESC')->where('user_id', Auth::id())->take(5)->cursor();
+                return view('home', compact(
+                    'productsTls',
+                    'batchesTl',
+                    'productsIssuedOut',
+                    'productsIssuedOutTL',
+                    'brandAmbassadors',
+                    'clientsWithMerchandiseTL',
+                    'activities',
+                ));
+            }
+
+            // BrandAmbassador Data
+            if (Gate::allows('brand_ambassador_access')) {
+                $rejects = Reject::select('product_id')->cursor();
+                $productsTls = Product::where('assigned_to', Auth::id())->whereNotIn('product_id', $rejects)->cursor();
+                $batchesTl = Product::select('*')->where('assigned_to', Auth::id())->groupBy('batch_id')->cursor();
+                $productsIssuedOut = Productbas::all();
+                $productsIssuedOutTL = Productbas::join('batches', 'batches.id', 'productbas.batch_id')
+                    ->where('batches.tl_id_accept', Auth::id())->cursor();
+                $activities = Activity::orderBy('created_at', 'DESC')->where('user_id', Auth::id())->take(5)->cursor();
+                $productsbas = Product::where('ba_id', Auth::id())->cursor();
+                $batchesbas = DB::table('batch_brandambassadors')->wherebrand_ambassador_id(Auth::id())->cursor();
+                $categories = Category::where('client_id', null)->get();
+                return view('home', compact(
+                    'productsbas',
+                    'batchesbas',
+                    'productsIssuedOut',
+                    'productsIssuedOutTL',
+                    'categories',
+                    'activities',
+                ));
+            }
+
+            //Client Data
+            if (Gate::allows('client_access')) {
+                $batchesClient = Batch::join('storages', 'storages.id', 'batches.storage_id')->where('storages.client_id', Auth::user()->client_id)->cursor();
+                $clients = Client::all();
+                $categoriesClient = Category::where('client_id', Auth::user()->client_id)->cursor();
+            }
+
+            // //Batches for a client
+
+            // $bas = User::where('role_id', 4)->get();
+            // $categories = Category::where('client_id', null)->get();
+            // $tls = User::where('role_id', 3)->where('client_id', null)->get();
+            // $salesreps = User::where('role_id', 3)->where('client_id', Auth::user()->client_id)->get();
+            // // ? Products issued Out
+            // $productsIssuedOut = Productbas::all();
+            // $productsIssuedOutTL = Productbas::join('batches', 'batches.id', 'productbas.batch_id')
+            //     ->where('batches.tl_id_accept', Auth::id())->get();
+            // //Get Bas under a team leader
+            // $user_id = Auth::id();
+            // $brandAmbassadors =  User::where('role_id', 4)->where('teamleader_id', $user_id)->get();
+
+
+            // // ? Brand Ambassador Data
+            // // ? Products for a Ba
+            // $productsbas = Productbas::where('assigned_to', Auth::id())->whereNotIn('product_id', $rejects)->get();
+            // // Batches ba
+
+            // $batchesbas = Productbas::select('*')->where('assigned_to', Auth::id())->groupBy('batch_id')->get();
+            // $activityAdmin = Activity::select('*')->latest()->take(5)->get();
+            // //dd($activityAdmin);
+
+
+
         }
     }
 
