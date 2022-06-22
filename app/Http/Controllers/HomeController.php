@@ -6,6 +6,7 @@ use App\Models\Activity;
 use App\Models\Batch;
 use App\Models\Category;
 use App\Models\Client;
+use App\Models\IssueProduct;
 use App\Models\Product;
 use App\Models\Productbas;
 use App\Models\User;
@@ -51,7 +52,7 @@ class HomeController extends Controller
                 $activityAdmin = Activity::select('*')->latest()->take(9)->cursor();
                 $bas = User::where('role_id', 4)->count();
                 $clients = Client::all();
-               // $tls = User::where('role_id', 3)->where('client_id', null)->cursor();
+                // $tls = User::where('role_id', 3)->where('client_id', null)->cursor();
                 if ($request->ajax()) {
 
                     $model = User::orderBy('id', 'DESC')->with('roles');
@@ -116,11 +117,18 @@ class HomeController extends Controller
             //TeamLeader Data
             if (Gate::allows('team_leader_access')) {
                 $rejects = Reject::select('product_id')->cursor();
-                $productsTls = Product::where('assigned_to', Auth::id())->whereNotIn('product_id', $rejects)->cursor();
-                $batchesTl = Product::select('*')->where('assigned_to', Auth::id())->groupBy('batch_id')->cursor();
+                $productsTls = Product::where('assigned_to', Auth::id())->count();
+                $batchesTl = DB::table('batch_teamleaders')->whereteam_leader_id(Auth::id())->cursor();
                 $productsIssuedOut = Productbas::all();
-                $productsIssuedOutTL = Productbas::join('batches', 'batches.id', 'productbas.batch_id')
-                    ->where('batches.tl_id_accept', Auth::id())->cursor();
+
+
+                //FIlter products belonging to the team leader
+                $productsTlID = Product::select('products.id')->join('batch_teamleaders', 'products.batch_tl_id', 'batch_teamleaders.id')
+                    ->where('batch_teamleaders.team_leader_id', Auth::id())->get();
+                //Issued Out
+                $productsIssuedOutTL = IssueProduct::select('*')->whereIn('product_id',$productsTlID)->count();
+
+                //Filter Product in issued Table
                 $user_id = Auth::id();
                 $brandAmbassadors =  User::where('role_id', 4)->where('teamleader_id', $user_id)->cursor();
                 $clientsWithMerchandiseTL = Product::select('client_id')->where('assigned_to', Auth::id())->groupBy('client_id')->cursor();

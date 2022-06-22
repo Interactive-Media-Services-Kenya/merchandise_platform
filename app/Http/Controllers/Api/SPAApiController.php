@@ -470,7 +470,7 @@ class SPAApiController extends Controller
                 'status' => 2,
             ]);
         } else {
-            $batch = $product->batch_id;
+            $batch = $product->batch_ba_id;
             $issueProduct = IssueProduct::create([
                 'ba_id' => auth()->user()->id,
                 'batch_id' => $batch,
