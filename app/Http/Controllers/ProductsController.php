@@ -89,10 +89,14 @@ class ProductsController extends Controller
                 $query = Product::with(['category', 'assign', 'batch', 'client'])->where('products.owner_id', Auth::id())->select('products.*')->where('product_code', '!=', null);
             } elseif (Auth::user()->role_id == 3) {
                 $query = Product::with(['category', 'assign', 'batch', 'client'])->where('products.assigned_to', Auth::id())
-                    ->join('batches', 'batches.id', 'products.batch_id')
-                    ->where('batches.tl_id_accept', Auth::id())->select('products.*');
+                    ->join('batch_teamleaders', 'batch_teamleaders.id', 'products.batch_tl_id')
+                    ->where('batch_teamleaders.accept_status', 1)->select('products.*');
             } elseif (Auth::user()->role_id == 5) {
                 $query = Product::with(['category', 'assign', 'batch', 'client'])->where('client_id', Auth::user()->client_id)->select('products.*');
+            } elseif (Auth::user()->role_id == 4) {
+                $query =Product::with(['category', 'assign', 'batch', 'client'])->where('products.ba_id', Auth::id())
+                ->join('batch_brandambassadors', 'batch_brandambassadors.id', 'products.batch_ba_id')
+                ->where('batch_brandambassadors.accept_status', 1)->select('products.*');;
             } else {
 
                 $query = Product::with(['category', 'assign', 'batch', 'client'])->where('products.accept_status', 1)->whereIn('products.id', $productsBa)->whereNotIn('products.id', $issuedProducts)->select('products.*');
@@ -117,7 +121,23 @@ class ProductsController extends Controller
                 return $row->assigned_to ? $row->assign->email : '';
             });
             $table->editColumn('batch', function ($row) {
-                return $row->batch_id ? $row->batch->batch_code : '';
+
+                //Super Admin
+                if (Auth::user()->role_id == 1) {
+                    return $row->batch_id ? $row->batch->batch_code : '';
+                }
+                //Agency
+                if (Auth::user()->role_id == 2) {
+                    return $row->batch_id ? $row->batch->batch_code : '';
+                }
+                //Teamleader
+                if (Auth::user()->role_id == 3) {
+                    return $row->batch_id ? DB::table('batch_teamleaders')->whereid($row->batch_tl_id)->value('batch_code') : '';
+                }
+                //BrandAmbassador
+                if (Auth::user()->role_id == 4) {
+                    return $row->batch_id ? DB::table('batch_brandambassadors')->whereid($row->batch_ba_id)->value('batch_code') : '';
+                }
             });
 
             $table->editColumn('action', function ($row) {
@@ -125,7 +145,7 @@ class ProductsController extends Controller
                     return '<a href="products/' . $row->id . '/edit"
                                 class="btn btn-primary btn-sm">Edit</a>';
                 } elseif (Auth::user()->role_id == 4) {
-                    return '<a href="/products/issue/product/' . $row->id . '/' . $row->batch->id . '"
+                    return '<a href="/products/issue/product/' . $row->id . '/' . $row->batch_ba_id . '"
                    class="btn btn-sm btn-warning">Issue Out</a>';
                 } else {
                     return "No Action";
@@ -438,7 +458,7 @@ class ProductsController extends Controller
 
                 //! Sending to the Assigned User (Agency)
                 $assignedPhone = User::whereid($request->team_leader_id)->value('phone');
-                $assignedMessage = 'You have been assigned Merchandise ('. DB::table('categories')->whereid($request->category_id)->value('title') .'): ' . $product->product_code . ' by ' . Auth::user()->name . ' of Phone: ' . Auth::user()->phone . ' Kindly Login to the App by clicking the link : ' . $url_login;
+                $assignedMessage = 'You have been assigned Merchandise (' . DB::table('categories')->whereid($request->category_id)->value('title') . '): ' . $product->product_code . ' by ' . Auth::user()->name . ' of Phone: ' . Auth::user()->phone . ' Kindly Login to the App by clicking the link : ' . $url_login;
                 $this->sendSMS($assignedPhone, $assignedMessage);
                 Alert::success('Success', 'Operation Successful');
                 return back();
@@ -598,12 +618,12 @@ class ProductsController extends Controller
                 }
                 //! Sending to the Assignee (Agency)
                 $assigneePhone = Auth::user()->phone;
-                $assigneeMessage = 'Merchandise (' . DB::table('categories')->whereid($request->category_id)->value('title') .') ' . $product->product_code . ' assigned to ' . User::whereid($request->team_leader_id)->value('name') . ' Phone: ' . User::whereid($request->team_leader_id)->value('phone');
+                $assigneeMessage = 'Merchandise (' . DB::table('categories')->whereid($request->category_id)->value('title') . ') ' . $product->product_code . ' assigned to ' . User::whereid($request->team_leader_id)->value('name') . ' Phone: ' . User::whereid($request->team_leader_id)->value('phone');
                 $this->sendSMS($assigneePhone, $assigneeMessage);
 
                 //! Sending to the Assigned User (TeamLeader)
                 $assignedPhone = User::whereid($request->team_leader_id)->value('phone');
-                $assignedMessage = 'You have been assigned Merchandise (' . DB::table('categories')->whereid($request->category_id)->value('title') .'): ' . $product->product_code . ' by ' . Auth::user()->name . ' of Phone: ' . Auth::user()->phone . ' Kindly Login to the App by clicking the link : ' . $url_login;
+                $assignedMessage = 'You have been assigned Merchandise (' . DB::table('categories')->whereid($request->category_id)->value('title') . '): ' . $product->product_code . ' by ' . Auth::user()->name . ' of Phone: ' . Auth::user()->phone . ' Kindly Login to the App by clicking the link : ' . $url_login;
                 $this->sendSMS($assignedPhone, $assignedMessage);
                 Alert::success('Success', 'Operation Successful');
                 return back();
@@ -871,15 +891,15 @@ class ProductsController extends Controller
                         ]);
                     }
                 }
-                 //! Sending SMS to the Assignee
-                 $assigneePhone = Auth::user()->phone;
-                 $assigneeMessage = 'Batch: ' . $batch_code . ' of ' . $request->quantity . ' ' . DB::table('categories')->whereid($request->category_id)->value('title') . ' assigned to ' . User::whereid($request->ba_id)->value('name') . ' Phone: ' . User::whereid($request->ba_id)->value('phone');
-                 $this->sendSMS($assigneePhone, $assigneeMessage);
+                //! Sending SMS to the Assignee
+                $assigneePhone = Auth::user()->phone;
+                $assigneeMessage = 'Batch: ' . $batch_code . ' of ' . $request->quantity . ' ' . DB::table('categories')->whereid($request->category_id)->value('title') . ' assigned to ' . User::whereid($request->ba_id)->value('name') . ' Phone: ' . User::whereid($request->ba_id)->value('phone');
+                $this->sendSMS($assigneePhone, $assigneeMessage);
 
-                 //! Sending SMS to the Assigned User (Brand Ambassador)
-                 $assignedPhone = User::whereid($request->ba_id)->value('phone');
-                 $assignedMessage = 'You have been assigned Merchandise (' . DB::table('categories')->whereid($request->category_id)->value('title') . ') Batch Code: ' . $batch_code . ' by ' . Auth::user()->name . ' of Phone: ' . Auth::user()->phone . ' Kindly Login to the App by clicking the link : ' . $url_login;
-                 $this->sendSMS($assignedPhone, $assignedMessage);
+                //! Sending SMS to the Assigned User (Brand Ambassador)
+                $assignedPhone = User::whereid($request->ba_id)->value('phone');
+                $assignedMessage = 'You have been assigned Merchandise (' . DB::table('categories')->whereid($request->category_id)->value('title') . ') Batch Code: ' . $batch_code . ' by ' . Auth::user()->name . ' of Phone: ' . Auth::user()->phone . ' Kindly Login to the App by clicking the link : ' . $url_login;
+                $this->sendSMS($assignedPhone, $assignedMessage);
                 Alert::success('Success', 'Operation Successful');
                 return back();
             } else {
@@ -901,7 +921,7 @@ class ProductsController extends Controller
                         ->where('category_id', $request->category_id)
                         ->where('size', $request->size)
                         ->where('color', $request->color)->whereowner_id(Auth::id())->whereba_id(null)->first();
-                        // dd($product);
+                    // dd($product);
                     if ($product == null) {
                         Alert::error('Failed', 'No Merchandise Found! Kindly Add the Merchandise Before Assigning');
                         return back();
@@ -946,7 +966,7 @@ class ProductsController extends Controller
 
                 //! Sending to the Assigned User (Agency)
                 $assignedPhone = User::whereid($request->ba_id)->value('phone');
-                $assignedMessage = 'You have been assigned Merchandise ('. DB::table('categories')->whereid($request->category_id)->value('title') .'): ' . $product->product_code . ' by ' . Auth::user()->name . ' of Phone: ' . Auth::user()->phone . ' Kindly Login to the App by clicking the link : ' . $url_login;
+                $assignedMessage = 'You have been assigned Merchandise (' . DB::table('categories')->whereid($request->category_id)->value('title') . '): ' . $product->product_code . ' by ' . Auth::user()->name . ' of Phone: ' . Auth::user()->phone . ' Kindly Login to the App by clicking the link : ' . $url_login;
                 $this->sendSMS($assignedPhone, $assignedMessage);
                 Alert::success('Success', 'Operation Successful');
                 return back();
