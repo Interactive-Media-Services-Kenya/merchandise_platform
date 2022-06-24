@@ -96,7 +96,7 @@ class ProductsController extends Controller
             } elseif (Auth::user()->role_id == 4) {
                 $query =Product::with(['category', 'assign', 'batch', 'client'])->where('products.ba_id', Auth::id())
                 ->join('batch_brandambassadors', 'batch_brandambassadors.id', 'products.batch_ba_id')
-                ->where('batch_brandambassadors.accept_status', 1)->select('products.*');;
+                ->where('batch_brandambassadors.accept_status', 1)->select('products.*');
             } else {
 
                 $query = Product::with(['category', 'assign', 'batch', 'client'])->where('products.accept_status', 1)->whereIn('products.id', $productsBa)->whereNotIn('products.id', $issuedProducts)->select('products.*');

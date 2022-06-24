@@ -776,11 +776,15 @@
                                                 </div>
                                             </td>
                                             <td class="align-middle text-center text-sm">
-                                                <span class="text-xs font-weight-bold">
+                                                <span class="text-xs font-weight-bold">{{\DB::table('products')->wherebatch_ba_id($batch->id)->count()??''}}
                                                     </span>
                                             </td>
                                             <td class="align-middle text-center text-sm">
                                                 <span class="text-xs font-weight-bold">
+                                                    {{\DB::table('products')->
+                                                        join('issue_products','issue_products.product_id','products.id')->
+                                                        where('products.batch_ba_id',$batch->id)->
+                                                        where('issue_products.ba_id',Auth::id())->count()??''}}
                                                      </span>
                                             </td>
                                             <td class="align-middle text-center text-sm"><a
