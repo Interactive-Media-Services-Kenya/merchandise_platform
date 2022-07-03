@@ -40,7 +40,7 @@ class ProductsController extends Controller
         $rejects = Reject::select('product_id')->get();
         $productsAdmin = count(Product::with(['category', 'assign', 'batch', 'client'])->select('products.*')->cursor());
         // dd($productsAdmin);
-        $products = count(Product::where('owner_id', Auth::id())->cursor());
+        $products = Product::where('owner_id', Auth::id())->count();
         $productsClient = count(Product::where('client_id', Auth::user()->client_id)->cursor());
         $productsIssuedOut = count(Productbas::all());
         $productsIssuedOutTL = count(Productbas::join('batches', 'batches.id', 'productbas.batch_id')
@@ -56,20 +56,9 @@ class ProductsController extends Controller
         $teamleadersWithBatches = Batch::where('accept_status', 1)->groupBy('tl_id_accept')->get();
         //dd($batchesAccepted);
         // ! Products Belonging to a Team Leader
-        $productsTls = count(Product::select(
-            'products.id',
-            'products.product_code',
-            'products.category_id',
-            'products.batch_id',
-            'products.client_id',
-            'products.assigned_to',
-            'products.owner_id',
-            'products.accept_status',
-            'products.created_at',
-            'products.updated_at'
-        )->where('products.assigned_to', Auth::id())
+        $productsTls = Product::select('products.*')->where('products.assigned_to', Auth::id())
             ->join('batches', 'batches.id', 'products.batch_id')
-            ->where('batches.tl_id_accept', Auth::id())->get());
+            ->where('batches.tl_id_accept', Auth::id())->count();
         // dd($productsTls);
         $issuedProducts = IssueProduct::select('product_id')->where('ba_id', Auth::id())->get();
         $productsBa = Productbas::select('product_id')->where('assigned_to', Auth::id())->get();
@@ -94,9 +83,10 @@ class ProductsController extends Controller
             } elseif (Auth::user()->role_id == 5) {
                 $query = Product::with(['category', 'assign', 'batch', 'client'])->where('client_id', Auth::user()->client_id)->select('products.*');
             } elseif (Auth::user()->role_id == 4) {
-                $query =Product::with(['category', 'assign', 'batch', 'client'])->where('products.ba_id', Auth::id())
-                ->join('batch_brandambassadors', 'batch_brandambassadors.id', 'products.batch_ba_id')
-                ->where('batch_brandambassadors.accept_status', 1)->select('products.*');
+                $issuedProducts = IssueProduct::select('product_id')->cursor();
+                $query = Product::with(['category', 'assign', 'batch', 'client'])->where('products.ba_id', Auth::id())
+                    ->join('batch_brandambassadors', 'batch_brandambassadors.id', 'products.batch_ba_id')
+                    ->where('batch_brandambassadors.accept_status', 1)->whereNotIn('products.id', $issuedProducts)->select('products.*');
             } else {
 
                 $query = Product::with(['category', 'assign', 'batch', 'client'])->where('products.accept_status', 1)->whereIn('products.id', $productsBa)->whereNotIn('products.id', $issuedProducts)->select('products.*');

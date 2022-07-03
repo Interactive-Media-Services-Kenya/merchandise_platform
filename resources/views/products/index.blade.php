@@ -526,7 +526,7 @@
                         <h6>Merchandise</h6>
                     </div>
 
-                    <div class="col-md-6 text-center"><a href="#" class="btn btn-sm btn-warning" data-toggle="modal"
+                    {{-- <div class="col-md-6 text-center"><a href="#" class="btn btn-sm btn-warning" data-toggle="modal"
                             data-target="#staticBackdropIssueBatch">Issue Out Batch</a>
                         <!-- Modal -->
                         <div class="modal fade" id="staticBackdropIssueBatch" data-backdrop="static" data-keyboard="false"
@@ -573,7 +573,7 @@
                             </div>
 
                         </div>
-                    </div>
+                    </div> --}}
                 </div>
             </div>
 

@@ -826,9 +826,9 @@
                                     <div class="timeline-content">
                                         <h6 class="text-dark text-sm font-weight-bold mb-0">{{ $category->title }}</h6>
                                         <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">Total:
-                                            {{ count(
-                                                \DB::table('products')->select('*')->where('products.category_id', $category->id)->join('productbas', 'productbas.product_id', 'products.id')->where('productbas.assigned_to', Auth::id())->get(),
-                                            ) }}
+                                            {{
+                                                \DB::table('products')->select('*')->where('products.category_id', $category->id)->whereba_id(Auth::id())->count(),
+                                            }}
                                         </p>
                                     </div>
                                 </div>
