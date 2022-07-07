@@ -224,9 +224,9 @@ class SPAApiController extends Controller
     public function rejectReasons()
     {
         $rejectReasons = Reason::all();
-        return response()->json([
+        return response()->json(
             $rejectReasons
-        ]);
+        );
     }
     public function batchReject(Request $request)
     {
