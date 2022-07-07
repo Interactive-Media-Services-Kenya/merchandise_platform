@@ -375,6 +375,7 @@ class SPAApiController extends Controller
                     $item = [
                         'batch' => $bch->batch_code,
                         'confirm_status' => $pb->accept_status == 1 ? true : false,
+                        'reject_status' => $pb->reject_status == 1 ? true : false,
                         'product_count' => DB::table('products')->wherebatch_tl_id($pb->id)->count(),
                         'merchandise_type' => DB::table('categories')->whereid(Product::wherebatch_ba_id($pb->id)->value('category_id'))->value('title'),
                     ];
@@ -397,6 +398,7 @@ class SPAApiController extends Controller
                 $item = [
                     'batch' => $pb->batch_code,
                     'confirm_status' => $pb->accept_status == 1 ? true : false,
+                    'reject_status' => $pb->reject_status == 1 ? true : false,
                     'product_count' => DB::table('products')->wherebatch_tl_id($pb->id)->count(),
                     'merchandise_type' => DB::table('categories')->whereid(Product::wherebatch_ba_id($pb->id)->value('category_id'))->value('title'),
                 ];
@@ -422,6 +424,7 @@ class SPAApiController extends Controller
                 $item = [
                     'batch' => $pb->batch_code,
                     'confirm_status' => $pb->accept_status == 1 ? true : false,
+                    'reject_status' => $pb->reject_status == 1 ? true : false,
                     'product_count' => DB::table('products')->wherebatch_ba_id($pb->id)->count(),
                     'merchandise_type' => DB::table('categories')->whereid(Product::wherebatch_ba_id($pb->id)->value('category_id'))->value('title'),
                 ];
