@@ -425,10 +425,12 @@
                                                     <td> {{ $product->accept_status == 1 ? 'Confirmed' : 'Not Confirmed' }}
                                                     </td>
                                                     <td>
-                                                        <a href="{{ route('product.confirm', [$product->id]) }}"
+                                                       @if($product->accept_status == 0) <a href="{{ route('product.confirm', [$product->id]) }}"
                                                             class="btn btn-success btn-sm"
                                                             onclick="return confirm('Are you Sure?')">Confirm</a>
+                                                        @endif
                                                         <!-- Button trigger modal -->
+
                                                         <a class="btn btn-sm btn-primary" data-toggle="modal"
                                                             data-target="#staticBackdrop{{ $product->id }}">
                                                             Reject

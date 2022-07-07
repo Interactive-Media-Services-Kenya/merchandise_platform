@@ -1496,8 +1496,8 @@ class ProductsController extends Controller
 
         //Get List of products to be accepted
         if (Gate::allows('team_leader_access')) {
-            $productaccepted = Product::select('id')->where('batch_id', $id)->where('accept_status', 0)->get();
-            $products = Productbas::select('*')->whereIn('product_id', $productaccepted)->where('assigned_to', Auth::id())->get();
+            $productaccepted = Product::select('id')->where('batch_tl_id', $id)->where('accept_status', 0)->get();
+            $products = Productbas::select('*')->whereIn('product_id', $productaccepted)->get();
             if (count($products) > 0) {
                 //Confirm and update individual products in the Batch
                 foreach ($products as $product) {
