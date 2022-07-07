@@ -1492,28 +1492,64 @@ class ProductsController extends Controller
 
     public function confirmBatch($id)
     {
-        //Get List of products to be accepted
-        $productaccepted = Product::select('id')->where('batch_id', $id)->where('accept_status', 0)->get();
-        $products = Productbas::select('*')->whereIn('product_id', $productaccepted)->where('assigned_to', Auth::id())->get();
-        if (count($products) > 0) {
-            //Confirm and update individual products in the Batch
-            foreach ($products as $product) {
-                $product = Product::findOrFail($product->product_id);
+        // confirm batch for Team Leaders
 
-                $product->update([
-                    'accept_status' => 1,
-                ]);
-                Activity::create([
-                    'title' => 'Merchandise Comfirmed',
-                    'user_id' => Auth::id(),
-                    'description' => Auth::user()->name . ' have accepted merchandise: ' . $product->product_code,
-                ]);
+        //Get List of products to be accepted
+        if (Gate::allows('team_leader_access')) {
+            $productaccepted = Product::select('id')->where('batch_id', $id)->where('accept_status', 0)->get();
+            $products = Productbas::select('*')->whereIn('product_id', $productaccepted)->where('assigned_to', Auth::id())->get();
+            if (count($products) > 0) {
+                //Confirm and update individual products in the Batch
+                foreach ($products as $product) {
+                    $product = Product::findOrFail($product->product_id);
+
+                    $product->update([
+                        'accept_status' => 1,
+                    ]);
+                    Activity::create([
+                        'title' => 'Merchandise Comfirmed',
+                        'user_id' => Auth::id(),
+                        'description' => Auth::user()->name . ' have accepted merchandise: ' . $product->product_code,
+                    ]);
+                }
+                Alert::success('Success', 'Operation Successfull.');
+                return back();
+            } else {
+                Alert::error('Failed', 'No products in Batch');
+                return back();
             }
-            Alert::success('Success', 'Operation Successfull.');
-            return back();
-        } else {
-            Alert::error('Failed', 'No products in Batch');
-            return back();
+        }
+
+
+        // confirm batch for Team Leaders
+
+        //Get List of products to be accepted
+        if (Gate::allows('brand_ambassador_access')) {
+
+            //Check Batch Ba is not accepted.
+           // $batchBA = \DB::
+            $productaccepted = Product::select('id')->where('batch_ba_id', $id)->where('accept_status', 0)->get();
+            $products = Productbas::select('*')->whereIn('product_id', $productaccepted)->where('assigned_to', Auth::id())->get();
+            if (count($products) > 0) {
+                //Confirm and update individual products in the Batch
+                foreach ($products as $product) {
+                    $product = Product::findOrFail($product->product_id);
+
+                    $product->update([
+                        'accept_status' => 1,
+                    ]);
+                    Activity::create([
+                        'title' => 'Merchandise Comfirmed',
+                        'user_id' => Auth::id(),
+                        'description' => Auth::user()->name . ' have accepted merchandise: ' . $product->product_code,
+                    ]);
+                }
+                Alert::success('Success', 'Operation Successfull.');
+                return back();
+            } else {
+                Alert::error('Failed', 'No products in Batch');
+                return back();
+            }
         }
     }
     //Brand Ambassador rejects Merrchandise in batch

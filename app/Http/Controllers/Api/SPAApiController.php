@@ -225,7 +225,7 @@ class SPAApiController extends Controller
     {
         $rejectReasons = Reason::all();
         return response()->json([
-            $rejectReasons, 200
+            $rejectReasons
         ]);
     }
     public function batchReject(Request $request)
@@ -561,7 +561,7 @@ class SPAApiController extends Controller
                 'status' => 0,
             ]);
         } else {
-            return response()->json($data, 200);
+            return response()->json($data);
         }
     }
 
