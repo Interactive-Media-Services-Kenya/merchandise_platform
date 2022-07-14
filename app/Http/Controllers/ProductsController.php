@@ -461,12 +461,13 @@ class ProductsController extends Controller
                     ->where('brand_id', $request->brand_id)
                     ->where('category_id', $request->category_id)
                     ->where('size', $request->size)
-                    ->where('color', $request->color)->whereassigned_to(null)->count();
+                    ->where('color', $request->color)->whereassigned_to(null)->whereowner_id(0)->count();
 
                 if ($productCount < $request->quantity) {
                     Alert::error('Failed', 'Quantity Exceeds Expected Amount. Remaining: ' . $productCount);
                     return back();
                 }
+                //Create Batch Code for the products
                 $batch_code = $this->generateBatchCode() . '-TL-' . $request->team_leader_id;
                 $batch = DB::table('batch_teamleaders')->insert([
                     'team_leader_id' => $request->team_leader_id,
@@ -482,7 +483,7 @@ class ProductsController extends Controller
                             ->where('brand_id', $request->brand_id)
                             ->where('category_id', $request->category_id)
                             ->where('size', $request->size)
-                            ->where('color', $request->color)->whereassigned_to(null)->first();
+                            ->where('color', $request->color)->whereassigned_to(null)->whereowner_id(0)->cursor();
 
                         if ($product == null) {
                             Alert::error('Failed', 'No Merchandise Found! Kindly Add the Merchandise Before Assigning');
@@ -502,7 +503,7 @@ class ProductsController extends Controller
                             ->where('client_id', $request->client_id)
                             ->where('brand_id', $request->brand_id)
                             ->where('category_id', $request->category_id)
-                            ->where('color', $request->color)->whereassigned_to(null)->first();
+                            ->where('color', $request->color)->whereassigned_to(null)->whereowner_id(0)->cursor();
 
                         if ($product == null) {
                             Alert::error('Failed', 'No Merchandise Found! Kindly Add the Merchandise Before Assigning');
