@@ -605,7 +605,7 @@ class SPAApiController extends Controller
     {
         $data = json_decode($request->getContent(), true);
 
-//        $data = $data->data;
+        $data = $data->data;
 
         $assignedProductsData = [];
         $uploadedData = [];
