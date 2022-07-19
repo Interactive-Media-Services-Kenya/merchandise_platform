@@ -32,13 +32,14 @@ class BatchController extends Controller
 
     public function show($id)
     {
+        //Batch for agency
         if (Gate::allows('tb_access')) {
             $batch = DB::table('batches')->whereid($id)->first();
             if($batch == null){
                 Alert::error('Failed','No Batch Found!');
                 return back();
             }
-            $products = Product::whereowner_id(Auth::id())->cursor();
+            $products = Product::whereowner_id(Auth::id())->wherebatch_id($id)->cursor();
 
             $reasons = Reason::all();
             return view('batches.show', compact('batch', 'products', 'reasons'));
@@ -49,7 +50,7 @@ class BatchController extends Controller
                 Alert::error('Failed','No Batch Found!');
                 return back();
             }
-            $products = Product::whereassigned_to(Auth::id())->cursor();
+            $products = Product::whereassigned_to(Auth::id())->wherebatch_tl_id($id)->cursor();
 
             $reasons = Reason::all();
             return view('batches.show', compact('batch', 'products', 'reasons'));

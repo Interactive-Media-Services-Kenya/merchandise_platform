@@ -232,7 +232,7 @@
                                                     </td>
 
                                                     <td>
-                                                        {{ $product->batch->batch_code ?? 'Single Product' }}
+                                                        {{ \DB::table('batch_teamleaders')->where('id',$product->batch_tl_id)->value('batch_code') ?? 'Single Product' }}
                                                     </td>
                                                     <td> {{ $product->accept_status == 1 ? 'Confirmed' : 'Not Confirmed' }}
                                                     </td>
