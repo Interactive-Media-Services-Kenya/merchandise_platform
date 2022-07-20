@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Mail\AssignMerchandise;
 use App\Models\Activity;
 use App\Models\Batch;
+use App\Models\BatchBrandambassador;
 use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Client;
@@ -92,10 +93,11 @@ class ProductsController extends Controller
                 $issuedProducts = IssueProduct::select('product_id')->cursor();
                 $query = Product::with(['category', 'assign', 'batch', 'client'])->where('products.ba_id', Auth::id())
                     ->join('batch_brandambassadors', 'batch_brandambassadors.id', 'products.batch_ba_id')
-                    ->where('batch_brandambassadors.accept_status', 1)->whereNotIn('products.id', $issuedProducts)->select('products.*');
+                    ->whereOr('batch_brandambassadors.accept_status', 1)->whereNotIn('products.id', $issuedProducts)->select('products.*');
             } else {
 
-                $query = Product::with(['category', 'assign', 'batch', 'client'])->where('products.accept_status', 1)->whereIn('products.id', $productsBa)->whereNotIn('products.id', $issuedProducts)->select('products.*');
+                $query = Product::with(['category', 'assign', 'batch', 'client'])->where('products.accept_status', 1)->whereIn('products.id', $productsBa)
+                                ->whereNotIn('products.id', $issuedProducts)->select('products.*');
             }
 
             $table = Datatables::of($query);
@@ -141,7 +143,7 @@ class ProductsController extends Controller
                     return '<a href="products/' . $row->id . '/edit"
                                 class="btn btn-primary btn-sm">Edit</a>';
                 } elseif (Auth::user()->role_id == 4) {
-                    return '<a href="/products/issue/product/' . $row->id . '/' . $row->batch_ba_id . '"
+                    return '<a href="products/issue/product/' . $row->id . '/' . $row->batch_ba_id . '"
                    class="btn btn-sm btn-warning">Issue Out</a>';
                 } else {
                     return "No Action";
@@ -1662,7 +1664,7 @@ class ProductsController extends Controller
     public function issueProduct($product_id, $batch_id)
     {
         $product = Product::findOrFail($product_id);
-        $batch = Batch::findOrFail($batch_id);
+        $batch = BatchBrandambassador::findOrFail($batch_id);
         IssueProduct::create([
             'ba_id' => Auth::id(),
             'batch_id' => $batch->id,
