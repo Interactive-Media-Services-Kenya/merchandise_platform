@@ -43,6 +43,9 @@ class Product extends Model
     public function ownerProduct(){
         return $this->belongsTo(Productbas::class, 'product_id');
     }
+    public function batchBA(){
+        return $this->belongsTo(BatchBrandambassador::class,'batch_ba_id');
+    }
     protected function serializeDate(DateTimeInterface $date)
     {
         return $date->format('Y-m-d H:i:s');

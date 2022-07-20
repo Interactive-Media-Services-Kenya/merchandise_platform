@@ -62,7 +62,7 @@ class BatchController extends Controller
                 Alert::error('Failed','No Batch Found!');
                 return back();
             }
-            $products = Product::whereba_id(Auth::id())->cursor();
+            $products = Product::whereba_id(Auth::id())->wherebatch_ba_id($id)->cursor();
 
             $reasons = Reason::all();
             return view('batches.show', compact('batch', 'products', 'reasons'));
@@ -71,30 +71,54 @@ class BatchController extends Controller
 
     public function confirmBatch($id)
     {
+        if (Gate::allows('team_leader_access')) {
+            $productsTl = Product::where('batch_id', $id)
+                ->join('batches', 'batches.id', 'products.batch_id')
+                ->where('batches.tl_id_accept', Auth::id())->where('batches.accept_status', 0)->get();
+            if (count($productsTl) > 0) {
+                $batch = Batch::findOrFail($id);
 
-        $productsTl = Product::where('batch_id', $id)
-            ->join('batches', 'batches.id', 'products.batch_id')
-            ->where('batches.tl_id_accept', Auth::id())->where('batches.accept_status', 0)->get();
-        if (count($productsTl) > 0) {
-            $batch = Batch::findOrFail($id);
+                $batch->update([
+                    'accept_status' => 1,
+                ]);
+                Activity::create([
+                    'title' => 'Confirm Batch',
+                    'user_id' => Auth::id(),
+                    'description' => Auth::user()->name . ' have confirmed Batch: ' . $batch->batch_code,
+                ]);
+                Alert::success('Success', 'Operation Successfull');
+                return back();
+            } else {
+                Alert::error('Failed', 'Batch is Already Confirmed');
+                return back();
+            }
+        }
 
-            $batch->update([
-                'accept_status' => 1,
-            ]);
-            Activity::create([
-                'title' => 'Confirm Batch',
-                'user_id' => Auth::id(),
-                'description' => Auth::user()->name . ' have confirmed Batch: ' . $batch->batch_code,
-            ]);
-            Alert::success('Success', 'Operation Successfull');
-            return back();
-        } else {
-            Alert::error('Failed', 'Batch is Already Confirmed');
-            return back();
+        if (Gate::allows('brand_ambassador_access')) {
+            $productsTl = Product::where('batch_id', $id)
+                ->join('batches', 'batches.id', 'products.batch_id')
+                ->where('batches.tl_id_accept', Auth::id())->where('batches.accept_status', 0)->get();
+            if (count($productsTl) > 0) {
+                $batch = Batch::findOrFail($id);
+
+                $batch->update([
+                    'accept_status' => 1,
+                ]);
+                Activity::create([
+                    'title' => 'Confirm Batch',
+                    'user_id' => Auth::id(),
+                    'description' => Auth::user()->name . ' have confirmed Batch: ' . $batch->batch_code,
+                ]);
+                Alert::success('Success', 'Operation Successfull');
+                return back();
+            } else {
+                Alert::error('Failed', 'Batch is Already Confirmed');
+                return back();
+            }
         }
     }
 
-    //Team Leader rejects Merrchandise in batch
+    //Team Leaders Reject Merchandise in batch
     public function rejectBatch(Request $request, $id)
     {
 

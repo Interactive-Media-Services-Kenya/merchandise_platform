@@ -325,7 +325,7 @@
                             <h5>BATCH-CODE
                                 : {{ strtoupper($batch->batch_code) }}</h5>
                             <a href="{{ route('products.confirm.batch', [$batch->id]) }}"
-                                class="btn btn-sm btn-success">Confirm
+                               onclick="return confirm('Are you Sure?')" class="btn btn-sm btn-success">Confirm
                                 Batch</a>
                             <a href="#" class="btn btn-sm btn-danger" data-toggle="modal"
                                 data-target="#staticBackdropRejectAll{{ $batch->id }}">Reject Batch</a>
@@ -420,12 +420,12 @@
                                                     </td>
 
                                                     <td>
-                                                        {{ $product->batch->batch_code ?? 'Single Product' }}
+                                                        {{ $product->batchBA->batch_code ?? 'Single Product' }}
                                                     </td>
-                                                    <td> {{ $product->accept_status == 1 ? 'Confirmed' : 'Not Confirmed' }}
+                                                    <td> {{ $product->batchBA->accept_status == 1 ? 'Confirmed' : 'Not Confirmed' }}
                                                     </td>
                                                     <td>
-                                                       @if($product->accept_status == 0) <a href="{{ route('product.confirm', [$product->id]) }}"
+                                                       @if($product->batchBA->accept_status == 0) <a href="{{ route('product.confirm', [$product->id]) }}"
                                                             class="btn btn-success btn-sm"
                                                             onclick="return confirm('Are you Sure?')">Confirm</a>
                                                         @endif

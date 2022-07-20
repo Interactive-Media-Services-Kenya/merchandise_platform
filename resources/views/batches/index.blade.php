@@ -211,7 +211,7 @@
                                             </td>
                                             <td class="align-middle text-center text-sm">
                                                 <span class="text-xs font-weight-bold">
-                                                    {{ \DB::table('products')->where('ba_id', Auth::id())->where('batch_id', $batch->id)->count() }}</span>
+                                                    {{ \DB::table('products')->where('ba_id', Auth::id())->where('batch_ba_id', $batch->id)->count() }}</span>
                                             </td>
                                             <td class="align-middle text-center text-sm">
                                                 <span class="text-xs font-weight-bold">
