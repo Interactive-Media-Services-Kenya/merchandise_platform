@@ -444,6 +444,128 @@
         {{-- End of registered Users --}}
     </div>
     @endcan
+{{--    Assign Merchandise to BrandAmbassadors by Teamleaders--}}
+    @can('team_leader_access')
+        <div class="row">
+            <div class="col-sm-8 offset-2">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="text-center">Assign Merchandise To BrandAmbassador</h4>
+                    </div>
+
+                    <div class="card-body">
+                        <form method="POST" action="{{ route('products.storeBA') }}">
+                            @csrf
+                            <div class="row mb-3">
+                                <label for="batch_id" class="col-md-4 col-form-label text-md-end">Select  Batch</label>
+
+                                <div class="col-md-6">
+                                    <select name="batch_tl_id" id="" class="form-control"
+                                            style="border: 1px solid; border-radius:10px;">
+                                        <option selected disabled>--- Select Batch ---</option>
+                                        @forelse ($batchTLs as $batch)
+                                            <option value="{{ $batch->batch_tl_id }}">{{ strtoupper($batch->batch_code) }}</option>
+                                        @empty
+                                            <option disabled> No Batch To Select Yet</option>
+                                        @endforelse
+                                    </select>
+                                    <input type="hidden" name="owner_id" value="{{ Auth::id() }}">
+                                    @error('batch_tl_id')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <label for="ba_id" class="col-md-4 col-form-label text-md-end">Select
+                                    BrandAmbassador User</label>
+
+                                <div class="col-md-6">
+                                    <select name="ba_id" id="" class="form-control"
+                                            style="border: 1px solid; border-radius:10px;">
+                                        <option selected disabled>--- Select BrandAmbassador Email ---</option>
+                                        @forelse ($brandambassadors as $ba)
+                                            <option value="{{ $ba->id }}">{{ strtoupper($ba->email) }}</option>
+                                        @empty
+                                            <option disabled> No BrandAmbassadors Registered</option>
+                                        @endforelse
+                                    </select>
+                                    @error('ba_id')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="row mb-3" id="batch">
+                                <label for="quantity" class="col-md-4 col-form-label text-md-end">Quantity</label>
+
+                                <div class="col-md-6">
+                                    <input id="quantity" type="number" min="1"
+                                           class="form-control @error('quantity') is-invalid @enderror input"
+                                           style="border: 1px solid; border-radius:10px;" name="quantity" autocomplete="number"
+                                           placeholder="200" required>
+
+                                    @error('quantity')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                    @enderror
+                                </div>
+                            </div>
+                            {{-- <div class="row mb-3">
+                        <div class="col-md-4 mx-auto">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="flexRadioDefault"
+                                    id="flexRadioDefault2" checked>
+                                <label class="form-check-label" for="flexRadioDefault2">
+                                    Single Merchandise
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="flexRadioDefault"
+                                    id="flexRadioDefault1" value="2">
+                                <label class="form-check-label" for="flexRadioDefault1">
+                                    Batch Merchandise
+                                </label>
+                            </div>
+                        </div>
+
+                    </div> --}}
+
+                            {{-- <div class="row mb-3" id="batch">
+                        <label for="quantity" class="col-md-4 col-form-label text-md-end">Quantity</label>
+
+                        <div class="col-md-6">
+                            <input id="quantity" type="number"
+                                class="form-control @error('quantity') is-invalid @enderror input"
+                                style="border: 1px solid; border-radius:10px;" name="quantity" autocomplete="number"
+                                placeholder="200">
+
+                            @error('quantity')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
+                        </div>
+                    </div> --}}
+
+                            <div class="row mb-0">
+                                <div class="col-md-6 offset-md-4">
+                                    <button type="submit" class="btn btn-success">
+                                        Submit
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {{-- End of registered Users --}}
+        </div>
+    @endcan
+
     @can('client_access')
         <div class="row">
             <div class="col-sm-8 offset-2">

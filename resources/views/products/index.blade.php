@@ -462,7 +462,7 @@
         </div>
         <div style="margin-bottom: 10px;" class="row">
             <div class="col-lg-12">
-                <a class="btn btn-success" href="{{ route('products.create') }}">
+                <a class="btn btn-success" href="{{ route('products.assign.brandambbassador') }}">
                     Assign Merchandise
                 </a>
             </div>

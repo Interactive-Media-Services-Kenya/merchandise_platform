@@ -52,7 +52,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($salesreps as $key => $teamleader)
+                            @foreach ($salesreps as  $teamleader)
                                 <tr data-entry-id="{{ $teamleader->id }}">
                                     <td>
 

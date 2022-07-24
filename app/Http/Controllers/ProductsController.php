@@ -45,7 +45,7 @@ class ProductsController extends Controller
     public function index(Request $request)
     {
         $rejects = Reject::select('product_id')->get();
-        $productsAdmin = count(Product::with(['category', 'assign', 'batch', 'client'])->select('products.*')->cursor());
+        $productsAdmin = Product::with(['category', 'assign', 'batch', 'client'])->select('products.*')->count();
         // dd($productsAdmin);
         $products = Product::where('owner_id', Auth::id())->count();
         $productsClient = count(Product::where('client_id', Auth::user()->client_id)->cursor());
@@ -236,7 +236,9 @@ class ProductsController extends Controller
         $brandambassadors = User::where('role_id', 4)->get();
         $brandAmbassadors = User::where('role_id', 4)->where('teamleader_id', $user_id)->get();
         $batches = Product::select('batch_id', 'batch_code')->where('assigned_to', Auth::id())->join('batches', 'batches.id', 'products.batch_id')->groupBy('batch_id')->get();
-        //dd($batches);
+        //Get Batches for a specific Team Leader
+        $batchTLs = Product::select('products.batch_tl_id', 'batch_teamleaders.batch_code')->where('products.assigned_to', Auth::id())->join('batch_teamleaders', 'batch_teamleaders.id', 'products.batch_tl_id')->groupBy('batch_tl_id')->get();
+
 
         $batchesAll = Batch::select('batches.*')->join('storages', 'batches.storage_id', 'storages.id')->where('storages.client_id', null)->get();
         $batchesClient = Batch::select('batches.*')->join('storages', 'batches.storage_id', 'storages.id')->where('storages.client_id', Auth::user()->client_id)->get();
@@ -248,6 +250,7 @@ class ProductsController extends Controller
             'clients',
             'batchesAll',
             'batchesClient',
+            'batchTLs',
             'brandAmbassadors',
             'brandambassadors',
             'batches',
@@ -272,6 +275,7 @@ class ProductsController extends Controller
         $user_id = Auth::id();
         $brands = Brand::with('client')->get();
         $brandAmbassadors = User::where('role_id', 4)->where('teamleader_id', $user_id)->get();
+
         $batches = Product::select('batch_id', 'batch_code')->where('assigned_to', Auth::id())->join('batches', 'batches.id', 'products.batch_id')->groupBy('batch_id')->get();
         //dd($batches);
 
@@ -369,7 +373,9 @@ class ProductsController extends Controller
 
 
         $brandAmbassadors = User::where('role_id', 4)->where('teamleader_id', $user_id)->get();
+        //
         $batches = Product::select('batch_id', 'batch_code')->where('assigned_to', Auth::id())->join('batches', 'batches.id', 'products.batch_id')->groupBy('batch_id')->get();
+        $batchesTL = Product::select('batch_id', 'batch_code')->where('assigned_to', Auth::id())->join('batch_teamleaders', 'batch_teamleaders.id', 'products.batch_tl_id')->groupBy('batch_id')->get();
 
         return view('products.create', compact(
             'teamleaders',
@@ -378,6 +384,7 @@ class ProductsController extends Controller
             'clients',
             'brandAmbassadors',
             'batches',
+            'batchesTL',
             'storages',
             'storagesClient',
             'brandsClient',
@@ -391,8 +398,8 @@ class ProductsController extends Controller
     public function storeBA(Request $request)
     {
         $request->validate([
-            'category_id' => 'required|integer',
-            'client_id' => 'required|integer',
+            'category_id' => 'integer',
+            'client_id' => 'integer',
             'ba_id' => 'required|integer',
             'brand_id' => 'integer',
             'size' => 'integer',
@@ -689,6 +696,92 @@ class ProductsController extends Controller
                         $product->update([
                             'assigned_to' => $request->team_leader_id,
                             'batch_tl_id' => $batch->id,
+                        ]);
+                    }
+                }
+                //! Sending SMS to the Assignee (Agency)
+                $assigneePhone = Auth::user()->phone;
+                $assigneeMessage = 'Batch: ' . $batch_code . ' of ' . $request->quantity . ' ' . DB::table('categories')->whereid($request->category_id)->value('title') . ' assigned to ' . User::whereid($request->ba_id)->value('name') . ' Phone: ' . User::whereid($request->ba_id)->value('phone');
+                $this->sendSMS($assigneePhone, $assigneeMessage);
+
+                //! Sending to the Assigned User (Team Leader)
+                $assignedPhone = User::whereid($request->ba_id)->value('phone');
+                $assignedMessage = 'You have been assigned Merchandise (' . $request->quantity . ' ' . DB::table('categories')->whereid($request->category_id)->value('title') . ') Batch Code: ' . $batch_code . ' by ' . Auth::user()->name . ' of Phone: ' . Auth::user()->phone . ' Kindly Login to the App by clicking the link : ' . $url_login;
+                $this->sendSMS($assignedPhone, $assignedMessage);
+                Alert::success('Success', 'Operation Successful');
+                return back();
+            } else {
+                Alert::error('Failed', 'Invalid Merchandise Quantity');
+                return back();
+            }
+        }
+        // ? Agency Assigns to Team Leader
+        if (FacadesGate::allows('team_leader_access')) {
+            //Store Products on count Not Assigned to any Agency.
+            $url_login = URL::to('/login');
+            //if quantity is  0ne
+            if ($request->quantity == 1) {
+                //when Both size & brand is set
+                if ($request->batch_tl_id != null) {
+                    $product = Product::where('batch_tl_id', $request->batch_tl_id)
+                                        ->whereassigned_to(Auth::id())
+                                        ->whereba_id(null)->first();
+
+
+                    if ($product == null) {
+                        Alert::error('Failed', 'No Merchandise Found! Kindly Add the Merchandise Before Assigning');
+                        return back();
+                    }
+                    $product->update([
+                        'ba_id' => $request->ba_id,
+                    ]);
+                }
+
+                //! Sending to the Assignee (Super Admin)
+                $assigneePhone = Auth::user()->phone;
+                $assigneeMessage = 'Merchandise ' . $product->product_code . ' assigned to ' . User::whereid($request->ba_id)->value('name') . ' Phone: ' . User::whereid($request->ba_id)->value('phone');
+                $this->sendSMS($assigneePhone, $assigneeMessage);
+
+                //! Sending to the Assigned User (Agency)
+                $assignedPhone = User::whereid($request->ba_id)->value('phone');
+                $assignedMessage = 'You have been assigned Merchandise (' . DB::table('categories')->whereid($request->category_id)->value('title') . '): ' . $product->product_code . ' by ' . Auth::user()->name . ' of Phone: ' . Auth::user()->phone . ' Kindly Login to the App by clicking the link : ' . $url_login;
+                $this->sendSMS($assignedPhone, $assignedMessage);
+                Alert::success('Success', 'Operation Successful');
+                return back();
+            }
+
+            if ($request->quantity > 1) {
+                //Create Batch for the product Group
+                $productCount = Product::where('batch_tl_id', $request->batch_tl_id)
+                    ->whereassigned_to(Auth::id())
+                    ->whereba_id(null)->count();
+
+                if ($productCount < $request->quantity) {
+                    Alert::error('Failed', 'Quantity Exceeds Expected Amount. Remaining: ' . $productCount);
+                    return back();
+                }
+                $batch_code = $this->generateBatchCode() . '-BA-' . $request->ba_id;
+                $batch = DB::table('batch_brandambassadors')->insert([
+                    'brand_ambassador_id' => $request->ba_id,
+                    'batch_code' => $batch_code,
+                    'created_at' => Carbon::now(),
+                ]);
+
+                for ($i = 0; $i < $request->quantity; $i++) {
+                    //when Both size & brand is set
+                    if ($request->size != null && $request->brand_id != null) {
+                        $product =Product::where('batch_tl_id', $request->batch_tl_id)
+                            ->whereowner_id(Auth::id())
+                            ->whereba_id(null)->first();
+
+                        if ($product == null) {
+                            Alert::error('Failed', 'No Merchandise Found! Kindly Add the Merchandise Before Assigning');
+                            return back();
+                        }
+
+                        $product->update([
+                            'ba_id' => $request->ba_id,
+                            'batch_ba_id' => DB::table('batch_brandambassadors')->where('batch_code', $batch_code)->value('id'),
                         ]);
                     }
                 }
@@ -1239,9 +1332,7 @@ class ProductsController extends Controller
 
     public function sendSMS($receiverNumber, $message)
     {
-
         try {
-
 
             $headers = [
                 'Cookie: ci_session=ttdhpf95lap45hq8t3h255af90npbb3ql'

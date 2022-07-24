@@ -503,7 +503,7 @@
                                     <select name="batch_id" id="" class="form-control"
                                         style="border: 1px solid; border-radius:10px;">
                                         <option selected disabled>--- Select Merchandise Batch ---</option>
-                                        @forelse ($batches as $batch)
+                                        @forelse ($batchesTL as $batch)
                                             <option value="{{ $batch->batch_id }}">{{ strtoupper($batch->batch_code) }}
                                             </option>
                                         @empty
