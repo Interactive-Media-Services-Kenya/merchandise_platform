@@ -456,9 +456,11 @@ class SPAApiController extends Controller
                 'status' => 0,
             ]);
         }
-        $productBa = Productbas::where('assigned_to', auth()->user()->id)->whereIn('product_id', $product_id)->get();
+        $productBa = Product::where('products.ba_id', auth()->user()->id)
+                                ->join('batch_brandambassadors','batch_brandambassadors.id', 'products.batch_ba_id')->count();
+
         //Check if product is issued Out
-        if (count($productBa) == 0) {
+        if ($productBa == 0) {
             return \Response::json([
                 'message' => "Merchandise Does not Belong to Brand Ambassador",
                 'status' => 0,
@@ -484,7 +486,7 @@ class SPAApiController extends Controller
             // ? Get all the products issued by a logged in BrandAmbassador
             $productsIssued = IssueProduct::select('product_id')->where('ba_id', auth()->user()->id)->where('category_id', $product->category_id)->get();
             // ? Fetch the remaining products of the brandAmbassador Assigned to but not issued out.
-            $remainingProducts = Productbas::where('assigned_to', auth()->user()->id)->whereNotIn('product_id', $productsIssued)->get();
+            $remainingProducts = Product::where('ba_id', auth()->user()->id)->where('batch_ba_id',$batch)->whereNotIn('id', $productsIssued)->get();
             //Save customer details alongside issued Product.
             if ($request->has('customer_phone') || $request->has('customer_name')) {
                 Customer::create([
