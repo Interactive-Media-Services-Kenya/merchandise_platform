@@ -446,7 +446,7 @@ class SPAApiController extends Controller
     public function IssueProductBA(Request $request)
     {
         //Check if user is Brand Ambassador && product assigned to him/her
-
+        $data = $request->all();
         // return count($productBa);
         abort_if(auth()->user()->role_id != 4, Response::HTTP_FORBIDDEN, '403 Forbidden');
         $product_id = Product::select('id')->where('product_code', $request->product_code)->first();
@@ -456,69 +456,200 @@ class SPAApiController extends Controller
                 'status' => 0,
             ]);
         }
-        $productBa = Product::where('products.ba_id', auth()->user()->id)
-                                ->join('batch_brandambassadors','batch_brandambassadors.id', 'products.batch_ba_id')->count();
+        //Check if product is single
+        $productSingle = Product::where('product_code',$request->product_code)->where('ba_id',auth()->user()->id)->first();
 
-        //Check if product is issued Out
-        if ($productBa == 0) {
+        if($productSingle){
+            //Product Is Single
+            if ($productSingle->batch_ba_id == null){
+                $product = Product::where('product_code', $request->product_code)->first();
+
+                $issuedProduct = IssueProduct::where('product_id', $product->id)->first();
+
+                if ($issuedProduct) {
+                    return \Response::json([
+                        'message' => "Merchandise Is Already Issued Out",
+                        'status' => 2,
+                    ]);
+                } else {
+                    $batch = $product->batch_ba_id;
+                    $issueProduct = IssueProduct::create([
+                        'ba_id' => auth()->user()->id,
+                        'batch_id' => $batch,
+                        'product_id' => $product->id,
+                        'category_id' => $product->category->id,
+                    ]);
+                    // Save Customer Data through Api.
+                    // ? Get all the products issued by a logged in BrandAmbassador
+                    $productsIssued = IssueProduct::select('product_id')->where('ba_id', auth()->user()->id)->where('category_id', $product->category_id)->get();
+                    // ? Fetch the remaining products of the brandAmbassador Assigned to but not issued out.
+                    $remainingProducts = Product::where('ba_id', auth()->user()->id)->where('batch_ba_id',$batch)->whereNotIn('id', $productsIssued)->get();
+                    //Save customer details alongside issued Product.
+                    if ($request->has('customer_phone') || $request->has('customer_name')) {
+                        Customer::create([
+                            'name' => $data['customer_name'],
+                            'phone' => $data['customer_phone'],
+                            'product_id' => $product->id,
+                        ]);
+                    }
+                    Activity::create([
+                        'title' => 'Merchandise Issued',
+                        'user_id' => auth()->user()->id,
+                        'description' => auth()->user()->name . ' have issued out ' . $product->product_code,
+                    ]);
+                    if ($issueProduct) {
+
+                        return \Response::json([
+                            'message' => "Merchandise Found and Issued Successfully",
+                            'merchandise_type'  => $product->category->title ?? 'No Merchandise Type Registered for the Merchandise',
+                            'remaining_items' => $remainingProducts ? count($remainingProducts) : 0,
+                            'issued_items' => $productsIssued ? count($productsIssued) : 0,
+                            //Status success
+                            'status' => 1,
+                        ]);
+                    } else {
+                        return \Response::json([
+                            'message' => "Merchandise Not Found",
+                            // Status Unsuccessful
+                            'status' => 0,
+                        ]);
+                    }
+                }
+            }else{
+                //Check if the merchandise belongs to a BA and Have confirmed Batch
+
+                $productBa = Product::where('products.ba_id', auth()->user()->id)
+                    ->join('batch_brandambassadors','batch_brandambassadors.id', 'products.batch_ba_id')
+                    ->where('batch_brandambassadors.accept_status',1)
+                    ->count();
+
+                //Check if product is issued Out
+                if ($productBa == 0) {
+                    return \Response::json([
+                        'message' => "Merchandise Does not Belong to Brand Ambassador",
+                        'status' => 0,
+                    ]);
+                }
+
+                $product = Product::where('product_code', $request->product_code)->first();
+
+                $issuedProduct = IssueProduct::where('product_id', $product->id)->first();
+
+                if ($issuedProduct) {
+                    return \Response::json([
+                        'message' => "Merchandise Is Already Issued Out",
+                        'status' => 2,
+                    ]);
+                } else {
+                    $batch = $product->batch_ba_id;
+                    $issueProduct = IssueProduct::create([
+                        'ba_id' => auth()->user()->id,
+                        'batch_id' => $batch,
+                        'product_id' => $product->id,
+                        'category_id' => $product->category->id,
+                    ]);
+                    // Save Customer Data through Api.
+                    // ? Get all the products issued by a logged in BrandAmbassador
+                    $productsIssued = IssueProduct::select('product_id')->where('ba_id', auth()->user()->id)->where('category_id', $product->category_id)->get();
+                    // ? Fetch the remaining products of the brandAmbassador Assigned to but not issued out.
+                    $remainingProducts = Product::where('ba_id', auth()->user()->id)->where('batch_ba_id',$batch)->whereNotIn('id', $productsIssued)->get();
+                    //Save customer details alongside issued Product.
+                    if ($request->has('customer_phone') || $request->has('customer_name')) {
+                        Customer::create([
+                            'name' => $data['customer_name'],
+                            'phone' => $data['customer_phone'],
+                            'product_id' => $product->id,
+                        ]);
+                    }
+                    Activity::create([
+                        'title' => 'Merchandise Issued',
+                        'user_id' => auth()->user()->id,
+                        'description' => auth()->user()->name . ' have issued out ' . $product->product_code,
+                    ]);
+                    if ($issueProduct) {
+
+                        return \Response::json([
+                            'message' => "Merchandise Found and Issued Successfully",
+                            'merchandise_type'  => $product->category->title ?? 'No Merchandise Type Registered for the Merchandise',
+                            'remaining_items' => $remainingProducts ? count($remainingProducts) : 0,
+                            'issued_items' => $productsIssued ? count($productsIssued) : 0,
+                            //Status success
+                            'status' => 1,
+                        ]);
+                    } else {
+                        return \Response::json([
+                            'message' => "Merchandise Not Found",
+                            // Status Unsuccessful
+                            'status' => 0,
+                        ]);
+                    }
+                }
+            }
+        }else{
             return \Response::json([
-                'message' => "Merchandise Does not Belong to Brand Ambassador",
+                'message' => "Merchandise Not Found",
+                // Status Unsuccessful
                 'status' => 0,
             ]);
         }
-        $product = Product::where('product_code', $request->product_code)->first();
-        $issuedProduct = IssueProduct::where('product_id', $product->id)->first();
 
-        if ($issuedProduct) {
+    }
+    public function issueMerchandise($data)
+{
+    $product = Product::where('product_code', $data['product_code'])->first();
+
+    $issuedProduct = IssueProduct::where('product_id', $product->id)->first();
+
+    if ($issuedProduct) {
+        return \Response::json([
+            'message' => "Merchandise Is Already Issued Out",
+            'status' => 2,
+        ]);
+    } else {
+        $batch = $product->batch_ba_id;
+        $issueProduct = IssueProduct::create([
+            'ba_id' => auth()->user()->id,
+            'batch_id' => $batch,
+            'product_id' => $product->id,
+            'category_id' => $product->category->id,
+        ]);
+        // Save Customer Data through Api.
+        // ? Get all the products issued by a logged in BrandAmbassador
+        $productsIssued = IssueProduct::select('product_id')->where('ba_id', auth()->user()->id)->where('category_id', $product->category_id)->get();
+        // ? Fetch the remaining products of the brandAmbassador Assigned to but not issued out.
+        $remainingProducts = Product::where('ba_id', auth()->user()->id)->where('batch_ba_id',$batch)->whereNotIn('id', $productsIssued)->get();
+        //Save customer details alongside issued Product.
+        if ($data->has('customer_phone') || $data->has('customer_name')) {
+            Customer::create([
+                'name' => $data['customer_name'],
+                'phone' => $data['customer_phone'],
+                'product_id' => $product->id,
+            ]);
+        }
+        Activity::create([
+            'title' => 'Merchandise Issued',
+            'user_id' => auth()->user()->id,
+            'description' => auth()->user()->name . ' have issued out ' . $product->product_code,
+        ]);
+        if ($issueProduct) {
+
             return \Response::json([
-                'message' => "Merchandise Is Already Issued Out",
-                'status' => 2,
+                'message' => "Merchandise Found and Issued Successfully",
+                'merchandise_type'  => $product->category->title ?? 'No Merchandise Type Registered for the Merchandise',
+                'remaining_items' => $remainingProducts ? count($remainingProducts) : 0,
+                'issued_items' => $productsIssued ? count($productsIssued) : 0,
+                //Status success
+                'status' => 1,
             ]);
         } else {
-            $batch = $product->batch_ba_id;
-            $issueProduct = IssueProduct::create([
-                'ba_id' => auth()->user()->id,
-                'batch_id' => $batch,
-                'product_id' => $product->id,
-                'category_id' => $product->category->id,
+            return \Response::json([
+                'message' => "Merchandise Not Found",
+                // Status Unsuccessful
+                'status' => 0,
             ]);
-            // Save Customer Data through Api.
-            // ? Get all the products issued by a logged in BrandAmbassador
-            $productsIssued = IssueProduct::select('product_id')->where('ba_id', auth()->user()->id)->where('category_id', $product->category_id)->get();
-            // ? Fetch the remaining products of the brandAmbassador Assigned to but not issued out.
-            $remainingProducts = Product::where('ba_id', auth()->user()->id)->where('batch_ba_id',$batch)->whereNotIn('id', $productsIssued)->get();
-            //Save customer details alongside issued Product.
-            if ($request->has('customer_phone') || $request->has('customer_name')) {
-                Customer::create([
-                    'name' => $request->customer_name,
-                    'phone' => $request->customer_phone,
-                    'product_id' => $product->id,
-                ]);
-            }
-            Activity::create([
-                'title' => 'Merchandise Issued',
-                'user_id' => auth()->user()->id,
-                'description' => auth()->user()->name . ' have issued out ' . $product->product_code,
-            ]);
-            if ($issueProduct) {
-
-                return \Response::json([
-                    'message' => "Merchandise Found and Issued Successfully",
-                    'merchandise_type'  => $product->category->title ?? 'No Merchandise Type Registered for the Merchandise',
-                    'remaining_items' => $remainingProducts ? count($remainingProducts) : 0,
-                    'issued_items' => $productsIssued ? count($productsIssued) : 0,
-                    //Status success
-                    'status' => 1,
-                ]);
-            } else {
-                return \Response::json([
-                    'message' => "Merchandise Not Found",
-                    // Status Unsuccessful
-                    'status' => 0,
-                ]);
-            }
         }
     }
+}
 
 
     // ? Get all the outlets registered in the database
