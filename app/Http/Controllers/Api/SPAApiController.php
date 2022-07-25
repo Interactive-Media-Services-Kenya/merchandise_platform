@@ -20,6 +20,7 @@ use App\Models\Storage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Support\Facades\Gate;
 use DB;
 
 class SPAApiController extends Controller
@@ -736,6 +737,12 @@ class SPAApiController extends Controller
 
     public function uploadMerchandise(Request $request)
     {
+        if(!Gate::allows('admin_access')){
+            return response()->json([
+                'message' => 'User is Not Authorized',
+                'status' => 0,
+            ]);
+        }
         $data = json_decode($request->getContent(), true);
 
 //        $data = $data->data;
@@ -760,7 +767,7 @@ class SPAApiController extends Controller
                     'product_code' => $product_code,
                     'client_id' => $client_id,
                     'category_id' => $category_id,
-                    'storage_id'=>$storage_id,
+                    //'storage_id'=>$storage_id,
                     'brand_id' => $brand_id,
                     'size' => $size,
                     'color' => $color,
