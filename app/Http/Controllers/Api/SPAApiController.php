@@ -733,7 +733,7 @@ class SPAApiController extends Controller
             ]);
         }
        // $data = json_decode($request->getContent(), true);
-       $data = json_encode($request->input('data'));
+       $data = json_decode($request->input('data'),true);
 
         //        $data = $data->data;
         logger(gettype($data));
