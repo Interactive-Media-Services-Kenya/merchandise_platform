@@ -744,42 +744,44 @@ class SPAApiController extends Controller
 
 
         //Multiple Upload
-        foreach ($data as $pr) {
-            $product_code = $pr['product_code'];
-            $client_id = $pr['client_id'];
-            $category_id = $pr['category_id'];
-            $storage_id = $pr['storage_id'];
-            $brand_id = $pr['brand_id'];
-            $size = $pr['size'];
-            $color = $pr['color'];
-            logger($pr);
+        if (is_array($data) || is_object($data)){
+            foreach ($data as $pr) {
+                $product_code = $pr['product_code'];
+                $client_id = $pr['client_id'];
+                $category_id = $pr['category_id'];
+                $storage_id = $pr['storage_id'];
+                $brand_id = $pr['brand_id'];
+                $size = $pr['size'];
+                $color = $pr['color'];
 
-            $alreadyUploadedCode = DB::table('products')->whereproduct_code($product_code)->value('product_code');
-            $validCode = DB::table('product_codes')->whereproduct_code($product_code)->where('product_code', '!=', $alreadyUploadedCode)->value('product_code');
+                $alreadyUploadedCode = DB::table('products')->whereproduct_code($product_code)->value('product_code');
+                $validCode = DB::table('product_codes')->whereproduct_code($product_code)->where('product_code', '!=', $alreadyUploadedCode)->value('product_code');
 
-            if ($validCode == $product_code) {
-                DB::table('products')->insert([
-                    'product_code' => $product_code,
-                    'client_id' => $client_id,
-                    'category_id' => $category_id,
-                    //'storage_id'=>$storage_id,
-                    'brand_id' => $brand_id,
-                    'size' => $size,
-                    'color' => $color,
-                    'created_at' => \Carbon\Carbon::now(),
-                    'updated_at' => \Carbon\Carbon::now(),
-                ]);
-                $product_code = $validCode;
-            }
+                if ($validCode == $product_code) {
+                    DB::table('products')->insert([
+                        'product_code' => $product_code,
+                        'client_id' => $client_id,
+                        'category_id' => $category_id,
+                        //'storage_id'=>$storage_id,
+                        'brand_id' => $brand_id,
+                        'size' => $size,
+                        'color' => $color,
+                        'created_at' => \Carbon\Carbon::now(),
+                        'updated_at' => \Carbon\Carbon::now(),
+                    ]);
+                    $product_code = $validCode;
+                }
 
-            $assigned_product = DB::table('products')->where('product_code', $validCode)->first();
-            //dd($assigned_product->count());
-            if ($assigned_product != null) {
-                array_push($assignedProductsData, $product_code);
-            } else {
-                array_push($productCodesInvalid, $product_code);
+                $assigned_product = DB::table('products')->where('product_code', $validCode)->first();
+                //dd($assigned_product->count());
+                if ($assigned_product != null) {
+                    array_push($assignedProductsData, $product_code);
+                } else {
+                    array_push($productCodesInvalid, $product_code);
+                }
             }
         }
+
         return response()->json([
             'status' => 1,
             'uploaded_merchandise' => count($assignedProductsData) . ' Merchandises Found and Uploaded Successfully',
