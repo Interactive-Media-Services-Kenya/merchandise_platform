@@ -732,7 +732,8 @@ class SPAApiController extends Controller
                 'status' => 0,
             ]);
         }
-        $data = json_decode($request->getContent(), true);
+       // $data = json_decode($request->getContent(), true);
+       $data = $request->all();
 
         //        $data = $data->data;
 
@@ -741,50 +742,49 @@ class SPAApiController extends Controller
         $productCodesInvalid = [];
 
         //Single Upload
-        if ($data == null) {
-            $product_code = $request->product_code;
-            $client_id = $request->client_id;
-            $category_id = $request->category_id;
-            $storage_id = $request->storage_id;
-            $brand_id = $request->brand_id;
-            $size = $request->size;
-            $color = $request->color;
+        // if ($data == null) {
+        //     $product_code = $request->product_code;
+        //     $client_id = $request->client_id;
+        //     $category_id = $request->category_id;
+        //     $storage_id = $request->storage_id;
+        //     $brand_id = $request->brand_id;
+        //     $size = $request->size;
+        //     $color = $request->color;
 
 
-            $alreadyUploadedCode = DB::table('products')->whereproduct_code($product_code)->value('product_code');
-            $validCode = DB::table('product_codes')->whereproduct_code($product_code)->where('product_code', '!=', $alreadyUploadedCode)->value('product_code');
+        //     $alreadyUploadedCode = DB::table('products')->whereproduct_code($product_code)->value('product_code');
+        //     $validCode = DB::table('product_codes')->whereproduct_code($product_code)->where('product_code', '!=', $alreadyUploadedCode)->value('product_code');
 
-            if ($validCode == $product_code) {
-                DB::table('products')->insert([
-                    'product_code' => $product_code,
-                    'client_id' => $client_id,
-                    'category_id' => $category_id,
-                    //'storage_id'=>$storage_id,
-                    'brand_id' => $brand_id,
-                    'size' => $size,
-                    'color' => $color,
-                    'created_at' => \Carbon\Carbon::now(),
-                    'updated_at' => \Carbon\Carbon::now(),
-                ]);
-                $product_code = $validCode;
-            }
+        //     if ($validCode == $product_code) {
+        //         DB::table('products')->insert([
+        //             'product_code' => $product_code,
+        //             'client_id' => $client_id,
+        //             'category_id' => $category_id,
+        //             //'storage_id'=>$storage_id,
+        //             'brand_id' => $brand_id,
+        //             'size' => $size,
+        //             'color' => $color,
+        //             'created_at' => \Carbon\Carbon::now(),
+        //             'updated_at' => \Carbon\Carbon::now(),
+        //         ]);
+        //         $product_code = $validCode;
+        //     }
 
-            $assigned_product = DB::table('products')->where('product_code', $validCode)->first();
-            //dd($assigned_product->count());
-            if ($assigned_product != null) {
-                return response()->json([
-                    'status' => 1,
-                    //'message' => 'Merchandise Uploaded Successfully Confirmed!',
-                    'message' => $assigned_product,
-
-                ]);
-            } else {
-                return response()->json([
-                    'status' => 0,
-                    'message' => 'Failed! Merchandise Not Uploaded!',
-                ]);
-            }
-        }
+        //     $assigned_product = DB::table('products')->where('product_code', $validCode)->first();
+        //     //dd($assigned_product->count());
+        //     if ($assigned_product != null) {
+        //         return response()->json([
+        //             'status' => 1,
+        //             'message' => 'Merchandise Uploaded Successfully Confirmed!',
+        //             // 'message' => $assigned_product,
+        //         ]);
+        //     } else {
+        //         return response()->json([
+        //             'status' => 0,
+        //             'message' => 'Failed! Merchandise Not Uploaded!',
+        //         ]);
+        //     }
+        // }
 
 
         //Multiple Upload
