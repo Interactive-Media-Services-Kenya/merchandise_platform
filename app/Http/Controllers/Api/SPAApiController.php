@@ -771,7 +771,7 @@ class SPAApiController extends Controller
                     ]);
                     $product_code = $validCode;
                 }
-
+                logger($validCode);
                 $assigned_product = DB::table('products')->where('product_code', $validCode)->first();
                 //dd($assigned_product->count());
                 if ($assigned_product != null) {
@@ -780,16 +780,16 @@ class SPAApiController extends Controller
                     array_push($productCodesInvalid, $product_code);
                 }
             }
+            return response()->json([
+                'status' => 1,
+                'uploaded_merchandise' => count($assignedProductsData) . ' Merchandises Found and Uploaded Successfully',
+                'failed_merchandise' => [
+                    'list' => $productCodesInvalid,
+                    'count' => count($productCodesInvalid),
+                ]
+            ]);
         }
 
-        return response()->json([
-            'status' => 1,
-            'uploaded_merchandise' => count($assignedProductsData) . ' Merchandises Found and Uploaded Successfully',
-            'failed_merchandise' => [
-                'list' => $productCodesInvalid,
-                'count' => count($productCodesInvalid),
-            ]
-        ]);
     }
 
 
