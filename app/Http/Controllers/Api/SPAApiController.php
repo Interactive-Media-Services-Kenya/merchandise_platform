@@ -788,6 +788,11 @@ class SPAApiController extends Controller
                     'count' => count($productCodesInvalid),
                 ]
             ]);
+        }else{
+            return response()->json([
+                'status' => 0,
+                'message'=> 'Failed! Merchandise Not Uploaded',
+            ]);
         }
 
     }
