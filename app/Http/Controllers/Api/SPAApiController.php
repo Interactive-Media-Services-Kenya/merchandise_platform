@@ -786,7 +786,7 @@ class SPAApiController extends Controller
                     'list' => $productCodesInvalid,
                     'count' => count($productCodesInvalid),
                 ],
-                'message' => count($assignedProductsData) . ' Merchandises Found and Uploaded Successfully',
+                'message' => count($assignedProductsData) . ' Merchandises Found and Uploaded Successfully. '.count($productCodesInvalid). ' Merchandises Failed',
             ]);
         }else{
             return response()->json([
