@@ -736,7 +736,7 @@ class SPAApiController extends Controller
        $data = $request->input('data');
 
         //        $data = $data->data;
-
+        logger($data);
         $assignedProductsData = [];
         $uploadedData = [];
         $productCodesInvalid = [];
@@ -771,7 +771,7 @@ class SPAApiController extends Controller
                     ]);
                     $product_code = $validCode;
                 }
-                logger($validCode);
+
                 $assigned_product = DB::table('products')->where('product_code', $validCode)->first();
                 //dd($assigned_product->count());
                 if ($assigned_product != null) {
