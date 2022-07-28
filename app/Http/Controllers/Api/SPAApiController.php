@@ -745,7 +745,7 @@ class SPAApiController extends Controller
 
 
         //Multiple Upload
-        for ($x = 0;$x<$data->count();$x++) {
+        for ($x = 0;$x<collect($data)->count();$x++) {
             $product_code = $data['product_code'];
             $client_id = $data['client_id'];
             $category_id = $data['category_id'];
