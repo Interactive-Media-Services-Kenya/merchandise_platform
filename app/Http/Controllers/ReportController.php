@@ -32,7 +32,7 @@ class ReportController extends Controller
                     })
                     ->addColumn('batch', function (IssueProduct $product) {
 
-                        return $product->batch->batch_code;
+                        return $product->product->batch->batch_code;
                     })
                     ->addColumn('product_code', function (IssueProduct $product) {
 
@@ -62,7 +62,7 @@ class ReportController extends Controller
                     })
                     ->addColumn('batch', function (IssueProduct $product) {
 
-                        return $product->batch->batch_code;
+                        return $product->product->batch->batch_code;
                     })
                     ->addColumn('category', function (IssueProduct $product) {
 
@@ -156,7 +156,7 @@ class ReportController extends Controller
                     })
                     ->addColumn('batch', function (IssueProduct $product) {
 
-                        return $product->batch->batch_code;
+                        return $product->product->batch->batch_code;
                     })
                     ->addColumn('client', function (IssueProduct $product) {
 
@@ -194,7 +194,7 @@ class ReportController extends Controller
                     })
                     ->addColumn('batch', function (IssueProduct $product) {
 
-                        return $product->batch->batch_code;
+                        return $product->product->batch->batch_code;
                     })
                     ->addColumn('category', function (IssueProduct $product) {
 
@@ -226,7 +226,7 @@ class ReportController extends Controller
                     })
                     ->addColumn('batch', function (IssueProduct $product) {
 
-                        return $product->batch->batch_code;
+                        return $product->product->batch->batch_code;
                     })
                     ->addColumn('client', function (IssueProduct $product) {
 
@@ -264,7 +264,7 @@ class ReportController extends Controller
                     })
                     ->addColumn('batch', function (IssueProduct $product) {
 
-                        return $product->batch->batch_code;
+                        return $product->product->batch->batch_code;
                     })
                     ->addColumn('category', function (IssueProduct $product) {
 
@@ -295,7 +295,7 @@ class ReportController extends Controller
                     })
                     ->addColumn('batch', function (IssueProduct $product) {
 
-                        return $product->batch->batch_code;
+                        return $product->product->batch->batch_code;
                     })
                     ->addColumn('client', function (IssueProduct $product) {
 
@@ -335,7 +335,7 @@ class ReportController extends Controller
                     })
                     ->addColumn('batch', function (IssueProduct $product) {
 
-                        return $product->batch->batch_code;
+                        return $product->product->batch->batch_code;
                     })
                     ->addColumn('category', function (IssueProduct $product) {
 
@@ -370,7 +370,7 @@ class ReportController extends Controller
                     })
                     ->addColumn('batch', function (IssueProduct $product) {
 
-                        return $product->batch->batch_code;
+                        return $product->product->batch->batch_code;
                     })
                     ->addColumn('client', function (IssueProduct $product) {
 
@@ -403,7 +403,7 @@ class ReportController extends Controller
                     })
                     ->addColumn('batch', function (IssueProduct $product) {
 
-                        return $product->batch->batch_code;
+                        return $product->product->batch->batch_code;
                     })
                     ->addColumn('client', function (IssueProduct $product) {
 

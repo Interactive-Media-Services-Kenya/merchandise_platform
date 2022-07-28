@@ -682,16 +682,6 @@ class SPAApiController extends Controller
     {
         $data = Storage::with('client')->get();
 
-        // $data = [];
-
-        // foreach ($storages as $storage) {
-        //     $storageData = [
-        //         'id' => $storage->id,
-        //         'name' => $storage->title,
-        //         'client' => $storage->client->name??'',
-        //     ];
-        //     array_push($data, $storageData);
-        // }
         if (count($data) == 0) {
             return response()->json([
                 'message' => "No Registered Storages",
@@ -762,6 +752,7 @@ class SPAApiController extends Controller
 
             $alreadyUploadedCode = DB::table('products')->whereproduct_code($product_code)->value('product_code');
             $validCode = DB::table('product_codes')->whereproduct_code($product_code)->where('product_code', '!=', $alreadyUploadedCode)->value('product_code');
+
             if ($validCode == $product_code) {
                 DB::table('products')->insert([
                     'product_code' => $product_code,
@@ -771,9 +762,13 @@ class SPAApiController extends Controller
                     'brand_id' => $brand_id,
                     'size' => $size,
                     'color' => $color,
+                    'created_at' => \Carbon\Carbon::now(),
+                    'updated_at' => \Carbon\Carbon::now(),
                 ]);
+
             }
-            $assigned_product = DB::table('products')->where('product_code', $product_code)->first();
+            //Check merchandise is not duplicate
+            $assigned_product = DB::table('products')->where('product_code', $validCode)->first();
             //dd($assigned_product->count());
             if ($assigned_product != null) {
                 array_push($assignedProductsData, $product_code);
