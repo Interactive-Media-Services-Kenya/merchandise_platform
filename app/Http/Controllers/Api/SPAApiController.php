@@ -774,7 +774,9 @@ class SPAApiController extends Controller
             if ($assigned_product != null) {
                 return response()->json([
                     'status' => 1,
-                    'message' => 'Merchandise Uploaded Successfully Confirmed!',
+                    //'message' => 'Merchandise Uploaded Successfully Confirmed!',
+                    'message' => $assigned_product,
+
                 ]);
             } else {
                 return response()->json([
