@@ -745,14 +745,14 @@ class SPAApiController extends Controller
 
 
         //Multiple Upload
-        foreach ($data as $pr) {
-            $product_code = $pr['product_code'];
-            $client_id = $pr['client_id'];
-            $category_id = $pr['category_id'];
-            $storage_id = $pr['storage_id'];
-            $brand_id = $pr['brand_id'];
-            $size = $pr['size'];
-            $color = $pr['color'];
+        for ($x = 0;$x<$data->count();$x++) {
+            $product_code = $data['product_code'];
+            $client_id = $data['client_id'];
+            $category_id = $data['category_id'];
+            $storage_id = $data['storage_id'];
+            $brand_id = $data['brand_id'];
+            $size = $data['size'];
+            $color = $data['color'];
 
 
             $alreadyUploadedCode = DB::table('products')->whereproduct_code($product_code)->value('product_code');
