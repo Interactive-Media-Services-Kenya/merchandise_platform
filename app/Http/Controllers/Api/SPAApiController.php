@@ -736,7 +736,7 @@ class SPAApiController extends Controller
        $data = $request->input('data');
 
         //        $data = $data->data;
-        logger($data);
+        logger(gettype($data));
         $assignedProductsData = [];
         $uploadedData = [];
         $productCodesInvalid = [];
