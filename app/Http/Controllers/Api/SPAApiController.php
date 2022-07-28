@@ -734,7 +734,7 @@ class SPAApiController extends Controller
         }
        // $data = json_decode($request->getContent(), true);
        $data = $request->all();
-
+       logger($data);
         //        $data = $data->data;
 
         $assignedProductsData = [];
@@ -797,7 +797,7 @@ class SPAApiController extends Controller
             $size = $pr['size'];
             $color = $pr['color'];
 
-            logger($product_code);
+
             $alreadyUploadedCode = DB::table('products')->whereproduct_code($product_code)->value('product_code');
             $validCode = DB::table('product_codes')->whereproduct_code($product_code)->where('product_code', '!=', $alreadyUploadedCode)->value('product_code');
 
