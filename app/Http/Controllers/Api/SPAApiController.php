@@ -739,6 +739,8 @@ class SPAApiController extends Controller
         $assignedProductsData = [];
         $uploadedData = [];
         $productCodesInvalid = [];
+
+        //Single Upload
         if ($data == null) {
             $product_code = $request->product_code;
             $client_id = $request->client_id;
@@ -772,7 +774,7 @@ class SPAApiController extends Controller
             if ($assigned_product != null) {
                 return response()->json([
                     'status' => 1,
-                    'message' => 'Merchandise Uploaded Successfully!',
+                    'message' => 'Merchandise Uploaded Successfully Confirmed!',
                 ]);
             } else {
                 return response()->json([
@@ -781,6 +783,9 @@ class SPAApiController extends Controller
                 ]);
             }
         }
+
+
+        //Multiple Upload
         foreach ($data as $pr) {
             $product_code = $pr['product_code'];
             $client_id = $pr['client_id'];
