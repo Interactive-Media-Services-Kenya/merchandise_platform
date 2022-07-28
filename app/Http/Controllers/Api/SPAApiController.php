@@ -736,7 +736,6 @@ class SPAApiController extends Controller
        $data = json_decode($request->input('data'),true);
 
         //        $data = $data->data;
-        logger(gettype($data));
         $assignedProductsData = [];
         $uploadedData = [];
         $productCodesInvalid = [];
@@ -786,7 +785,8 @@ class SPAApiController extends Controller
                 'failed_merchandise' => [
                     'list' => $productCodesInvalid,
                     'count' => count($productCodesInvalid),
-                ]
+                ],
+                'message' => count($assignedProductsData) . ' Merchandises Found and Uploaded Successfully',
             ]);
         }else{
             return response()->json([
