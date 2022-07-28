@@ -458,11 +458,11 @@ class SPAApiController extends Controller
             ]);
         }
         //Check if product is single
-        $productSingle = Product::where('product_code',$request->product_code)->where('ba_id',auth()->user()->id)->first();
+        $productSingle = Product::where('product_code', $request->product_code)->where('ba_id', auth()->user()->id)->first();
 
-        if($productSingle){
+        if ($productSingle) {
             //Product Is Single
-            if ($productSingle->batch_ba_id == null){
+            if ($productSingle->batch_ba_id == null) {
                 $product = Product::where('product_code', $request->product_code)->first();
 
                 $issuedProduct = IssueProduct::where('product_id', $product->id)->first();
@@ -484,7 +484,7 @@ class SPAApiController extends Controller
                     // ? Get all the products issued by a logged in BrandAmbassador
                     $productsIssued = IssueProduct::select('product_id')->where('ba_id', auth()->user()->id)->where('category_id', $product->category_id)->get();
                     // ? Fetch the remaining products of the brandAmbassador Assigned to but not issued out.
-                    $remainingProducts = Product::where('ba_id', auth()->user()->id)->where('batch_ba_id',$batch)->whereNotIn('id', $productsIssued)->get();
+                    $remainingProducts = Product::where('ba_id', auth()->user()->id)->where('batch_ba_id', $batch)->whereNotIn('id', $productsIssued)->get();
                     //Save customer details alongside issued Product.
                     if ($request->has('customer_phone') || $request->has('customer_name')) {
                         Customer::create([
@@ -516,12 +516,12 @@ class SPAApiController extends Controller
                         ]);
                     }
                 }
-            }else{
+            } else {
                 //Check if the merchandise belongs to a BA and Have confirmed Batch
 
                 $productBa = Product::where('products.ba_id', auth()->user()->id)
-                    ->join('batch_brandambassadors','batch_brandambassadors.id', 'products.batch_ba_id')
-                    ->where('batch_brandambassadors.accept_status',1)
+                    ->join('batch_brandambassadors', 'batch_brandambassadors.id', 'products.batch_ba_id')
+                    ->where('batch_brandambassadors.accept_status', 1)
                     ->count();
 
                 //Check if product is issued Out
@@ -553,7 +553,7 @@ class SPAApiController extends Controller
                     // ? Get all the products issued by a logged in BrandAmbassador
                     $productsIssued = IssueProduct::select('product_id')->where('ba_id', auth()->user()->id)->where('category_id', $product->category_id)->get();
                     // ? Fetch the remaining products of the brandAmbassador Assigned to but not issued out.
-                    $remainingProducts = Product::where('ba_id', auth()->user()->id)->where('batch_ba_id',$batch)->whereNotIn('id', $productsIssued)->get();
+                    $remainingProducts = Product::where('ba_id', auth()->user()->id)->where('batch_ba_id', $batch)->whereNotIn('id', $productsIssued)->get();
                     //Save customer details alongside issued Product.
                     if ($request->has('customer_phone') || $request->has('customer_name')) {
                         Customer::create([
@@ -586,62 +586,6 @@ class SPAApiController extends Controller
                     }
                 }
             }
-        }else{
-            return \Response::json([
-                'message' => "Merchandise Not Found",
-                // Status Unsuccessful
-                'status' => 0,
-            ]);
-        }
-
-    }
-    public function issueMerchandise($data)
-{
-    $product = Product::where('product_code', $data['product_code'])->first();
-
-    $issuedProduct = IssueProduct::where('product_id', $product->id)->first();
-
-    if ($issuedProduct) {
-        return \Response::json([
-            'message' => "Merchandise Is Already Issued Out",
-            'status' => 2,
-        ]);
-    } else {
-        $batch = $product->batch_ba_id;
-        $issueProduct = IssueProduct::create([
-            'ba_id' => auth()->user()->id,
-            'batch_id' => $batch,
-            'product_id' => $product->id,
-            'category_id' => $product->category->id,
-        ]);
-        // Save Customer Data through Api.
-        // ? Get all the products issued by a logged in BrandAmbassador
-        $productsIssued = IssueProduct::select('product_id')->where('ba_id', auth()->user()->id)->where('category_id', $product->category_id)->get();
-        // ? Fetch the remaining products of the brandAmbassador Assigned to but not issued out.
-        $remainingProducts = Product::where('ba_id', auth()->user()->id)->where('batch_ba_id',$batch)->whereNotIn('id', $productsIssued)->get();
-        //Save customer details alongside issued Product.
-        if ($data->has('customer_phone') || $data->has('customer_name')) {
-            Customer::create([
-                'name' => $data['customer_name'],
-                'phone' => $data['customer_phone'],
-                'product_id' => $product->id,
-            ]);
-        }
-        Activity::create([
-            'title' => 'Merchandise Issued',
-            'user_id' => auth()->user()->id,
-            'description' => auth()->user()->name . ' have issued out ' . $product->product_code,
-        ]);
-        if ($issueProduct) {
-
-            return \Response::json([
-                'message' => "Merchandise Found and Issued Successfully",
-                'merchandise_type'  => $product->category->title ?? 'No Merchandise Type Registered for the Merchandise',
-                'remaining_items' => $remainingProducts ? count($remainingProducts) : 0,
-                'issued_items' => $productsIssued ? count($productsIssued) : 0,
-                //Status success
-                'status' => 1,
-            ]);
         } else {
             return \Response::json([
                 'message' => "Merchandise Not Found",
@@ -650,7 +594,62 @@ class SPAApiController extends Controller
             ]);
         }
     }
-}
+    public function issueMerchandise($data)
+    {
+        $product = Product::where('product_code', $data['product_code'])->first();
+
+        $issuedProduct = IssueProduct::where('product_id', $product->id)->first();
+
+        if ($issuedProduct) {
+            return \Response::json([
+                'message' => "Merchandise Is Already Issued Out",
+                'status' => 2,
+            ]);
+        } else {
+            $batch = $product->batch_ba_id;
+            $issueProduct = IssueProduct::create([
+                'ba_id' => auth()->user()->id,
+                'batch_id' => $batch,
+                'product_id' => $product->id,
+                'category_id' => $product->category->id,
+            ]);
+            // Save Customer Data through Api.
+            // ? Get all the products issued by a logged in BrandAmbassador
+            $productsIssued = IssueProduct::select('product_id')->where('ba_id', auth()->user()->id)->where('category_id', $product->category_id)->get();
+            // ? Fetch the remaining products of the brandAmbassador Assigned to but not issued out.
+            $remainingProducts = Product::where('ba_id', auth()->user()->id)->where('batch_ba_id', $batch)->whereNotIn('id', $productsIssued)->get();
+            //Save customer details alongside issued Product.
+            if ($data->has('customer_phone') || $data->has('customer_name')) {
+                Customer::create([
+                    'name' => $data['customer_name'],
+                    'phone' => $data['customer_phone'],
+                    'product_id' => $product->id,
+                ]);
+            }
+            Activity::create([
+                'title' => 'Merchandise Issued',
+                'user_id' => auth()->user()->id,
+                'description' => auth()->user()->name . ' have issued out ' . $product->product_code,
+            ]);
+            if ($issueProduct) {
+
+                return \Response::json([
+                    'message' => "Merchandise Found and Issued Successfully",
+                    'merchandise_type'  => $product->category->title ?? 'No Merchandise Type Registered for the Merchandise',
+                    'remaining_items' => $remainingProducts ? count($remainingProducts) : 0,
+                    'issued_items' => $productsIssued ? count($productsIssued) : 0,
+                    //Status success
+                    'status' => 1,
+                ]);
+            } else {
+                return \Response::json([
+                    'message' => "Merchandise Not Found",
+                    // Status Unsuccessful
+                    'status' => 0,
+                ]);
+            }
+        }
+    }
 
 
     // ? Get all the outlets registered in the database
@@ -727,7 +726,7 @@ class SPAApiController extends Controller
 
     public function uploadMerchandise(Request $request)
     {
-        if(!Gate::allows('admin_access')){
+        if (!Gate::allows('admin_access')) {
             return response()->json([
                 'message' => 'User is Not Authorized',
                 'status' => 0,
@@ -735,11 +734,53 @@ class SPAApiController extends Controller
         }
         $data = json_decode($request->getContent(), true);
 
-//        $data = $data->data;
+        //        $data = $data->data;
 
         $assignedProductsData = [];
         $uploadedData = [];
         $productCodesInvalid = [];
+        if ($data == null) {
+            $product_code = $request->product_code;
+            $client_id = $request->client_id;
+            $category_id = $request->category_id;
+            $storage_id = $request->storage_id;
+            $brand_id = $request->brand_id;
+            $size = $request->size;
+            $color = $request->color;
+
+
+            $alreadyUploadedCode = DB::table('products')->whereproduct_code($product_code)->value('product_code');
+            $validCode = DB::table('product_codes')->whereproduct_code($product_code)->where('product_code', '!=', $alreadyUploadedCode)->value('product_code');
+
+            if ($validCode == $product_code) {
+                DB::table('products')->insert([
+                    'product_code' => $product_code,
+                    'client_id' => $client_id,
+                    'category_id' => $category_id,
+                    //'storage_id'=>$storage_id,
+                    'brand_id' => $brand_id,
+                    'size' => $size,
+                    'color' => $color,
+                    'created_at' => \Carbon\Carbon::now(),
+                    'updated_at' => \Carbon\Carbon::now(),
+                ]);
+                $product_code = $validCode;
+            }
+
+            $assigned_product = DB::table('products')->where('product_code', $validCode)->first();
+            //dd($assigned_product->count());
+            if ($assigned_product != null) {
+                return response()->json([
+                    'status' => 1,
+                    'message' => 'Merchandise Uploaded Successfully!',
+                ]);
+            } else {
+                return response()->json([
+                    'status' => 0,
+                    'message' => 'Failed! Merchandise Not Uploaded!',
+                ]);
+            }
+        }
         foreach ($data as $pr) {
             $product_code = $pr['product_code'];
             $client_id = $pr['client_id'];
@@ -765,9 +806,9 @@ class SPAApiController extends Controller
                     'created_at' => \Carbon\Carbon::now(),
                     'updated_at' => \Carbon\Carbon::now(),
                 ]);
-
+                $product_code = $validCode;
             }
-            //Check merchandise is not duplicate
+
             $assigned_product = DB::table('products')->where('product_code', $validCode)->first();
             //dd($assigned_product->count());
             if ($assigned_product != null) {
@@ -796,7 +837,7 @@ class SPAApiController extends Controller
             $products = Product::select('product_code',)->wherebatch_id($batch)->cursor();
             $batchProducts = [];
             foreach ($products as $product) {
-                array_push($batchProducts,$product->product_code);
+                array_push($batchProducts, $product->product_code);
             }
         }
         //Batch for TeamLeader
@@ -819,10 +860,10 @@ class SPAApiController extends Controller
         }
         if ($batchProducts != null) {
             return response()->json([
-                'status'=>1,
+                'status' => 1,
                 'products' => $batchProducts,
             ]);
-        }else{
+        } else {
             return response()->json([
                 'status' => 0,
                 'message' => 'No Products In Batch'
@@ -871,4 +912,43 @@ class SPAApiController extends Controller
             return redirect()->back()->with("error", $e);
         }
     }
+
+    //Unused Upload Data Optimize
+
+
+    // public function uploadData($product_code,$client_id,$category_id,$storage_id,$brand_id,$size,$color){
+    //     $alreadyUploadedCode = DB::table('products')->whereproduct_code($product_code)->value('product_code');
+    //         $validCode = DB::table('product_codes')->whereproduct_code($product_code)->where('product_code', '!=', $alreadyUploadedCode)->value('product_code');
+
+    //         if ($validCode == $product_code) {
+    //             DB::table('products')->insert([
+    //                 'product_code' => $product_code,
+    //                 'client_id' => $client_id,
+    //                 'category_id' => $category_id,
+    //                 //'storage_id'=>$storage_id,
+    //                 'brand_id' => $brand_id,
+    //                 'size' => $size,
+    //                 'color' => $color,
+    //                 'created_at' => \Carbon\Carbon::now(),
+    //                 'updated_at' => \Carbon\Carbon::now(),
+    //             ]);
+
+    //         }
+    //         //Check merchandise is not duplicate
+    //         $assigned_product = DB::table('products')->where('product_code', $validCode)->first();
+    //         //dd($assigned_product->count());
+    //         if ($assigned_product != null) {
+    //             array_push($assignedProductsData, $product_code);
+    //         } else {
+    //             array_push($productCodesInvalid, $product_code);
+    //         }
+    //         return response()->json([
+    //             'status' => 1,
+    //             'uploaded_merchandise' => count($assignedProductsData) . ' Merchandises Found and Uploaded Successfully',
+    //             'failed_merchandise' => [
+    //                 'list' => $productCodesInvalid,
+    //                 'count' => count($productCodesInvalid),
+    //             ]
+    //         ]);
+    // }
 }
