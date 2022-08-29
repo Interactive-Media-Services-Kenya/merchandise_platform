@@ -657,7 +657,7 @@ class SPAApiController extends Controller
     {
         $outlets = Outlet::all();
 
-        $data = [];
+        $dataItems = [];
 
         foreach ($outlets as $outlet) {
             $outletData = [
@@ -666,9 +666,13 @@ class SPAApiController extends Controller
                 'outlet_code' => $outlet->code,
                 'county' => $outlet->county->name,
             ];
-            array_push($data, $outletData);
+            array_push($dataItems, $outletData);
         }
-        if (count($data) == 0) {
+        $data = [
+            'status' => 0,
+            'data' => $dataItems,
+        ];
+        if (count($dataItems) == 0) {
             return response()->json([
                 'message' => "No Registered Outlets",
                 'status' => 0,
@@ -691,7 +695,26 @@ class SPAApiController extends Controller
         }
     }
 
-
+    public function user(){
+        $user = Auth::user();
+        return \Response::json([
+            'name' => $user->name,
+            'email' => $user->email,
+            'role' => $user->roles->title,
+            'status' => 1,
+            'permissions' =>
+                            $user->role_id == 1 || $user->role_id == 2 || $user->role_id == 5 ?
+                                [
+                                    'can_confirm_merchandise' => true,
+                                    'can_upload_merchandise' => true,
+                                ]
+                                :
+                                [
+                                    'can_confirm_merchandise' => false,
+                                    'can_upload_merchandise' => false
+                                ],
+        ]);
+    }
     public function merchandise_types()
     {
         $categories = Category::select('id', 'title')->get();
@@ -804,7 +827,7 @@ class SPAApiController extends Controller
         // Batch for Agency
         if (Auth::user()->role_id == 2) {
             $batch = DB::table('batches')->wherebatch_code($batch_code)->value('id');
-            $products = Product::select('product_code',)->wherebatch_id($batch)->cursor();
+            $products = Product::select('product_code')->wherebatch_id($batch)->cursor();
             $batchProducts = [];
             foreach ($products as $product) {
                 array_push($batchProducts, $product->product_code);
@@ -813,7 +836,7 @@ class SPAApiController extends Controller
         //Batch for TeamLeader
         if (Auth::user()->role_id == 3) {
             $batch = DB::table('batch_teamleaders')->wherebatch_code($batch_code)->value('id');
-            $products = Product::select('product_code',)->wherebatch_tl_id($batch)->cursor();
+            $products = Product::select('product_code')->wherebatch_tl_id($batch)->cursor();
             $batchProducts = [];
             foreach ($products as $product) {
                 array_push($batchProducts, $product->product_code);
@@ -822,7 +845,7 @@ class SPAApiController extends Controller
         //Batch for BrandAmbassador
         if (Auth::user()->role_id == 4) {
             $batch = DB::table('batch_brandambassadors')->wherebatch_code($batch_code)->value('id');
-            $products = Product::select('product_code',)->wherebatch_ba_id($batch)->cursor();
+            $products = Product::select('product_code')->wherebatch_ba_id($batch)->cursor();
             $batchProducts = [];
             foreach ($products as $product) {
                 array_push($batchProducts, $product->product_code);

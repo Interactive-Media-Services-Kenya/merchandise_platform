@@ -42,7 +42,7 @@ class LoginController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('guest')->except(['logout','logoutApi']);
+        $this->middleware('guest')->except(['logout', 'logoutApi']);
     }
     public function login(Request $request)
     {
@@ -54,7 +54,7 @@ class LoginController extends Controller
         $credentials = $request->only('email', 'password');
         if (Auth::attempt($credentials)) {
             $user_id = auth()->user()->id;
-            $user = User::where('id',$user_id)->first();
+            $user = User::where('id', $user_id)->first();
             $user->generateCode($user);
 
             return redirect()->route('otp.index');
@@ -71,18 +71,18 @@ class LoginController extends Controller
         // Todo: If the phone number exists, Authenticate then send otp
 
         //Todo: Confirm OTP and assign user token.
-        $phoneNumber = '254' . substr($request->phone,-9,9);
+        $phoneNumber = '254' . substr($request->phone, -9, 9);
         $user = User::where('phone', $phoneNumber)->first();
         if ($user) {
             $user->generateCode($user);
             return  \Response::json([
                 'message' => "OTP Code Sent Use it to generate Auth Token",
-                'status'=>1,
+                'status' => 1,
             ]);
         } else {
             return \Response::json([
-                'message' => "Phone Number doesn't exist",
-                'status'=>0,
+                'message' => "Unauthorised ! Phone number not registered in the System.",
+                'status' => 0,
             ]);
         };
     }
@@ -104,15 +104,25 @@ class LoginController extends Controller
                 'token' => $token->plainTextToken,
                 'user_id' => $user->id,
                 'name' => $user->name,
-                'email' =>$user->email,
+                'email' => $user->email,
                 'role' => $user->roles->title,
                 'status' => 1,
-                'permissions' => $user->role_id == 1 || $user->role_id == 2 || $user->role_id == 5 ? ['can_confirm_merchandise'=>true] : ['can_confirm_merchandise'=>false],
+                'permissions' =>
+                                $user->role_id == 1 || $user->role_id == 2 || $user->role_id == 5 ?
+                                    [
+                                        'can_confirm_merchandise' => true,
+                                        'can_upload_merchandise' => true,
+                                    ]
+                                    :
+                                    [
+                                        'can_confirm_merchandise' => false,
+                                        'can_upload_merchandise' => false
+                                    ],
             ]);
         } else {
             return response()->json([
                 'message' => "OTP Code does not exist or is expired",
-                'status'=>0,
+                'status' => 0,
             ]);
         }
     }
