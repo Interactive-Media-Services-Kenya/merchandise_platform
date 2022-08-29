@@ -107,17 +107,6 @@ class LoginController extends Controller
                 'email' => $user->email,
                 'role' => $user->roles->title,
                 'status' => 1,
-                'permissions' =>
-                                $user->role_id == 1 || $user->role_id == 2 || $user->role_id == 5 ?
-                                    [
-                                        'can_confirm_merchandise' => true,
-                                        'can_upload_merchandise' => true,
-                                    ]
-                                    :
-                                    [
-                                        'can_confirm_merchandise' => false,
-                                        'can_upload_merchandise' => false
-                                    ],
             ]);
         } else {
             return response()->json([

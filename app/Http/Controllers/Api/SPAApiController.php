@@ -22,6 +22,7 @@ use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Gate;
 use DB;
+use App\Models\User;
 
 class SPAApiController extends Controller
 {
@@ -697,22 +698,13 @@ class SPAApiController extends Controller
 
     public function user(){
         $user = Auth::user();
+        $permissionUser = new User();
         return \Response::json([
             'name' => $user->name,
             'email' => $user->email,
             'role' => $user->roles->title,
             'status' => 1,
-            'permissions' =>
-                            $user->role_id == 1 || $user->role_id == 2 || $user->role_id == 5 ?
-                                [
-                                    'can_confirm_merchandise' => true,
-                                    'can_upload_merchandise' => true,
-                                ]
-                                :
-                                [
-                                    'can_confirm_merchandise' => false,
-                                    'can_upload_merchandise' => false
-                                ],
+            'permissions' => $permissionUser->permissions(),
         ]);
     }
     public function merchandise_types()

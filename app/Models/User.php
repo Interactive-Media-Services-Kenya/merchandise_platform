@@ -107,6 +107,46 @@ class User extends Authenticatable
             return redirect()->back()->with("error", $e);
         }
     }
+
+    public function permissions(){
+        $user = Auth::user();
+        //Permissions for Super Admin
+        if($user->role_id == 1){
+            $permissions = [
+                'can_confirm_merchandise' => false,
+                'can_upload_merchandise' => true,
+            ];
+        }
+        //Permissions for Agency
+        if($user->role_id == 2){
+            $permissions = [
+                'can_confirm_merchandise' => true,
+                'can_upload_merchandise' => true,
+            ];
+        }
+        //Permissions for Team Leader
+        if($user->role_id == 3){
+            $permissions = [
+                'can_confirm_merchandise' => true,
+                'can_upload_merchandise' => false,
+            ];
+        }
+        //Permissions for Brand Ambassador
+        if($user->role_id == 4){
+            $permissions = [
+                'can_confirm_merchandise' => true,
+                'can_upload_merchandise' => false,
+            ];
+        }
+        //Permissions for Client
+        if($user->role_id == 5){
+            $permissions = [
+                'can_confirm_merchandise' => false,
+                'can_upload_merchandise' => false,
+            ];
+        }
+        return $permissions;
+    }
     protected function serializeDate(DateTimeInterface $date)
     {
         return $date->format('Y-m-d H:i:s');
