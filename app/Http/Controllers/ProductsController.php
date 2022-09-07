@@ -1618,7 +1618,7 @@ class ProductsController extends Controller
                 Alert::success('Success', 'Operation Successfull.');
                 return back();
             } else {
-                Alert::error('Failed', 'No products in Batch');
+                Alert::error('Failed', 'Products In Batch Confirmed or No Products in Batch');
                 return back();
             }
         }
