@@ -99,6 +99,7 @@ class LoginController extends Controller
 
             $token = 'token';
             $token = $user->createToken($token);
+            $permissionUser = new User();
             return \Response::json([
                 'message' => "Token Generated Successfull",
                 'token' => $token->plainTextToken,
@@ -107,6 +108,7 @@ class LoginController extends Controller
                 'email' => $user->email,
                 'role' => $user->roles->title,
                 'status' => 1,
+                'permissions' => $permissionUser->permissions(),
             ]);
         } else {
             return response()->json([
