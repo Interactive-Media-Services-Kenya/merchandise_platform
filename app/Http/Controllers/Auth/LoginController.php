@@ -103,6 +103,7 @@ class LoginController extends Controller
                 $permissions = [
                     'can_confirm_merchandise' => false,
                     'can_upload_merchandise' => true,
+                    'can_issue_merchandise' => false,
                 ];
             }
             //Permissions for Agency
@@ -110,6 +111,7 @@ class LoginController extends Controller
                 $permissions = [
                     'can_confirm_merchandise' => true,
                     'can_upload_merchandise' => true,
+                    'can_issue_merchandise' => false,
                 ];
             }
             //Permissions for Team Leader
@@ -117,6 +119,7 @@ class LoginController extends Controller
                 $permissions = [
                     'can_confirm_merchandise' => true,
                     'can_upload_merchandise' => false,
+                    'can_issue_merchandise' => false,
                 ];
             }
             //Permissions for Brand Ambassador
@@ -124,6 +127,7 @@ class LoginController extends Controller
                 $permissions = [
                     'can_confirm_merchandise' => true,
                     'can_upload_merchandise' => false,
+                    'can_issue_merchandise' => false,
                 ];
             }
             //Permissions for Client
@@ -131,6 +135,7 @@ class LoginController extends Controller
                 $permissions = [
                     'can_confirm_merchandise' => false,
                     'can_upload_merchandise' => false,
+                    'can_issue_merchandise' => false,
                 ];
             }
             return \Response::json([
