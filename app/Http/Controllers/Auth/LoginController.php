@@ -101,7 +101,7 @@ class LoginController extends Controller
             $token = $user->createToken($token);
             if($user->role_id == 1){
                 $permissions = [
-                    'can_confirm_merchandise' => false,
+                    'can_confirm_merchandise' => true,
                     'can_upload_merchandise' => true,
                     'can_issue_merchandise' => false,
                 ];
