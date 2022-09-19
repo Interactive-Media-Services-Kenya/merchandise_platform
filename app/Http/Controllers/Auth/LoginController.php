@@ -127,7 +127,7 @@ class LoginController extends Controller
                 $permissions = [
                     'can_confirm_merchandise' => true,
                     'can_upload_merchandise' => false,
-                    'can_issue_merchandise' => false,
+                    'can_issue_merchandise' => true,
                 ];
             }
             //Permissions for Client
