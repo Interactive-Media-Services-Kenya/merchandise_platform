@@ -6,6 +6,7 @@ use App\Models\Client;
 use Illuminate\Http\Request;
 use Alert;
 use Illuminate\Support\Facades\Auth;
+use DB;
 
 class ClientsController extends Controller
 {
@@ -139,5 +140,21 @@ class ClientsController extends Controller
             return back();
         }
 
+    }
+
+    function fetch(Request $request)
+    {
+     $select = $request->get('select');
+     $value = $request->get('value');
+     $dependent = $request->get('dependent');
+     $data = DB::table('brands')
+       ->where($select, $value)
+       ->get();
+     $output = '<option value="">Select Brand</option>';
+     foreach($data as $row)
+     {
+      $output .= '<option value="'.$row->id.'">'.$row->name.'</option>';
+     }
+     echo $output;
     }
 }
