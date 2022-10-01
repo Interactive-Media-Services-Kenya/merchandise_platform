@@ -34,9 +34,17 @@ use Picqer\Barcode\BarcodeGeneratorHTML;
 use RealRashid\SweetAlert\Facades\Alert;
 use Symfony\Component\HttpFoundation\Response;
 use Yajra\DataTables\Facades\DataTables;
+use App\Services\SendSMSService;
 
 class ProductsController extends Controller
 {
+
+    protected $sendSMSService;
+
+    public function __construct(SendSMSService $sendSMSService)
+    {
+        $this->sendSMSService = $sendSMSService;
+    }
     /**
      * Display a listing of the resource.
      *
@@ -1467,7 +1475,7 @@ class ProductsController extends Controller
 
             if (count($dataProducts) > 0) {
                 $receiver_email = User::where('id', $request->assigned_to)->value('email');
-
+                $receiver_phone = User::where('id', $request->assigned_to)->value('phone');
                 $sender_email = Auth::user()->email;
                 //Add Message for assigning merchandises : includes merchandise type, batch_code quantity
                 $merchandise = array_pop($dataProducts);
@@ -1479,9 +1487,13 @@ class ProductsController extends Controller
                     'title' => 'Mail from ' . $sender_email,
                     'body' => $message,
                 ];
+                //Send Mail
+                //Mail::to($receiver_email)->send(new AssignMerchandise($details));
 
-                Mail::to($receiver_email)->send(new AssignMerchandise($details));
-                Alert::success('Success', 'Merchandises Assigned Successfully to: ' . $receiver_email);
+                //Send SMS
+                $sms = $this->sendSMSService->sendSMS($message,$receiver_phone);
+
+                Alert::success('Success', 'Merchandises Assigned Successfully to: ' . $receiver_phone);
                 return back();
             } else {
                 Alert::error('Error', 'Merchandise not Successfully Assigned');
@@ -1518,15 +1530,18 @@ class ProductsController extends Controller
         $product_code = $product->product_code;
         $sender_email = Auth::user()->email;
         $receiver_email = $product->assign->email;
+        $receiver_phone = $product->assign->phone;
         $url_login = URL::to('/login');
         $message = "Hello, Merchandise ($merchandise_type), $product_code from Batch-Code $batchcode, has been rejected by $sender_email. Kindly Confirm through the portal: $url_login.";
         $details = [
             'title' => 'Mail From ' . $sender_email,
             'body' => $message,
         ];
-
-        Mail::to($receiver_email)->send(new AssignMerchandise($details));
-        Alert::success('Success', 'Operation Successfull An Email has been sent to ' . $receiver_email);
+         //Send SMS
+         $sms = $this->sendSMSService->sendSMS($message,$receiver_phone);
+         //Send MAil
+        //Mail::to($receiver_email)->send(new AssignMerchandise($details));
+        Alert::success('Success', 'Operation Succesfull Details has been sent to ' . $receiver_phone);
         return back();
     }
     //Brand Ambassador rejects Merrchandise in batch
@@ -1614,7 +1629,8 @@ class ProductsController extends Controller
                         'user_id' => Auth::id(),
                         'description' => Auth::user()->name . ' have accepted Batch: ' . $batchBA->batch_code,
                     ]);
-                $this->sendMail($products,$productsCount,$batchCode,$info);
+                //Send Message FeedBack
+                $this->sendMessage($products,$productsCount,$batchCode,$info);
                 Alert::success('Success', 'Operation Successfull.');
                 return back();
             } else {
@@ -1656,7 +1672,7 @@ class ProductsController extends Controller
                         'description' => Auth::user()->name . ' have rejected ' . $product->product_code,
                     ]);
                 }
-                $this->sendMail($products,$productsCount,$batchCode,$info);
+                $this->sendMessage($products,$productsCount,$batchCode,$info);
                 Alert::success('Success', 'Operation Successfull');
                 return back();
             } else {
@@ -1699,7 +1715,7 @@ class ProductsController extends Controller
                     ]);
                 }
 
-                $this->sendMail($products,$productsCount,$batchCode,$info);
+                $this->sendMessage($products,$productsCount,$batchCode,$info);
                 Alert::success('Success', 'Operation Successfull');
                 return back();
             } else {
@@ -1832,12 +1848,13 @@ class ProductsController extends Controller
         }
     }
 
-    public function sendMail($products,$productsCount,$batchCode,$info){
+    public function sendMessage($products,$productsCount,$batchCode,$info){
         $product = $products->first();
         $productsCount = $products->count();
         $merchandise_type = $product->category->title;
         $sender_email = Auth::user()->email;
         $receiver_email = $product->assign->email;
+        $receiver_phone = $product->assign->phone;
 
         $url_login = URL::to('/login');
         $message = "Hello, Merchandise ($merchandise_type), $productsCount from Batch-Code $batchCode, has been $info by $sender_email. Kindly Confirm through the portal: $url_login.";
@@ -1845,7 +1862,10 @@ class ProductsController extends Controller
             'title' => 'Mail From ' . $sender_email,
             'body' => $message,
         ];
+       // Send Mail
+       // Mail::to($receiver_email)->send(new AssignMerchandise($details));
 
-        Mail::to($receiver_email)->send(new AssignMerchandise($details));
+       //Send SMS
+       $sms = $this->sendSMSService->sendSMS($message,$receiver_phone);
     }
 }

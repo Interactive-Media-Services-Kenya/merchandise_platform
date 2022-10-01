@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\UpdatePasswordUser;
 use Illuminate\Support\Facades\URL;
+use App\Services\SendSMSService;
 
 class UsersController extends Controller
 {
@@ -23,6 +24,13 @@ class UsersController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+    protected $sendSMSService;
+
+    public function __construct(SendSMSService $sendSMSService)
+    {
+        $this->sendSMSService = $sendSMSService;
+    }
     public function index()
     {
         $users = User::with(['roles', 'county'])->get();
@@ -93,16 +101,17 @@ class UsersController extends Controller
             'phone' => ['required', 'numeric', 'digits:12'],
             'county_id' => ['required', 'integer'],
             'role_id' => ['required', 'integer'],
-            'password' => ['required', Password::min(8)->mixedCase()->symbols()->uncompromised(), 'confirmed'],
+           // 'password' => ['required', Password::min(8)->mixedCase()->symbols()->uncompromised(), 'confirmed'],
         ]);
         $phone = '254' . substr($request->phone,-9,9);
+        $password = rand(1000, 9999);
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'phone' => $phone,
             'county_id' => $request->county_id,
             'role_id' => $request->role_id,
-            'password' => bcrypt($request->password),
+            'password' => bcrypt($password),
         ]);
         if ($request->has('client_id')) {
             $user->update([
@@ -122,8 +131,11 @@ class UsersController extends Controller
                     'title' => 'Mail from '.config('app.name'),
                     'body' => $message,
                 ];
+            //Send Mail
+          //  $mail = Mail::to($user->email)->send(new UpdatePasswordUser($details));
 
-                Mail::to($user->email)->send(new UpdatePasswordUser($details));
+            //Send SMS
+            $sms = $this->sendSMSService->sendSMS($message,$phone);
             Alert::success('Success', 'User Successfully Added');
             return back();
         } else {
@@ -139,9 +151,10 @@ class UsersController extends Controller
             'email' => ['required', 'email', 'max:255', 'unique:users'],
             'phone' => ['required', 'numeric', 'digits:12'],
             'county_id' => ['required', 'integer'],
-            'password' => ['required', Password::min(8)->mixedCase()->symbols()->uncompromised(), 'confirmed'],
+           // 'password' => ['required', Password::min(8)->mixedCase()->symbols()->uncompromised(), 'confirmed'],
         ]);
         $phone = '254' . substr($request->phone,-9,9);
+        $password = rand(1000, 9999);
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
@@ -149,7 +162,7 @@ class UsersController extends Controller
             'county_id' => $request->county_id,
             'role_id' => 4,
             'teamleader_id' =>Auth::id(),
-            'password' => bcrypt($request->password),
+            'password' => bcrypt($password),
         ]);
         if ($request->has('client_id')) {
             $user->update([
@@ -162,7 +175,19 @@ class UsersController extends Controller
             'description' => Auth::user()->name . ' Added User: ' . $user->email,
             'user_id' => Auth::id(),
         ]);
+
         if ($user) {
+            $url_login = URL::to('/');
+            $message = "Hello, You have been assigned an account at $url_login . Kindly Use the following details to login to your Account.     Email: $user->email and Password: $request->password ";
+                $details = [
+                    'title' => 'Mail from '.config('app.name'),
+                    'body' => $message,
+                ];
+            //Send Mail
+          //  $mail = Mail::to($user->email)->send(new UpdatePasswordUser($details));
+
+            //Send SMS
+            $sms = $this->sendSMSService->sendSMS($message,$phone);
             Alert::success('Success', 'User Successfully Added');
             return back();
         } else {

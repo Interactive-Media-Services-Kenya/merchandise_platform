@@ -16,10 +16,18 @@ use App\Mail\AssignMerchandise;
 use App\Models\Activity;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Mail;
+use App\Services\SendSMSService;
 use DB;
 
 class BatchController extends Controller
 {
+    protected $sendSMSService;
+
+    public function __construct(SendSMSService $sendSMSService)
+    {
+        $this->sendSMSService = $sendSMSService;
+    }
+
     public function index()
     {
         $batchesTls = DB::table('batch_teamleaders')->whereteam_leader_id(Auth::id())->orderBy('created_at','DESC')->cursor();
@@ -147,6 +155,7 @@ class BatchController extends Controller
             $batchcode = $product->batch->batch_code;
             $sender_email = Auth::user()->email;
             $receiver_email = $product->user->email;
+            $receiver_phone = $product->user->phone;
             //dd($receiver_email);
             $url_login = URL::to('/login');
             $message = "Hello, Merchandise ($merchandise_type), $productsCount from Batch-Code $batchcode, has been rejected by $sender_email. Kindly Confirm through the portal: $url_login.";
@@ -154,9 +163,12 @@ class BatchController extends Controller
                 'title' => 'Mail From ' . $sender_email,
                 'body' => $message,
             ];
+            //Send Mail
+           // Mail::to($receiver_email)->send(new AssignMerchandise($details));
+            //Send Sms
+            $sms = $this->sendSMSService->sendSMS($message,$receiver_phone);
 
-            Mail::to($receiver_email)->send(new AssignMerchandise($details));
-            Alert::success('Success', 'Operation Successfull. An Email has been sent to ' . $receiver_email);
+            Alert::success('Success', 'Operation Successfull. Details has been sent to ' . $receiver_phone);
             return back();
         } else {
             Alert::error('Failed!', 'Products in Batch Have Already Been Confirmed!');
