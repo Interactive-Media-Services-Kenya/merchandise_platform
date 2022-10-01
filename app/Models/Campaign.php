@@ -13,4 +13,12 @@ class Campaign extends Model
     public function client(){
         return $this->belongsTo(Client::class);
     }
+
+    public function brand(){
+        return $this->belongsTo(Brand::class);
+    }
+
+    public function user(){
+        return $this->belongsTo(User::class);
+    }
 }

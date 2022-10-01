@@ -150,10 +150,10 @@ class ClientsController extends Controller
      $data = DB::table('brands')
        ->where($select, $value)
        ->get();
-     $output = '<option value="">Select Brand</option>';
+     $output = '<option value="">SELECT BRAND</option>';
      foreach($data as $row)
      {
-      $output .= '<option value="'.$row->id.'">'.$row->name.'</option>';
+      $output .= '<option value="'.$row->id.'">'.strtoupper($row->name).'</option>';
      }
      echo $output;
     }

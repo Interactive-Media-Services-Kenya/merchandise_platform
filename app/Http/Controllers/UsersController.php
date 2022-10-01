@@ -95,10 +95,11 @@ class UsersController extends Controller
             'role_id' => ['required', 'integer'],
             'password' => ['required', Password::min(8)->mixedCase()->symbols()->uncompromised(), 'confirmed'],
         ]);
+        $phone = '254' . substr($request->phone,-9,9);
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
-            'phone' => $request->phone,
+            'phone' => $phone,
             'county_id' => $request->county_id,
             'role_id' => $request->role_id,
             'password' => bcrypt($request->password),
@@ -140,10 +141,11 @@ class UsersController extends Controller
             'county_id' => ['required', 'integer'],
             'password' => ['required', Password::min(8)->mixedCase()->symbols()->uncompromised(), 'confirmed'],
         ]);
+        $phone = '254' . substr($request->phone,-9,9);
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
-            'phone' => $request->phone,
+            'phone' => $phone,
             'county_id' => $request->county_id,
             'role_id' => 4,
             'teamleader_id' =>Auth::id(),

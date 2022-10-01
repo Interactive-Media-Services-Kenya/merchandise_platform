@@ -35,7 +35,7 @@
 
                             <div class="col-md-6">
                                 <select name="client_id" id="client_id" class="form-control dynamic"
-                                    style="border: 1px solid; border-radius:10px;" data-dependent="brand_id">
+                                    style="border: 1px solid; border-radius:10px;" data-dependent="brand_id" required>
                                     <option selected disabled>--- Select Client ---</option>
                                     @forelse ($clients as $client)
                                         <option value="{{ $client->id }}">{{ strtoupper($client->name) }}</option>
@@ -57,7 +57,7 @@
                             <div class="col-md-6">
                                 <select name="brand_id" id="brand_id" class="form-control"
                                     style="border: 1px solid; border-radius:10px;">
-                                    <option value="">Select Brand</option>
+                                    <option value="">SELECT BRAND</option>
                                 </select>
 
                                 @error('brand_id')
@@ -65,6 +65,30 @@
                                         <strong>{{ $message }}</strong>
                                     </span>
                                 @enderror
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label for="name" class="col-md-4 col-form-label text-md-end">Campaign Period (Start - End)</label>
+
+                            <div class="row justify-content-center col-md-6">
+                                <div class="col-md-6">
+                                    <input id="from_date" type="date" class="form-control @error('from_date') is-invalid @enderror  input" style="border: 1px solid; border-radius:10px;" name="from_date" required autocomplete="from_date" autofocus placeholder="Enter Campaign Title">
+
+                                @error('from_date')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                                </div>
+                                <div class="col-md-6">
+                                    <input id="to_date" type="date" class="form-control @error('to_date') is-invalid @enderror  input" style="border: 1px solid; border-radius:10px;" name="to_date" required autocomplete="from_date" autofocus placeholder="Enter Campaign Title">
+
+                                @error('to_date')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                                </div>
                             </div>
                         </div>
 

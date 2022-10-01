@@ -19,6 +19,7 @@ class CreateCampaignsTable extends Migration
             $table->timestamp('from_date');
             $table->timestamp('to_date');
             $table->foreignId('client_id');
+            $table->foreignId('brand_id')->nullable()->constrained();
             $table->foreignId('user_id');
             $table->timestamps();
         });

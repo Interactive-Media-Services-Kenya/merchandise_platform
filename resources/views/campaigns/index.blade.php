@@ -38,10 +38,16 @@
                             Client
                         </th>
                         <th>
+                            Brand
+                        </th>
+                        <th>
                             Start Date
                         </th>
                         <th>
                             End Date
+                        </th>
+                        <th>
+                            Added By
                         </th>
                         <th>
                             Actions
@@ -64,10 +70,17 @@
                                 {{ $campaign->client->name ?? '' }}
                             </td>
                             <td>
+                                {{$campaign->brand->name?? 'No Brand'}}
+                            </td>
+                            <td>
                                 {{ $campaign->from_date ?? '' }}
                             </td>
                             <td>
                                 {{ $campaign->to_date ?? '' }}
+                            </td>
+
+                            <td>
+                                {{ $campaign->user->name ?? '' }}
                             </td>
 
                             <td>
