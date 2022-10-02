@@ -12,6 +12,9 @@
             <a class="btn btn-success" href="{{ route('users.create') }}">
                 Add User
             </a>
+            <a class="btn btn-warning" href="{{ route('users.import') }}">
+                Import Users
+            </a>
         </div>
     </div>
 

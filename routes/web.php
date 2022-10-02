@@ -34,6 +34,18 @@ Route::group(['middleware' => ['auth:web','otp']], function () {
     Route::get('/home', 'HomeController@index')->name('home');
     Route::post('/password/update-first-time-login', 'HomeController@updatePassword')->name('password.update-first-time');
     Route::get('/users/get','HomeController@users')->name('users.register');
+
+
+    //Import Users
+    Route::get('import/users', 'UsersController@importUsers')->name('users.import');
+    Route::get('import/agency', 'UsersController@getImportAgency')->name('import.agency');
+    Route::get('import/teamleaders', 'UsersController@getImportTeamleader')->name('import.teamleader');
+    Route::get('import/bas', 'UsersController@getImportBas')->name('import.bas');
+    Route::post('import/users', 'UsersController@submitImport')->name('import.submit');
+
+
+
+
     // Permissions
     // Route::delete('permissions/destroy', 'PermissionsController@massDestroy')->name('permissions.massDestroy');
     // Route::resource('permissions', 'PermissionsController');
