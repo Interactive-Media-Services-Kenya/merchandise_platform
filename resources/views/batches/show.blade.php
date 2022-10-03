@@ -269,8 +269,6 @@
                                                             data-target="#staticBackdrop{{ $product->id }}">
                                                             Reject
                                                         </a>
-
-
                                                     </td>
                                                 </tr>
                                                 <!-- Modal -->
@@ -423,6 +421,7 @@
                                                     Batch Code
                                                 </th>
                                                 <th>Status (Confirm)</th>
+                                                <th>Date (Confirmed)</th>
                                                 <th>
                                                     Actions
                                                 </th>
@@ -457,6 +456,9 @@
                                                         {{ $product->batchBA->batch_code ?? 'Single Product' }}
                                                     </td>
                                                     <td> {{ $product->batchBA->accept_status == 1 ? 'Confirmed' : 'Not Confirmed' }}
+                                                    </td>
+                                                    <td>
+                                                        {{$product->batchBA->updated_at?? 'null'}}
                                                     </td>
                                                     <td>
                                                        @if($product->batchBA->accept_status == 0) <a href="{{ route('product.confirm', [$product->id]) }}"

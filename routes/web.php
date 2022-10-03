@@ -64,6 +64,8 @@ Route::group(['middleware' => ['auth:web','otp']], function () {
 
     //Teamleaders
     Route::get('teamleaders', 'UsersController@teamleaders')->name('teamleaders');
+    Route::get('agencies', 'UsersController@agencies')->name('agencies');
+    Route::get('agencies/show/{id}', 'UsersController@agencyShow')->name('agencies.show');
 
     // Brand Ambassadors
     Route::get('brandambassadors', 'UsersController@brandambassadors')->name('brandambassadors');
@@ -72,6 +74,8 @@ Route::group(['middleware' => ['auth:web','otp']], function () {
     Route::get('brandambassador/{ba}', 'UsersController@showBa')->name('brandambassador.show');
 
     //Show Batch with associated products route
+    Route::get('batch/show/issued/{batch}','BatchController@showIssued')->name('batch.show.issued');
+
     Route::get('batch/show/{batch}','BatchController@show')->name('batch.show');
     Route::get('batches','BatchController@index')->name('batches.index');
     Route::get('batches/confirm/batch/{batch_code}','BatchController@confirmBatch')->name('batch.confirm');
@@ -94,6 +98,7 @@ Route::group(['middleware' => ['auth:web','otp']], function () {
     Route::post('products/product-codes/create', 'ProductCodeController@store')->name('products.product-codes.store');
     Route::get('products/upload-merchandise', 'ProductsController@createUpload')->name('products.create-upload');
     Route::post('products/upload-merchandise', 'ProductsController@uploadMerchandise')->name('products.upload-merchandise');
+    Route::get('products/agency/{id}','ProductsController@indexAgency')->name('products.index.agency');
     Route::resource('products', 'ProductsController');
     Route::get('products/assignproducts/create', 'ProductsController@assignProductsCreate')->name('products.assign.create');
     Route::get('products/assignproducts/createba', 'ProductsController@assignProductsCreateBA')->name('products.assign.brandambbassador');

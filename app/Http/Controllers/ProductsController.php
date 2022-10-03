@@ -52,6 +52,7 @@ class ProductsController extends Controller
      */
     public function index(Request $request)
     {
+
         $rejects = Reject::select('product_id')->get();
         $productsAdmin = Product::with(['category', 'assign', 'batch', 'client'])->select('products.*')->count();
         // dd($productsAdmin);
@@ -172,6 +173,112 @@ class ProductsController extends Controller
             return $table->make(true);
         }
         return view('products.index', compact(
+            'products',
+            'productsClient',
+            'batchesTl',
+            'productsTls',
+            'productsBas',
+            'batchesBa',
+            'teamleaders',
+            'salesreps',
+            'teamleadersWithBatches',
+            'clientsWithMerchandiseTL',
+            'brandAmbassadors',
+            'productsIssuedOutTL',
+            'batches',
+            'batchesAccepted',
+            'clients',
+            'clientsWithMerchandise',
+            'productsIssuedOut',
+            'productsAdmin'
+        ));
+    }
+    public function indexAgency(Request $request,$id)
+    {
+
+        $issuedProducts = IssueProduct::select('product_id')->where('ba_id', Auth::id())->get();
+
+        //Ajax Datatables for products
+
+        if ($request->ajax()) {
+            if (Auth::user()->role_id == 5) {
+                $query = Product::with(['category', 'assign', 'batch', 'client','issueProduct'])->whereowner_id($id)->where('client_id', Auth::user()->client_id)->select('products.*');
+            }else {
+
+                $query = Product::with(['category', 'assign', 'batch', 'client'])->where('products.accept_status', 1)
+                    ->whereNotIn('products.id', $issuedProducts)->select('products.*');
+            }
+            $table = Datatables::of($query);
+            $table->addColumn('placeholder', '&nbsp;');
+            $table->addColumn('action', 'action');
+            $table->addColumn('issued_at', 'issued_at');
+            $table->editColumn('id', function ($row) {
+                return $row->id ? $row->id : '';
+            });
+            $table->editColumn('product_code', function ($row) {
+                return $row->product_code ? $row->product_code : 'Not Assigned';
+            });
+            $table->editColumn('category', function ($row) {
+                return $row->category_id ? $row->category->title : '';
+            });
+            $table->editColumn('client', function ($row) {
+                return $row->client_id ? $row->client->name : '';
+            });
+            $table->editColumn('assign', function ($row) {
+                return $row->assigned_to ? $row->assign->email : '';
+            });
+            $table->editColumn('issued_at', function ($row) {
+                return $row->issueProduct->created_at ?? $row->issueProduct->created_at;
+            });
+            $table->editColumn('created_at', function ($row) {
+                return $row->client_id ? $row->created_at: '';
+            });
+            $table->editColumn('batch', function ($row) {
+
+                //Super Admin
+                if (Auth::user()->role_id == 1) {
+                    return $row->batch_id ? $row->batch->batch_code : '';
+                }
+                //Agency
+                if (Auth::user()->role_id == 2) {
+                    return $row->batch_id ? $row->batch->batch_code : '';
+                }
+                //Teamleader
+                if (Auth::user()->role_id == 3) {
+                    return $row->batch_id ? DB::table('batch_teamleaders')->whereid($row->batch_tl_id)->value('batch_code') : '';
+                }
+                //BrandAmbassador
+                if (Auth::user()->role_id == 4) {
+                    return $row->batch_id ? DB::table('batch_brandambassadors')->whereid($row->batch_ba_id)->value('batch_code') : '';
+                }
+            });
+
+            $table->editColumn('action', function ($row) {
+                if (Auth::user()->role_id == 1) {
+                    return '<a href="products/' . $row->id . '/edit"
+                                class="btn btn-primary btn-sm">Edit</a>';
+                } elseif (Auth::user()->role_id == 4) {
+                    return '<a href="products/issue/product/' . $row->id . '/' . $row->batch_ba_id . '"
+                   class="btn btn-sm btn-warning">Issue Out</a>';
+                } else {
+                    return "No Action";
+                }
+            });
+
+            $table->editColumn('bar_code', function ($row) {
+                if ($row->product_code != null) {
+                    $generator = new BarcodeGeneratorHTML();
+                    return $generator->getBarcode($row->product_code, $generator::TYPE_CODE_128);
+                } else {
+                    return "No Product Code";
+                }
+            });
+
+            $table->rawColumns(['placeholder', 'id', 'product_code', 'category', 'client', 'assign', 'batch', 'bar_code', 'action']);
+
+            return $table->make(true);
+        }
+        return view('agencies.show', compact(
             'products',
             'productsClient',
             'batchesTl',
@@ -1481,8 +1588,9 @@ class ProductsController extends Controller
                 $merchandise = array_pop($dataProducts);
                 //Get the item type in batch
                 $merchandise_type = $merchandise->product->category->title;
+                $campaign = $merchandise->product->campaign->name;
                 $batchcode = Batch::where('id', $request->batch_id)->value('batch_code');
-                $message = "Hello, You have been assigned $quantity Merchandises ($merchandise_type) from Batch-Code $batchcode. Kindly Confirm through the portal: $url_login";
+                $message = "Hello, You have been assigned $quantity Merchandises ($merchandise_type) from Batch-Code $batchcode for $campaign. Kindly Confirm through the portal: $url_login";
                 $details = [
                     'title' => 'Mail from ' . $sender_email,
                     'body' => $message,

@@ -13,4 +13,7 @@ class Client extends Model
     public function brands(){
         return $this->hasMany(Brand::class,'client_id');
     }
+    public function user(){
+        return $this->belongsTo(User::class);
+    }
 }

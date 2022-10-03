@@ -3,10 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Activity;
+use App\Models\Category;
 use App\Models\County;
+use App\Models\IssueProduct;
 use App\Models\Productbas;
 use App\Models\Role;
 use App\Models\User;
+use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rules\Password;
 use Session;
@@ -62,6 +65,35 @@ class UsersController extends Controller
 
 
         return view('teamleaders.index', compact('teamleaders','salesreps'));
+    }
+
+    public function agencies()
+    {
+        $agencies = User::with(['roles', 'county'])->where('role_id', 2)->where('client_id',Auth::user()->client_id)->get();
+        $salesreps = User::with(['roles', 'county'])->where('role_id', 2)->where('client_id',Auth::user()->client_id)->get();
+
+
+        return view('agencies.index', compact('agencies','salesreps'));
+    }
+
+    public function agencyShow($id){
+        $agency = User::findOrFail($id);
+
+        if($agency->role_id!=2){
+            Alert::error('Unauthorized!','User Unauthorized to view this page.');
+            return back();
+        }
+
+        //Show All merchandise types for the client under the agency
+        $categories = Category::whereclient_id(Auth::user()->client_id)->get();
+        //Products Belonging to the client under an agency
+        $products = Product::whereclient_id(Auth::user()->client_id)->whereowner_id($id)->get();
+        //Merchandise/Products Issued belonging to client.
+        $issuedProducts = IssueProduct::select('product_id')->cursor();
+        //Merchandise/Products Issued belonging to client.
+        $issuedProductsClient = Product::whereIn('id',$issuedProducts)->whereowner_id($id)->whereclient_id(Auth::user()->client_id)->cursor();
+
+        return view('agencies.show',compact('agency','categories','products','issuedProductsClient'));
     }
 
     // ? Get Brand Ambassadors for each team leader
@@ -325,6 +357,9 @@ class UsersController extends Controller
 
         if(Auth::user()->role_id == 2){
             $ids = [1,2];
+            //Exclude Roles SuperAdmin,Agency Client and Other.
+            $roleids = [1,2,5,6];
+            $roles = Role::whereNotIn('id',$roleids)->pluck('title', 'id');
             $users = User::whereNotIn('role_id', $ids)->whereDate('created_at', DB::raw('CURDATE()'))->get();
             $entryCount = $users->count();
 
@@ -364,19 +399,22 @@ class UsersController extends Controller
 
             $now = Carbon::now();
 
-            $entryCount = DB::table('users')->whereDate('created_at', DB::raw('CURDATE()'))->count();
             if(Auth::user()->role_id == 1){
-                $users = DB::table('users')->whereDate('created_at', DB::raw('CURDATE()'))->get();
+                $users = User::whereDate('created_at', DB::raw('CURDATE()'))->get();
+                $entryCount = $users->count();
             }
 
             if(Auth::user()->role_id == 2){
                 $ids = [1,2];
-                $users = DB::table('users')->whereNotIn('role_id', $ids)->whereDate('created_at', DB::raw('CURDATE()'))->get();
+                $users = User::whereNotIn('role_id', $ids)->whereDate('created_at', DB::raw('CURDATE()'))->get();
+                $entryCount = $users->count();
+
             }
 
             if(Auth::user()->role_id == 3){
                 $ids = [1,2,3];
-                $users = DB::table('users')->whereNotIn('role_id', $ids)->whereDate('created_at', DB::raw('CURDATE()'))->get();
+                $users = User::whereNotIn('role_id', $ids)->whereDate('created_at', DB::raw('CURDATE()'))->get();
+                $entryCount = $users->count();
             }
 
 

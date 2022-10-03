@@ -14,6 +14,9 @@
                         <a class="btn btn-success" href="{{ route('users.create') }}">
                             Add Sales Representative
                         </a>
+                        <a class="btn btn-warning" href="{{ route('users.import') }}">
+                            Import Teamleaders
+                        </a>
                     </div>
                 </div>
             </div>

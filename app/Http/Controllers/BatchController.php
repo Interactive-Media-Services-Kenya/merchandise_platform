@@ -38,6 +38,47 @@ class BatchController extends Controller
         return view('batches.index', compact('batchesbas', 'batchesTls'));
     }
 
+    public function showIssued($id)
+    {
+        //Batch for agency
+        if (Gate::allows('tb_access')) {
+            $batch = DB::table('batches')->whereid($id)->first();
+            if($batch == null){
+                Alert::error('Failed','No Batch Found!');
+                return back();
+            }
+            $products = Product::whereowner_id(Auth::id())->wherebatch_id($id)->cursor();
+
+            $reasons = Reason::all();
+            return view('batches.show', compact('batch', 'products', 'reasons'));
+        }
+        if (Gate::allows('team_leader_access')) {
+            $batch = DB::table('batch_teamleaders')->whereid($id)->first();
+            if($batch == null){
+                Alert::error('Failed','No Batch Found!');
+                return back();
+            }
+            $products = Product::whereassigned_to(Auth::id())->wherebatch_tl_id($id)->cursor();
+
+            $reasons = Reason::all();
+            return view('batches.show', compact('batch', 'products', 'reasons'));
+        }
+
+        if (Gate::allows('brand_ambassador_access')) {
+            $batch = DB::table('batch_brandambassadors')->whereid($id)->first();
+            if($batch == null){
+                Alert::error('Failed','No Batch Found!');
+                return back();
+            }
+            //Get Issued Products in the batch
+            $issuedByBA = IssueProduct::select('product_id')->where('ba_id',Auth::id())->get();
+            $products = Product::whereIn('id',$issuedByBA)->whereba_id(Auth::id())->wherebatch_ba_id($id)->cursor();
+
+            $reasons = Reason::all();
+            return view('batches.show-issued', compact('batch', 'products', 'reasons'));
+        }
+    }
+
     public function show($id)
     {
         //Batch for agency
@@ -88,6 +129,7 @@ class BatchController extends Controller
 
                 $batch->update([
                     'accept_status' => 1,
+                    'updated_at' => \Carbon\Carbon::now(),
                 ]);
                 Activity::create([
                     'title' => 'Confirm Batch',
@@ -111,6 +153,7 @@ class BatchController extends Controller
 
                 $batch->update([
                     'accept_status' => 1,
+                    'updated_at' => \Carbon\Carbon::now(),
                 ]);
                 Activity::create([
                     'title' => 'Confirm Batch',

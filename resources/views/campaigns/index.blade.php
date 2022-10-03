@@ -108,92 +108,106 @@
 </div>
 @endcan
 @can('tb_access')
-        <div style="margin-bottom: 10px;" class="row">
-            <div class="col-lg-12">
-                <a class="btn btn-success" href="{{ route('campaigns.create') }}">
-                    Add campaign
-                </a>
-            </div>
+    <div style="margin-bottom: 10px;" class="row">
+        <div class="col-lg-12">
+            <a class="btn btn-success" href="{{ route('campaigns.create') }}">
+                Add Campaign
+            </a>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            Campaigns
         </div>
 
-        <div class="card">
-            <div class="card-header">
-                campaigns
-            </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class=" table table-bordered table-striped table-hover datatable datatable-campaign" id="campaignTable">
+                    <thead>
+                    <tr>
+                        <th width="10">
 
-            <div class="card-body">
-                <div class="table-responsive">
-                    <table class=" table table-bordered table-striped table-hover datatable datatable-campaign" id="campaignTable">
-                        <thead>
-                            <tr>
-                                <th width="10">
+                        </th>
+                        <th>
+                            ID
+                        </th>
+                        <th>
+                            Name
+                        </th>
+                        <th>
+                            Client
+                        </th>
+                        <th>
+                            Brand
+                        </th>
+                        <th>
+                            Start Date
+                        </th>
+                        <th>
+                            End Date
+                        </th>
+                        <th>
+                            Added By
+                        </th>
+                        <th>
+                            Actions
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @forelse($campaigns as $key => $campaign)
+                        <tr data-entry-id="{{ $campaign->id }}">
+                            <td>
 
-                                </th>
-                                <th>
-                                    ID
-                                </th>
-                                <th>
-                                    Name
-                                </th>
-                                <th>
-                                    Email
-                                </th>
-                                <th>
-                                    Phone
-                                </th>
-                                <th>
-                                    Address
-                                </th>
-                                <th>
-                                    Actions
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @forelse($campaigns as $key => $campaign)
-                                <tr data-entry-id="{{ $campaign->id }}">
-                                    <td>
+                            </td>
+                            <td>
+                                {{ $campaign->id ?? '' }}
+                            </td>
+                            <td>
+                                {{ $campaign->name ?? '' }}
+                            </td>
+                            <td>
+                                {{ $campaign->client->name ?? '' }}
+                            </td>
+                            <td>
+                                {{$campaign->brand->name?? 'No Brand'}}
+                            </td>
+                            <td>
+                                {{ $campaign->from_date ?? '' }}
+                            </td>
+                            <td>
+                                {{ $campaign->to_date ?? '' }}
+                            </td>
 
-                                    </td>
-                                    <td>
-                                        {{ $campaign->id ?? '' }}
-                                    </td>
-                                    <td>
-                                        {{ $campaign->name ?? '' }}
-                                    </td>
-                                    <td>
-                                        {{ $campaign->email ?? '' }}
-                                    </td>
-                                    <td>
-                                        {{ $campaign->phone ?? '' }}
-                                    </td>
-                                    <td>
-                                        {{ $campaign->address ?? '' }}
-                                    </td>
+                            <td>
+                                {{ $campaign->user->name ?? '' }}
+                            </td>
 
-                                    <td>
-                                        @can('tb_access')
-                                            <a href="{{ route('campaigns.edit', [$campaign->id]) }}"
-                                                class="btn btn-primary btn-sm">Edit</a>
-                                        @endcan
-                                        @can('admin_access')
-                                            <a href="{{ route('campaigns.destroycampaign', [$campaign->id]) }}"
-                                                class="btn btn-danger btn-sm" onclick="return confirm('Are you Sure?')">Delete</a>
-                                        @endcan
-                                    </td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="7" class="text-center">
-                                        No campaigns Registered
-                                    </td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                </div>
+                            <td>
+                                @can('admin_access')
+                                    <a href="{{ route('campaigns.edit', [$campaign->id]) }}"
+                                       class="btn btn-primary btn-sm">Edit</a>
+                                @endcan
+                                @can('tb_access')<a href="{{ route('campaigns.edit', [$campaign->id]) }}" class="btn btn-primary btn-sm">Edit</a>@endcan
+                                @can('admin_access')
+                                    <a href="{{ route('campaigns.destroyCampaign', [$campaign->id]) }}"
+                                       class="btn btn-danger btn-sm" onclick="return confirm('Are you Sure?')">Delete</a>
+                                @endcan
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="7" class="text-center">
+                                No Campaigns Registered
+                            </td>
+                        </tr>
+                    @endforelse
+                    </tbody>
+                </table>
             </div>
         </div>
+    </div>
     @endcan
 @endsection
 @section('scripts')

@@ -171,6 +171,11 @@ class HomeController extends Controller
                 $batchesClient = Batch::join('storages', 'storages.id', 'batches.storage_id')->where('storages.client_id', Auth::user()->client_id)->cursor();
                 $clients = Client::all();
                 $categoriesClient = Category::where('client_id', Auth::user()->client_id)->cursor();
+                $products = Product::whereclient_id(Auth::user()->client_id)->get();
+                $salesreps = User::where('role_id', 3)->where('client_id', Auth::user()->client_id)->get();
+                $batchesConfirmed = DB::table('batch_teamleaders')->whereaccept_status(1)->whereteam_leader_id(Auth::id())->take(5)->cursor();
+                $activities = Activity::orderBy('created_at', 'DESC')->where('user_id', Auth::id())->take(5)->cursor();
+                return view('home', compact('batchesClient','products','clients','categoriesClient','salesreps','batchesConfirmed','activities'));
             }
 
             // //Batches for a client

@@ -50,4 +50,14 @@ class Product extends Model
     {
         return $date->format('Y-m-d H:i:s');
     }
+    public function customer(){
+        return $this->hasOne(Customer::class);
+    }
+    public function issueProduct(){
+        return $this->hasOne(IssueProduct::class,'product_id');
+    }
+
+    public function campaign(){
+        return $this->belongsTo(Campaign::class);
+    }
 }

@@ -88,6 +88,14 @@
                     </a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link text-white " href="{{ route('campaigns.index') }}">
+                        <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                            <i class="material-icons opacity-10">person</i>
+                        </div>
+                        <span class="nav-link-text ms-1">Campaigns</span>
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link text-white " href="{{ route('teamleaders') }}">
                         <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                             <i class="material-icons opacity-10">format_textdirection_r_to_l</i>
@@ -141,6 +149,14 @@
                 </li>
             @endcan
             @can('client_access')
+                <li class="nav-item">
+                    <a class="nav-link text-white " href="{{ route('agencies') }}">
+                        <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                            <i class="material-icons opacity-10">format_textdirection_r_to_l</i>
+                        </div>
+                        <span class="nav-link-text ms-1">Agencies</span>
+                    </a>
+                </li>
                 <li class="nav-item">
                     <a class="nav-link text-white " href="{{ route('teamleaders') }}">
                         <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">

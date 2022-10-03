@@ -219,11 +219,11 @@
                                             </td>
                                             <td class="align-middle text-center text-sm"><a
                                                     href="{{ route('batch.show', [$batch->id]) }}"
-                                                    class="btn btn-sm btn-info">View</a>
-                                                {{-- <a href="#"
-                                        class="btn btn-sm btn-success">Confirm</a> &nbsp;
-                                        <a href="#"
-                                        class="btn btn-sm btn-danger">Reject</a> --}}
+                                                    class="btn btn-sm btn-info">Confirm/Reject</a>
+                                                <a href="{{ route('batch.show.issued', [$batch->id]) }}"
+                                        class="btn btn-sm btn-success">View Issued</a> &nbsp;
+{{--                                        <a href="#"--}}
+{{--                                        class="btn btn-sm btn-danger">Reject</a>--}}
                                             </td>
                                         </tr>
                                     @empty

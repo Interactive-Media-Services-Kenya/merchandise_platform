@@ -25,7 +25,8 @@ class CampaignController extends Controller
         }
         if (Gate::allows('tb_access')) {
             //Get Clients Associated with each teamleaders and Brands.
-            $clients = Client::with('brands')->join('users','users.client_id','clients.id')->where('users.id',Auth::id());
+            $clients = Client::with('brands')->get();
+            //$clients = Client::with('brands')->join('users','users.client_id','clients.id')->where('users.id',Auth::id());
         }
         return view('campaigns.create', compact('clients'));
     }
