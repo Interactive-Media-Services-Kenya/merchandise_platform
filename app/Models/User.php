@@ -54,6 +54,10 @@ class User extends Authenticatable
         return $this->hasMany(Client::class);
     }
 
+    public function campaigns(){
+        return $this->belongsToMany(Campaign::class);
+    }
+
     // ? Generate OTP Code
     public function generateCode($user)
     {

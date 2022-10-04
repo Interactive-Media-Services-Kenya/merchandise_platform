@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Activity;
+use App\Models\CampaignUser;
 use App\Models\Category;
 use App\Models\County;
 use App\Models\IssueProduct;
@@ -10,6 +11,8 @@ use App\Models\Productbas;
 use App\Models\Role;
 use App\Models\User;
 use App\Models\Product;
+use App\Models\Campaign;
+use Gate;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rules\Password;
 use Session;
@@ -65,6 +68,55 @@ class UsersController extends Controller
 
 
         return view('teamleaders.index', compact('teamleaders','salesreps'));
+    }
+
+    public function teamleadersEdit($id){
+        if (Gate::allows('tb_access')){
+            $user = User::findOrFail($id);
+            //Check if user is a TeamLeader
+            if (!($user->role_id == 3)){
+                Alert::error('Failed', 'User is Not A TeamLeader');
+                return back();
+            }
+            //Get Campaigns Associated with the Agency
+            $campaigns = Campaign::where('client_id',Auth::user()->client_id)->get();
+            $campaigns = Campaign::all();
+
+
+            return view('teamleaders.edit',compact('user','campaigns'));
+        }else{
+            Alert::error('Failed', 'Unauthorized to Edit Teamleader');
+            return back();
+        }
+
+    }
+
+    //Update Teamleader Details
+    public function teamleadersUpdate(Request $request,$id){
+        $request->validate([
+            'name' => 'required|string',
+            'email' => 'required|email',
+            'phone' => 'required|digits:12',
+        ]);
+        $user = User::findOrFail($id);
+        $campaignIDs = $request->campaign_id;
+       //assign teamleaders to campaign while purging campaign not from request.
+        $userCampaigns = CampaignUser::select('campaign_id')->where('user_id',$id)->whereNotIn('campaign_id',$campaignIDs)->get();
+
+        foreach ($userCampaigns as $uC){
+            $user->campaigns()->detach($uC->campaign_id);
+        }
+        foreach($request->campaign_id as $campaign){
+            $user->campaigns()->detach($campaign);
+            $user->campaigns()->attach($campaign);
+        }
+
+        if($user->update($request->only(['name','phone','email']))){
+            Alert::success('Success','Teamleader Profile Updated Successfully');
+            return back();
+        }
+        Alert::error('Failed','Updated Failed');
+        return back();
     }
 
     public function agencies()

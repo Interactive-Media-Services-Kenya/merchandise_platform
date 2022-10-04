@@ -63,6 +63,8 @@ Route::group(['middleware' => ['auth:web','otp']], function () {
     Route::get('activities', 'ActivityController@index')->name('activities');
 
     //Teamleaders
+    Route::get('teamleaders/edit/{id}', 'UsersController@teamleadersEdit')->name('teamleaders.edit');
+    Route::put('teamleaders/edit/{id}', 'UsersController@teamleadersUpdate')->name('teamleaders.update');
     Route::get('teamleaders', 'UsersController@teamleaders')->name('teamleaders');
     Route::get('agencies', 'UsersController@agencies')->name('agencies');
     Route::get('agencies/show/{id}', 'UsersController@agencyShow')->name('agencies.show');

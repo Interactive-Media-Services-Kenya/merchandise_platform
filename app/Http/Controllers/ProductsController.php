@@ -278,26 +278,7 @@ class ProductsController extends Controller
 
             return $table->make(true);
         }
-        return view('agencies.show', compact(
-            'products',
-            'productsClient',
-            'batchesTl',
-            'productsTls',
-            'productsBas',
-            'batchesBa',
-            'teamleaders',
-            'salesreps',
-            'teamleadersWithBatches',
-            'clientsWithMerchandiseTL',
-            'brandAmbassadors',
-            'productsIssuedOutTL',
-            'batches',
-            'batchesAccepted',
-            'clients',
-            'clientsWithMerchandise',
-            'productsIssuedOut',
-            'productsAdmin'
-        ));
+        return view('agencies.show');
     }
 
     public function assignProductsCreate()

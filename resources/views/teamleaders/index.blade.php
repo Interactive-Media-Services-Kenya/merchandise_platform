@@ -49,9 +49,9 @@
                                 <th>
                                     County
                                 </th>
-                                {{-- <th>
-                            Actions
-                        </th> --}}
+                                <th>
+                                    Actions
+                                </th>
                             </tr>
                         </thead>
                         <tbody>
@@ -75,10 +75,10 @@
                                     <td>
                                         {{ $teamleader->county->name ?? '' }}
                                     </td>
-                                    {{-- <td>
+                                     <td>
                                 <a href="{{route('teamleaders.edit', [$teamleader->id])}}" class="btn btn-primary btn-sm">Edit</a>
-                                @if (Auth::id() != $teamleader->id)<a href="{{route('teamleaders.destroyteamleader',[$teamleader->id])}}" class="btn btn-danger btn-sm" onclick="return confirm('Are you Sure?')">Delete</a>@endif
-                            </td> --}}
+{{--                                @if (Auth::id() != $teamleader->id)<a href="{{route('teamleaders.destroyteamleader',[$teamleader->id])}}" class="btn btn-danger btn-sm" onclick="return confirm('Are you Sure?')">Delete</a>@endif--}}
+                            </td>
 
                                 </tr>
                             @endforeach
