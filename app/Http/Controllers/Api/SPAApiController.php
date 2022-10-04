@@ -19,6 +19,7 @@ use App\Models\Size;
 use App\Models\Storage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use RealRashid\SweetAlert\Facades\Alert;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Gate;
 use DB;
@@ -488,6 +489,16 @@ class SPAApiController extends Controller
                     $remainingProducts = Product::where('ba_id', auth()->user()->id)->where('batch_ba_id', $batch)->whereNotIn('id', $productsIssued)->get();
                     //Save customer details alongside issued Product.
                     if ($request->has('customer_phone') || $request->has('customer_name')) {
+                        $customerPhone = $data['customer_phone'];
+                        $customer = Customer::with('product.campaign')->select('product_id')->where('phone',$customerPhone)->get();
+                        //Check Campaign Associated with the customer.
+                        if ($customer->count()>0){
+                            return \Response::json([
+                                'message' => "Customer has Already Received Merchandise",
+                                // Status Unsuccessful
+                                'status' => 0,
+                            ]);
+                        }
                         Customer::create([
                             'name' => $data['customer_name'],
                             'phone' => $data['customer_phone'],

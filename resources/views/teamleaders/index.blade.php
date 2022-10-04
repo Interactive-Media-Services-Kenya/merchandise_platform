@@ -12,7 +12,7 @@
                 <div class="row">
                     <div class="col-md-6">
                         <a class="btn btn-success" href="{{ route('users.create') }}">
-                            Add Sales Representative
+                            Add Teamleaders
                         </a>
                         <a class="btn btn-warning" href="{{ route('users.import') }}">
                             Import Teamleaders

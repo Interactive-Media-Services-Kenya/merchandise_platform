@@ -10,6 +10,7 @@ use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Client;
 use App\Models\Color;
+use App\Models\Customer;
 use App\Models\IssueProduct;
 use App\Models\Product;
 use App\Models\Productbas;
@@ -1856,11 +1857,39 @@ class ProductsController extends Controller
             return back();
         }
     }
-
-    public function issueProduct($product_id, $batch_id)
+    public function issueProductCustomer($product_id, $batch_id)
     {
         $product = Product::findOrFail($product_id);
         $batch = BatchBrandambassador::findOrFail($batch_id);
+
+        return view('products.issue-customer',compact('product','batch'));
+    }
+    public function issueProduct(Request $request)
+    {
+        $product = Product::findOrFail($request->product_id);
+        $productIssued = IssueProduct::where('product_id',$request->product_id)->get();
+        if ($productIssued){
+            Alert::error('Failed','Merchandise Has already been issued out');
+            return redirect()->route('products.index');
+        }
+        $batch = BatchBrandambassador::findOrFail($request->batch_id);
+        //Check if customer phone exist in DB and Reject
+        if (!empty($request->customer_phone)){
+            $customerPhone = $request->customer_phone;
+            $customer = Customer::with('product.campaign')->select('product_id')->where('phone',$customerPhone)->get();
+            //Check Campaign Associated with the customer.
+            if ($customer->count()>0){
+                Alert::error('Failed','Customer Has Been Issued Merchandise');
+                return back();
+            }
+
+            Customer::create([
+                'name' => $request->customer_name,
+                'phone' => $request->customer_phone,
+                'product_id' => $product->id,
+            ]);
+        }
+
         IssueProduct::create([
             'ba_id' => Auth::id(),
             'batch_id' => $batch->id,
@@ -1873,7 +1902,7 @@ class ProductsController extends Controller
             'description' => Auth::user()->name . ' have issued out ' . $product->product_code,
         ]);
         Alert::success('Success', 'Operation Successfull');
-        return back();
+        return redirect()->route('products.index');
     }
 
     public function createUpload()
