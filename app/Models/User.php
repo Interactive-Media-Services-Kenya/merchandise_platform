@@ -115,6 +115,10 @@ class User extends Authenticatable
         }
     }
 
+    public function permission_users(){
+        return $this->belongsToMany(Permission::class);
+    }
+
     public function permissions(){
         $user = Auth::user();
         //Permissions for Super Admin
