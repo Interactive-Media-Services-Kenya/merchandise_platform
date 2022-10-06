@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Campaign;
+use App\Models\Permission;
+use App\Services\PermissionsService;
+use App\Services\SendSMSService;
 use Illuminate\Http\Request;
 use Alert;
 use App\Models\Client;
@@ -11,6 +14,12 @@ use Illuminate\Support\Facades\Auth;
 
 class CampaignController extends Controller
 {
+    protected $permissionsService;
+
+    public function __construct(PermissionsService $permissionsService)
+    {
+        $this->permissionsService = $permissionsService;
+    }
     public function index(){
         $campaigns = Campaign::all();
 
@@ -18,7 +27,11 @@ class CampaignController extends Controller
     }
 
     public function create(){
-        //Pass Clients with Associated Brands
+        //Pass Clients with Associated
+        $permissionName = 'Create Campaign';
+        $permissions = $this->permissionsService->getPermissions($permissionName);
+
+        abort_unless($permissions, 403);
         if (Gate::allows('admin_access')) {
             $clients = Client::with('brands')->get();
 
@@ -62,6 +75,9 @@ class CampaignController extends Controller
     }
 
     public function edit($id){
+        $permissionName = 'Edit Campaign';
+        $permissions = $this->permissionsService->getPermissions($permissionName);
+        abort_unless($permissions, 403);
         $campaign = Campaign::findOrFail($id);
          //Pass Clients with Associated Brands
          if (Gate::allows('admin_access')) {

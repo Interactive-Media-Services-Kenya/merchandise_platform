@@ -25,6 +25,7 @@ class DatabaseSeeder extends Seeder
             OutletsTableSeeder::class,
             SizeTableSeeder::class,
             ColorTableSeeder::class,
+            PermissionsTableSeeder::class,
         ]);
     }
 }
