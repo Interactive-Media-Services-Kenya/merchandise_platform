@@ -36,15 +36,18 @@ use RealRashid\SweetAlert\Facades\Alert;
 use Symfony\Component\HttpFoundation\Response;
 use Yajra\DataTables\Facades\DataTables;
 use App\Services\SendSMSService;
+use App\Services\PermissionsService;
 
 class ProductsController extends Controller
 {
+    protected $permissionsService;
 
     protected $sendSMSService;
 
-    public function __construct(SendSMSService $sendSMSService)
+    public function __construct(SendSMSService $sendSMSService,PermissionsService $permissionsService)
     {
         $this->sendSMSService = $sendSMSService;
+        $this->permissionsService = $permissionsService;
     }
     /**
      * Display a listing of the resource.
@@ -1866,6 +1869,11 @@ class ProductsController extends Controller
     }
     public function issueProduct(Request $request)
     {
+        $permissionName = 'Issue Merchandise';
+        $permissions = $this->permissionsService->getPermissions($permissionName);
+        abort_unless($permissions, 403);
+
+
         $product = Product::findOrFail($request->product_id);
         $productIssued = IssueProduct::where('product_id',$request->product_id)->get();
         if ($productIssued){
