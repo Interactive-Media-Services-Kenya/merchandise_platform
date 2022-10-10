@@ -149,3 +149,13 @@ Route::group(['middleware' => ['auth:web','otp']], function () {
     Route::post('dynamic_dependent/fetch', 'ClientsController@fetch')->name('dynamicdependent.fetch');
     Route::resource('campaigns','CampaignController');
 });
+
+Route::get('/optimize', function() {
+    \Artisan::call('optimize:clear');
+    return "Cache is cleared";
+});
+
+Route::get('/migrate', function() {
+    \Artisan::call('migrate');
+    return "Migration successfull";
+});
