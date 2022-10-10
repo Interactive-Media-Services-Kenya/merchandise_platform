@@ -1,6 +1,8 @@
 @extends('layouts.backend')
 @section('css')
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.4/css/jquery.dataTables.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    {{-- selec2 cdn --}}
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <style>
         .input{
             border:1px solid;
@@ -102,6 +104,26 @@
                                 @enderror
                             </div>
                         </div>
+                        <div class="row mb-3">
+                            <label for="permission_id" class="col-md-4 col-form-label text-md-end">Select Permissions</label>
+
+                            <div class="col-md-6">
+                                <select name="permission_id[]" id="js-example-basic-multiple" class="form-control select2-multiple" multiple="multiple"
+                                        style="border: 1px solid; border-radius:10px;">
+                                    @forelse ($permissions as $permission)
+                                        <option value="{{ $permission->id }}">{{ strtoupper($permission->name) }}</option>
+                                    @empty
+                                        <option disabled> No Permissions Added Yet</option>
+                                    @endforelse
+                                </select>
+
+                                @error('permission_id')
+                                <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                @enderror
+                            </div>
+                        </div>
 
                         <div class="row mb-0">
                             <div class="col-md-6 offset-md-4">
@@ -116,4 +138,19 @@
         </div>
         {{-- End of registered Users --}}
     </div>
+@endsection
+@section('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            // Select2 Multiple
+            $('.select2-multiple').select2({
+                placeholder: "Select",
+                allowClear: true
+            });
+
+        });
+
+    </script>
 @endsection

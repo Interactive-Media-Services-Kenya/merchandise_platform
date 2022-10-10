@@ -7,6 +7,7 @@ use App\Models\CampaignUser;
 use App\Models\Category;
 use App\Models\County;
 use App\Models\IssueProduct;
+use App\Models\Permission;
 use App\Models\Productbas;
 use App\Models\Role;
 use App\Models\User;
@@ -311,8 +312,8 @@ class UsersController extends Controller
         $user = User::findOrFail($id);
         $roles = Role::pluck('title', 'id');
         $counties = County::pluck('name', 'id');
-
-        return view('users.edit', compact('roles', 'user', 'counties'));
+        $permissions = Permission::all();
+        return view('users.edit', compact('roles', 'user', 'counties','permissions'));
     }
 
     /**
@@ -332,9 +333,21 @@ class UsersController extends Controller
             'county_id' => ['required', 'integer'],
             'role_id' => ['required', 'integer'],
         ]);
+        $permissionIDs = $request->permission_id;
+        //assign teamleaders to campaign while purging campaign not from request.
+        $userPermissions = DB::table('permission_user')->select('permission_id')->where('user_id',$id)->whereNotIn('permission_id',$permissionIDs)->get();
         $user = User::findOrFail($id);
+        //Remove Permissions Not in request for the user
+        foreach ($userPermissions as $permission){
+            $user->permission_users()->detach($permission->permission_id);
+        }
+        //Add Permissions in the request
+        foreach ($permissionIDs as $permission){
+            $user->permission_users()->attach($permission);
+        }
 
-        if ($user->update($request->all())) {
+
+        if ($user->update($request->only(['name','email','role_id','phone','county_id']))) {
             Activity::create([
                 'title' => 'User Updated',
                 'description' => Auth::user()->name . ' Updated User: ' . $user->email,

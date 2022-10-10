@@ -66,6 +66,5 @@ class PermissionController extends Controller
         }
         Alert::error('Failed','Permission not removed!');
         return back();
-
     }
 }
