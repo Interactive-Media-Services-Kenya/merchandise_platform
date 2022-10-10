@@ -7,9 +7,16 @@ use App\Models\ProductCode;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 use RealRashid\SweetAlert\Facades\Alert;
+use App\Services\PermissionsService;
 
 class ProductCodeController extends Controller
 {
+    protected $permissionsService;
+
+    public function __construct(PermissionsService $permissionsService)
+    {
+        $this->permissionsService = $permissionsService;
+    }
     public function index(Request $request){
 
         if ($request->ajax()) {
@@ -39,6 +46,10 @@ class ProductCodeController extends Controller
     }
 
     public function create(){
+        $permissionName = 'Generate MerchandiseCodes';
+        $permissions = $this->permissionsService->getPermissions($permissionName);
+
+        abort_unless($permissions, 403);
         return view('products.create_product_codes');
     }
 
