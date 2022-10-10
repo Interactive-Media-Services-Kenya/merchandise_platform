@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\Permission;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
 
@@ -25,6 +26,10 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
+        //Define Access Gates for User Permissions
+
+        //$permissions = Permission::all();
+
         $user = \Auth::user();
 
 
@@ -46,5 +51,10 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('client_access', function ($user) {
             return in_array($user->role_id, [5]);
         });
+//        $createCampaign = "Create Campaign";
+//        Gate::define($createCampaign, function ($user) {
+//            return in_array($user->id, [\Auth::id()]);
+//        });
+
     }
 }

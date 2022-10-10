@@ -48,7 +48,7 @@ Route::group(['middleware' => ['auth:web','otp']], function () {
 
     // Permissions
     // Route::delete('permissions/destroy', 'PermissionsController@massDestroy')->name('permissions.massDestroy');
-    // Route::resource('permissions', 'PermissionsController');
+    Route::resource('permissions', 'PermissionController');
 
     // Roles
     // Route::delete('roles/destroy', 'RolesController@massDestroy')->name('roles.massDestroy');
