@@ -20,6 +20,7 @@
         "picqer/php-barcode-generator": "^2.2",
         "realrashid/sweet-alert": "^5.0",
         "timwassenburg/laravel-service-generator": "^1.0",
+        "torann/geoip": "^3.0",
         "yajra/laravel-datatables-oracle": "^9.19"
     },
     "require-dev": {

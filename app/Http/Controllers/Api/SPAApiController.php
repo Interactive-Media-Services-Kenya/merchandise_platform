@@ -476,11 +476,18 @@ class SPAApiController extends Controller
                     ]);
                 } else {
                     $batch = $product->batch_ba_id;
+                    $location = geoip($request->ip());
                     $issueProduct = IssueProduct::create([
                         'ba_id' => auth()->user()->id,
                         'batch_id' => $batch,
                         'product_id' => $product->id,
                         'category_id' => $product->category->id,
+                        'ip-address' => $location->ip??'',
+                        'longitude' => $location->lon??'',
+                        'latitude' => $location->lat??'',
+                        'state_name' => $location->state_name??'',
+                        'postal_code' => $location->postal_code??'',
+                        'city' => $location->$location->city??'',
                     ]);
                     // Save Customer Data through Api.
                     // ? Get all the products issued by a logged in BrandAmbassador
@@ -555,11 +562,18 @@ class SPAApiController extends Controller
                     ]);
                 } else {
                     $batch = $product->batch_ba_id;
+                    $location = geoip($request->ip());
                     $issueProduct = IssueProduct::create([
                         'ba_id' => auth()->user()->id,
                         'batch_id' => $batch,
                         'product_id' => $product->id,
                         'category_id' => $product->category->id,
+                        'ip-address' => $location->ip??'',
+                        'longitude' => $location->lon??'',
+                        'latitude' => $location->lat??'',
+                        'state_name' => $location->state_name??'',
+                        'postal_code' => $location->postal_code??'',
+                        'city' => $location->city??'',
                     ]);
                     // Save Customer Data through Api.
                     // ? Get all the products issued by a logged in BrandAmbassador
