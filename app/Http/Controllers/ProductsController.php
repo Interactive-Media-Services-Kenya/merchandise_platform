@@ -526,6 +526,7 @@ class ProductsController extends Controller
                     }
                     $product->update([
                         'ba_id' => $request->ba_id,
+                        'campaign_id' => $request->campaign_id,
                     ]);
                 }
                 if ($request->size == null) {
@@ -540,6 +541,7 @@ class ProductsController extends Controller
                     }
                     $product->update([
                         'ba_id' => $request->ba_id,
+                        'campaign_id' => $request->campaign_id,
                     ]);
                 }
 
@@ -555,6 +557,7 @@ class ProductsController extends Controller
                     }
                     $product->update([
                         'ba_id' => $request->ba_id,
+                        'campaign_id' => $request->campaign_id,
                     ]);
                 }
                 //! Sending to the Assignee (Assignee)
@@ -607,6 +610,7 @@ class ProductsController extends Controller
 
                         $product->update([
                             'ba_id' => $request->ba_id,
+                            'campaign_id' => $request->campaign_id,
                             'batch_ba_id' => DB::table('batch_brandambassadors')->where('batch_code', $batch_code)->value('id'),
                         ]);
                     }
@@ -642,6 +646,7 @@ class ProductsController extends Controller
                         $product->update([
                             'assigned_to' => $request->team_leader_id,
                             'batch_tl_id' => $batch->id,
+                            'campaign_id' => $request->campaign_id,
                         ]);
                     }
                 }
@@ -681,7 +686,8 @@ class ProductsController extends Controller
                         return back();
                     }
                     $product->update([
-                        'ba_id' => $request->ba_id,
+                        'ba_id' => $request->ba_id??'',
+                        'campaign_id' => $request->campaign_id??'',
                     ]);
                 }
                 if ($request->size == null) {
@@ -696,6 +702,7 @@ class ProductsController extends Controller
                     }
                     $product->update([
                         'ba_id' => $request->ba_id,
+                        'campaign_id' => $request->campaign_id,
                     ]);
                 }
 
@@ -711,6 +718,7 @@ class ProductsController extends Controller
                     }
                     $product->update([
                         'ba_id' => $request->ba_id,
+                        'campaign_id' => $request->campaign_id,
                     ]);
                 }
                 //! Sending to the Assignee (Super Admin)
@@ -763,6 +771,7 @@ class ProductsController extends Controller
                         $product->update([
                             'ba_id' => $request->ba_id,
                             'batch_ba_id' => DB::table('batch_brandambassadors')->where('batch_code', $batch_code)->value('id'),
+                            'campaign_id' => $request->campaign_id,
                         ]);
                     }
                     if ($request->size == null) {
@@ -780,6 +789,7 @@ class ProductsController extends Controller
                         $product->update([
                             'assigned_to' => $request->team_leader_id,
                             'batch_tl_id' => $batch->id,
+                            'campaign_id' => $request->campaign_id,
                         ]);
                     }
 
@@ -797,6 +807,7 @@ class ProductsController extends Controller
                         $product->update([
                             'assigned_to' => $request->team_leader_id,
                             'batch_tl_id' => $batch->id,
+                            'campaign_id' => $request->campaign_id,
                         ]);
                     }
                 }
@@ -816,7 +827,7 @@ class ProductsController extends Controller
                 return back();
             }
         }
-        // ? Agency Assigns to Team Leader
+        // ? Team Leader Assigns to Brand Ambassador
         if (FacadesGate::allows('team_leader_access')) {
             //Store Products on count Not Assigned to any Agency.
             $url_login = URL::to('/login');
@@ -835,6 +846,7 @@ class ProductsController extends Controller
                     }
                     $product->update([
                         'ba_id' => $request->ba_id,
+                        'campaign_id' => $request->campaign_id,
                     ]);
                 }
 
@@ -883,6 +895,7 @@ class ProductsController extends Controller
                         $product->update([
                             'ba_id' => $request->ba_id,
                             'batch_ba_id' => DB::table('batch_brandambassadors')->where('batch_code', $batch_code)->value('id'),
+                            'campaign_id' => $request->campaign_id,
                         ]);
                     }
                 }
@@ -1993,7 +2006,6 @@ class ProductsController extends Controller
         $sender_email = Auth::user()->email;
         $receiver_email = $product->assign->email??$adminIMS->email;
         $receiver_phone = $product->assign->phone??$adminIMS->phone;
-
         $url_login = URL::to('/login');
         $message = "Hello, Merchandise ($merchandise_type), $productsCount from Batch-Code $batchCode, has been $info by $sender_email. Kindly Confirm through the portal: $url_login.";
         $details = [

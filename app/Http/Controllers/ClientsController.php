@@ -157,4 +157,19 @@ class ClientsController extends Controller
      }
      echo $output;
     }
+    function fetchCampaign(Request $request)
+    {
+     $select = $request->get('select');
+     $value = $request->get('value');
+     $dependent = $request->get('dependent');
+     $data = DB::table('campaigns')
+       ->where($select, $value)
+       ->get();
+     $output = '<option value="">---SELECT CAMPAIGN---</option>';
+     foreach($data as $row)
+     {
+      $output .= '<option value="'.$row->id.'">'.strtoupper($row->name).'</option>';
+     }
+     echo $output;
+    }
 }

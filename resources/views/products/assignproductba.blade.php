@@ -55,8 +55,8 @@
                                     Client</label>
 
                                 <div class="col-md-6">
-                                    <select name="client_id" id="" class="form-control"
-                                        style="border: 1px solid; border-radius:10px;">
+                                    <select name="client_id" id="client_id" class="dynamic form-control"
+                                        style="border: 1px solid; border-radius:10px;" data-dependent="campaign_id">
                                         <option selected disabled>--- Select Client ---</option>
                                         @forelse ($clients as  $client)
                                             <option value="{{ $client->id }}">{{ strtoupper($client->name) }}</option>
@@ -66,6 +66,22 @@
                                     </select>
 
                                     @error('client_id')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <label for="campaign_id" class="col-md-4 col-form-label text-md-end">Select Campaign</label>
+
+                                <div class="col-md-6">
+                                    <select name="campaign_id" id="campaign_id" class="form-control"
+                                        style="border: 1px solid; border-radius:10px;">
+                                        <option value="">---Select Campaign---</option>
+                                    </select>
+
+                                    @error('campaign_id')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>
                                         </span>
@@ -272,8 +288,8 @@
                                 Client</label>
 
                             <div class="col-md-6">
-                                <select name="client_id" id="" class="form-control"
-                                    style="border: 1px solid; border-radius:10px;">
+                                <select name="client_id" id="client_id" class="dynamic form-control"
+                                    style="border: 1px solid; border-radius:10px;" data-dependent="campaign_id">
                                     <option selected disabled>--- Select Client ---</option>
                                     @forelse ($clients as  $client)
                                         <option value="{{ $client->id }}">{{ strtoupper($client->name) }}</option>
@@ -306,6 +322,22 @@
                                 </select>
 
                                 @error('brand_id')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label for="campaign_id" class="col-md-4 col-form-label text-md-end">Select Campaign</label>
+
+                            <div class="col-md-6">
+                                <select name="campaign_id" id="campaign_id" class="form-control"
+                                    style="border: 1px solid; border-radius:10px;">
+                                    <option value="">---Select Campaign---</option>
+                                </select>
+
+                                @error('campaign_id')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
                                     </span>
@@ -637,18 +669,36 @@
     @endcan
 @endsection
 @section('scripts')
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" referrerpolicy="no-referrer"></script>
-    {{-- <script>
-        $("#batch").hide();
-        $("#quantity").val("");
-        $("input[name='flexRadioDefault']").click(function() {
-            var status = $(this).val();
-            if (status == 2) {
-                $("#batch").show();
-            } else {
-                $("#batch").hide();
-                $("#quantity").val("");
-            }
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+<script type='text/javascript'>
+
+    $(document).ready(function(){
+
+      // Client Change
+      $('.dynamic').change(function(){
+            if ($(this).val() != '') {
+                var select = $(this).attr('id');
+                var value = $(this).val();
+                var dependent = $(this).data('dependent');
+                var _token = $('input[name="_token"]').val();
+                $.ajax({
+                    url:"{{ route('dynamicdependent.fetch.campaign') }}",
+                    method:"POST",
+                    data:{select:select, value:value, _token:_token, dependent:dependent},
+                    success:function(result)
+                    {
+                        $('#'+dependent).html(result);
+                    }
+
+                    })
+                }
         });
-    </script> --}}
+
+        $('#client_id').change(function(){
+            $('#campaign_id').val('');
+        });
+
+      });
+
+    </script>
 @endsection

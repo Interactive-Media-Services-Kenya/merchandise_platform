@@ -147,6 +147,7 @@ Route::group(['middleware' => ['auth:web','otp']], function () {
     //Campaigns
     Route::get('campaign/delete/{id}','CampaignController@destroyCampaign')->name('campaigns.destroyCampaign');
     Route::post('dynamic_dependent/fetch', 'ClientsController@fetch')->name('dynamicdependent.fetch');
+    Route::post('dynamic_dependent/fetch/campaigns', 'ClientsController@fetchCampaign')->name('dynamicdependent.fetch.campaign');
     Route::resource('campaigns','CampaignController');
 });
 

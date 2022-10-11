@@ -28,23 +28,23 @@ class ReportController extends Controller
 
                     ->addColumn('ba', function (IssueProduct $product) {
 
-                        return $product->brandambassador->email;
+                        return $product->brandambassador->email??"";
                     })
                     ->addColumn('batch', function (IssueProduct $product) {
 
-                        return $product->product->batch->batch_code;
+                        return $product->product->batch->batch_code??"";
                     })
                     ->addColumn('product_code', function (IssueProduct $product) {
 
-                        return $product->product->product_code;
+                        return $product->product->product_code??"";
                     })
                     ->addColumn('category', function (IssueProduct $product) {
 
-                        return $product->category->title;
+                        return $product->category->title??"";
                     })
                     ->editColumn('created_at', function (IssueProduct $product) {
 
-                        return $product->created_at;
+                        return $product->created_at??"";
                     })
                     ->toJson();
             } else {
@@ -54,19 +54,19 @@ class ReportController extends Controller
 
                     ->addColumn('product_code', function (IssueProduct $product) {
 
-                        return $product->product->product_code;
+                        return $product->product->product_code??"";
                     })
                     ->addColumn('ba', function (IssueProduct $product) {
 
-                        return $product->brandambassador->email;
+                        return $product->brandambassador->email??"";
                     })
                     ->addColumn('batch', function (IssueProduct $product) {
 
-                        return $product->product->batch->batch_code;
+                        return $product->product->batch->batch_code??"";
                     })
                     ->addColumn('category', function (IssueProduct $product) {
 
-                        return $product->category->title;
+                        return $product->category->title??"";
                     })
 
                     ->toJson();
@@ -89,23 +89,23 @@ class ReportController extends Controller
 
                     ->addColumn('salesrep', function (IssueProduct $product) {
 
-                        return $product->product->assign->email;
+                        return $product->product->assign->email??"";
                     })
                     ->addColumn('batch', function (IssueProduct $product) {
 
-                        return $product->batch->batch_code;
+                        return $product->batch->batch_code??"";
                     })
                     ->addColumn('product_code', function (IssueProduct $product) {
 
-                        return $product->product->product_code;
+                        return $product->product->product_code??"";
                     })
                     ->addColumn('category', function (IssueProduct $product) {
 
-                        return $product->category->title;
+                        return $product->category->title??"";
                     })
                     ->editColumn('created_at', function (IssueProduct $product) {
 
-                        return $product->created_at;
+                        return $product->created_at??"";
                     })
                     ->toJson();
             } else {
@@ -118,19 +118,19 @@ class ReportController extends Controller
 
                     ->addColumn('product_code', function (IssueProduct $product) {
 
-                        return $product->product->product_code;
+                        return $product->product->product_code??"";
                     })
                     ->addColumn('salesrep', function (IssueProduct $product) {
 
-                        return $product->product->assign->email;
+                        return $product->product->assign->email??"";
                     })
                     ->addColumn('batch', function (IssueProduct $product) {
 
-                        return $product->batch->batch_code;
+                        return $product->batch->batch_code??"";
                     })
                     ->addColumn('category', function (IssueProduct $product) {
 
-                        return $product->category->title;
+                        return $product->category->title??"";
                     })
 
                     ->toJson();
@@ -152,27 +152,27 @@ class ReportController extends Controller
 
                     ->addColumn('ba', function (IssueProduct $product) {
 
-                        return $product->brandambassador->email;
+                        return $product->brandambassador->email??"";
                     })
                     ->addColumn('batch', function (IssueProduct $product) {
 
-                        return $product->product->batch->batch_code;
+                        return $product->product->batch->batch_code??"";
                     })
                     ->addColumn('client', function (IssueProduct $product) {
 
-                        return $product->product->client->name;
+                        return $product->product->client->name??"";
                     })
                     ->addColumn('product_code', function (IssueProduct $product) {
 
-                        return $product->product->product_code;
+                        return $product->product->product_code??"";
                     })
                     ->addColumn('category', function (IssueProduct $product) {
 
-                        return $product->category->title;
+                        return $product->category->title??"";
                     })
                     ->editColumn('created_at', function (IssueProduct $product) {
 
-                        return $product->created_at;
+                        return $product->created_at??"";
                     })
                     ->toJson();
             } else {
@@ -182,23 +182,23 @@ class ReportController extends Controller
 
                     ->addColumn('product_code', function (IssueProduct $product) {
 
-                        return $product->product->product_code;
+                        return $product->product->product_code??"";
                     })
                     ->addColumn('ba', function (IssueProduct $product) {
 
-                        return $product->brandambassador->email;
+                        return $product->brandambassador->email??"";
                     })
                     ->addColumn('client', function (IssueProduct $product) {
 
-                        return $product->product->client->name;
+                        return $product->product->client->name??"";
                     })
                     ->addColumn('batch', function (IssueProduct $product) {
 
-                        return $product->product->batch->batch_code;
+                        return $product->product->batch->batch_code??"";
                     })
                     ->addColumn('category', function (IssueProduct $product) {
 
-                        return $product->category->title;
+                        return $product->category->title??"";
                     })
 
                     ->toJson();
@@ -222,27 +222,27 @@ class ReportController extends Controller
 
                     ->addColumn('ba', function (IssueProduct $product) {
 
-                        return $product->brandambassador->email;
+                        return $product->brandambassador->email??"";
                     })
                     ->addColumn('batch', function (IssueProduct $product) {
 
-                        return $product->product->batch->batch_code;
+                        return $product->product->batch->batch_code??"";
                     })
                     ->addColumn('client', function (IssueProduct $product) {
 
-                        return $product->product->client->name;
+                        return $product->product->client->name??"";
                     })
                     ->addColumn('product_code', function (IssueProduct $product) {
 
-                        return $product->product->product_code;
+                        return $product->product->product_code??"";
                     })
                     ->addColumn('category', function (IssueProduct $product) {
 
-                        return $product->category->title;
+                        return $product->category->title??"";
                     })
                     ->editColumn('created_at', function (IssueProduct $product) {
 
-                        return $product->created_at;
+                        return $product->created_at??"";
                     })
                     ->toJson();
             } else {
@@ -252,23 +252,23 @@ class ReportController extends Controller
 
                     ->addColumn('product_code', function (IssueProduct $product) {
 
-                        return $product->product->product_code;
+                        return $product->product->product_code??"";
                     })
                     ->addColumn('ba', function (IssueProduct $product) {
 
-                        return $product->brandambassador->email;
+                        return $product->brandambassador->email??"";
                     })
                     ->addColumn('client', function (IssueProduct $product) {
 
-                        return $product->product->client->name;
+                        return $product->product->client->name??"";
                     })
                     ->addColumn('batch', function (IssueProduct $product) {
 
-                        return $product->product->batch->batch_code;
+                        return $product->product->batch->batch_code??"";
                     })
                     ->addColumn('category', function (IssueProduct $product) {
 
-                        return $product->category->title;
+                        return $product->category->title??"";
                     })
 
                     ->toJson();
@@ -291,27 +291,27 @@ class ReportController extends Controller
 
                     ->addColumn('salesrep', function (IssueProduct $product) {
 
-                        return $product->product->assign->email;
+                        return $product->product->assign->email??"";
                     })
                     ->addColumn('batch', function (IssueProduct $product) {
 
-                        return $product->product->batch->batch_code;
+                        return $product->product->batch->batch_code??"";
                     })
                     ->addColumn('client', function (IssueProduct $product) {
 
-                        return $product->product->client->name;
+                        return $product->product->client->name??"";
                     })
                     ->addColumn('product_code', function (IssueProduct $product) {
 
-                        return $product->product->product_code;
+                        return $product->product->product_code??"";
                     })
                     ->addColumn('category', function (IssueProduct $product) {
 
-                        return $product->category->title;
+                        return $product->category->title??"";
                     })
                     ->editColumn('created_at', function (IssueProduct $product) {
 
-                        return $product->created_at;
+                        return $product->created_at??"";
                     })
                     ->toJson();
             } else {
@@ -323,23 +323,23 @@ class ReportController extends Controller
 
                     ->addColumn('product_code', function (IssueProduct $product) {
 
-                        return $product->product->product_code;
+                        return $product->product->product_code??"";
                     })
                     ->addColumn('salesrep', function (IssueProduct $product) {
 
-                        return $product->product->assign->email;
+                        return $product->product->assign->email??"";
                     })
                     ->addColumn('client', function (IssueProduct $product) {
 
-                        return $product->product->client->name;
+                        return $product->product->client->name??"";
                     })
                     ->addColumn('batch', function (IssueProduct $product) {
 
-                        return $product->product->batch->batch_code;
+                        return $product->product->batch->batch_code??"";
                     })
                     ->addColumn('category', function (IssueProduct $product) {
 
-                        return $product->category->title;
+                        return $product->category->title??"";
                     })
 
                     ->toJson();
@@ -362,31 +362,31 @@ class ReportController extends Controller
 
                     ->addColumn('ba', function (IssueProduct $product) {
 
-                        return $product->brandambassador->email;
+                        return $product->brandambassador->email??"";
                     })
                     ->addColumn('teamleader', function (IssueProduct $product) {
 
-                        return $product->product->assign->email;
+                        return $product->product->assign->email??"";
                     })
                     ->addColumn('batch', function (IssueProduct $product) {
 
-                        return $product->product->batch->batch_code;
+                        return $product->product->batch->batch_code??"";
                     })
                     ->addColumn('client', function (IssueProduct $product) {
 
-                        return $product->product->client->name;
+                        return $product->product->client->name??"";
                     })
                     ->addColumn('product_code', function (IssueProduct $product) {
 
-                        return $product->product->product_code;
+                        return $product->product->product_code??"";
                     })
                     ->addColumn('category', function (IssueProduct $product) {
 
-                        return $product->category->title;
+                        return $product->category->title??"";
                     })
                     ->editColumn('created_at', function (IssueProduct $product) {
 
-                        return $product->created_at;
+                        return $product->created_at??"";
                     })
                     ->toJson();
             } else {
@@ -395,31 +395,31 @@ class ReportController extends Controller
 
                     ->addColumn('ba', function (IssueProduct $product) {
 
-                        return $product->brandambassador->email;
+                        return $product->brandambassador->email??"";
                     })
                     ->addColumn('teamleader', function (IssueProduct $product) {
 
-                        return $product->product->assign->email;
+                        return $product->product->assign->email??"";
                     })
                     ->addColumn('batch', function (IssueProduct $product) {
 
-                        return $product->product->batch->batch_code;
+                        return $product->product->batch->batch_code??"";
                     })
                     ->addColumn('client', function (IssueProduct $product) {
 
-                        return $product->product->client->name;
+                        return $product->product->client->name??"";
                     })
                     ->addColumn('product_code', function (IssueProduct $product) {
 
-                        return $product->product->product_code;
+                        return $product->product->product_code??"";
                     })
                     ->addColumn('category', function (IssueProduct $product) {
 
-                        return $product->category->title;
+                        return $product->category->title??"";
                     })
                     ->editColumn('created_at', function (IssueProduct $product) {
 
-                        return $product->created_at;
+                        return $product->created_at??"";
                     })
 
                     ->toJson();
