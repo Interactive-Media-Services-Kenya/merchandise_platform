@@ -580,6 +580,7 @@ class ProductsController extends Controller
                     ->where('brand_id', $request->brand_id)
                     ->where('size', $request->size)
                     ->where('color', $request->color)->whereba_id(null)->whereassigned_to(null)->whereowner_id(0)->count();
+                    //dd($productCount);
 
                 if ($request->quantity > $productCount) {
                     Alert::error('Failed', 'Quantity Exceeds Expected Amount. Remaining: ' . $productCount);
@@ -1137,7 +1138,6 @@ class ProductsController extends Controller
                 if ($request->brand_id == null) {
                     $product = Product::where('category_id', $request->category_id)
                         ->where('client_id', $request->client_id)
-                        ->where('category_id', $request->category_id)
                         ->where('size', $request->size)
                         ->where('color', $request->color)->whereassigned_to(null)->whereba_id(null)->wherebatch_id(null)->wherebatch_tl_id(null)->first();
                     if ($product == null) {
@@ -1169,7 +1169,7 @@ class ProductsController extends Controller
                     ->where('category_id', $request->category_id)
                     ->where('size', $request->size)
                     ->where('color', $request->color)->whereassigned_to(null)->whereowner_id(0)->whereba_id(null)->wherebatch_id(null)->wherebatch_tl_id(null)->count();
-
+                //dd($productCount);
                 if ($productCount < $request->quantity) {
                     Alert::error('Failed', 'Quantity Exceeds Expected Amount. Remaining: ' . $productCount);
                     return back();
