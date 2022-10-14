@@ -84,7 +84,7 @@
                                             <td>
                                                 <div class="avatar-group mt-2">
                                                     @php
-                                                        $categoryProduct = \App\Models\Product::wherebatch_tl_id($batch->id)->first()
+                                                        $categoryProduct = \App\Models\Product::wherebatch_tl_id($batch->id)->first();
                                                     @endphp
                                                     <h6>{{ $categoryProduct->category->title?? ''}}
                                                     </h6>
@@ -204,7 +204,7 @@
                                             <td>
                                                 <div class="avatar-group mt-2">
                                                     @php
-                                                        $categoryProduct = \App\Models\Product::wherebatch_ba_id($batch->id)->first()
+                                                        $categoryProduct = \App\Models\Product::wherebatch_ba_id($batch->id)->first();
                                                     @endphp
                                                     <h6>{{ $categoryProduct->category->title?? ''}}</h6>
                                                 </div>

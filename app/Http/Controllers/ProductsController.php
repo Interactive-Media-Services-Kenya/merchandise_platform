@@ -629,7 +629,7 @@ class ProductsController extends Controller
 
                         $product->update([
                             'assigned_to' => $request->team_leader_id,
-                            'batch_tl_id' => $batch->id,
+                            'batch_tl_id' =>  DB::table('batch_brandambassadors')->where('batch_code', $batch_code)->value('id'),
                         ]);
                     }
 
@@ -646,7 +646,7 @@ class ProductsController extends Controller
 
                         $product->update([
                             'assigned_to' => $request->team_leader_id,
-                            'batch_tl_id' => $batch->id,
+                            'batch_tl_id' =>  DB::table('batch_brandambassadors')->where('batch_code', $batch_code)->value('id'),
                             'campaign_id' => $request->campaign_id,
                         ]);
                     }
@@ -789,7 +789,7 @@ class ProductsController extends Controller
 
                         $product->update([
                             'assigned_to' => $request->team_leader_id,
-                            'batch_tl_id' => $batch->id,
+                            'batch_tl_id' =>  DB::table('batch_brandambassadors')->where('batch_code', $batch_code)->value('id'),
                             'campaign_id' => $request->campaign_id,
                         ]);
                     }
@@ -807,7 +807,7 @@ class ProductsController extends Controller
 
                         $product->update([
                             'assigned_to' => $request->team_leader_id,
-                            'batch_tl_id' => $batch->id,
+                            'batch_tl_id' =>  DB::table('batch_brandambassadors')->where('batch_code', $batch_code)->value('id'),
                             'campaign_id' => $request->campaign_id,
                         ]);
                     }
@@ -1021,10 +1021,10 @@ class ProductsController extends Controller
                             Alert::error('Failed', 'No Merchandise Found! Kindly Add the Merchandise Before Assigning');
                             return back();
                         }
-//                        if ($product->count() < $request->quantity) {
-//                            Alert::error('Failed', 'Merchandise Available is less than requested Quantity');
-//                            return back();
-//                        }
+                    //    if ($product->count() < $request->quantity) {
+                    //        Alert::error('Failed', 'Merchandise Available is less than requested Quantity');
+                    //        return back();
+                    //    }
                         $product->update([
                             'owner_id' => $request->owner_id,
                             'batch_id' => $batch->id,
@@ -1041,10 +1041,10 @@ class ProductsController extends Controller
                             Alert::error('Failed', 'No Merchandise Found! Kindly Add the Merchandise Before Assigning');
                             return back();
                         }
-//                        if ($product->count() != $request->quantity) {
-//                            Alert::error('Failed', 'No Merchandise Found with no size! Kindly Add the Merchandise Before Assigning');
-//                            return back();
-//                        }
+                    //    if ($product->count() != $request->quantity) {
+                    //        Alert::error('Failed', 'No Merchandise Found with no size! Kindly Add the Merchandise Before Assigning');
+                    //        return back();
+                    //    }
                         $product->update([
                             'owner_id' => $request->owner_id,
                             'batch_id' => $batch->id,
@@ -1274,6 +1274,7 @@ class ProductsController extends Controller
                     }
                     $product->update([
                         'assigned_to' => $request->team_leader_id,
+                        'campaign_id' =>$request->campaign_id, // Attach Campaign Id to product...By Agency
                     ]);
                 }
                 if ($request->size == null) {
@@ -1288,6 +1289,7 @@ class ProductsController extends Controller
                     }
                     $product->update([
                         'assigned_to' => $request->team_leader_id,
+                        'campaign_id' =>$request->campaign_id, // Attach Campaign Id to product...By Agency
                     ]);
                 }
 
@@ -1303,6 +1305,7 @@ class ProductsController extends Controller
                     }
                     $product->update([
                         'assigned_to' => $request->team_leader_id,
+                        'campaign_id' =>$request->campaign_id, // Attach Campaign Id to product...By Agency
                     ]);
                 }
                 //! Sending to the Assignee (Agency)
@@ -1356,6 +1359,7 @@ class ProductsController extends Controller
                         $product->update([
                             'assigned_to' => $request->team_leader_id,
                             'batch_tl_id' => DB::table('batch_teamleaders')->where('batch_code', $batch_code)->value('id'),
+                            'campaign_id' =>$request->campaign_id, // Attach Campaign Id to product...By Agency
                         ]);
                     }
                     if ($request->size == null) {
@@ -1372,7 +1376,8 @@ class ProductsController extends Controller
 
                         $product->update([
                             'assigned_to' => $request->team_leader_id,
-                            'batch_tl_id' => $batch->id,
+                            'batch_tl_id' =>DB::table('batch_teamleaders')->where('batch_code', $batch_code)->value('id'),
+                            'campaign_id' =>$request->campaign_id, // Attach Campaign Id to product...By Agency
                         ]);
                     }
 
@@ -1389,7 +1394,8 @@ class ProductsController extends Controller
 
                         $product->update([
                             'assigned_to' => $request->team_leader_id,
-                            'batch_tl_id' => $batch->id,
+                            'batch_tl_id' =>DB::table('batch_teamleaders')->where('batch_code', $batch_code)->value('id'),
+                             'campaign_id' =>$request->campaign_id, // Attach Campaign Id to product...By Agency
                         ]);
                     }
                 }

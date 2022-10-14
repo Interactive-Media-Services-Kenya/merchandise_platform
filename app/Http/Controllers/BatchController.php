@@ -30,8 +30,10 @@ class BatchController extends Controller
 
     public function index()
     {
+        //Batches for the loggedIn Team Leaders
         $batchesTls = DB::table('batch_teamleaders')->whereteam_leader_id(Auth::id())->orderBy('created_at','DESC')->cursor();
 
+        //Batches for the loggedIN BrandAmbassadors
         $batchesbas = DB::table('batch_brandambassadors')->wherebrand_ambassador_id(Auth::id())->cursor();
 
 

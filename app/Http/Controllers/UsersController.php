@@ -259,8 +259,8 @@ class UsersController extends Controller
             'password' => bcrypt($password),
         ]);
         //Sync permission to issue Merchandise for BA on enroll
-        $permission = Permission::wherename('Issue Merchandise')->get();
-        $user->permission_users()->attach($permission->permission_id);
+        $permission = Permission::wherename('Issue Merchandise')->first();
+        $user->permission_users()->attach($permission->id);
         if ($request->has('client_id')) {
             $user->update([
                 'client_id' => Auth::user()->client_id,
@@ -275,7 +275,7 @@ class UsersController extends Controller
 
         if ($user) {
             $url_login = URL::to('/');
-            $message = "Hello, You have been assigned an account at $url_login . Kindly Use the following details to login to your Account. Email: $user->email and Password: $request->password ";
+            $message = "Hello, You have been assigned an account at $url_login . Kindly Use the following details to login to your Account. Email: $user->email and Password: $password ";
                 $details = [
                     'title' => 'Mail from '.config('app.name'),
                     'body' => $message,

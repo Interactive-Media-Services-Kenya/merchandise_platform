@@ -97,7 +97,7 @@
                                 </div>
                             </div>
 
-                            <div class="row mb-3">
+                            {{-- <div class="row mb-3">
                                 <label for="password"
                                     class="col-md-4 col-form-label text-md-end">{{ __('Password') }}</label>
 
@@ -124,7 +124,7 @@
                                         style="border: 1px solid; border-radius:10px;" name="password_confirmation" required
                                         autocomplete="new-password">
                                 </div>
-                            </div>
+                            </div> --}}
 
                             <div class="row mb-0">
                                 <div class="col-md-6 offset-md-4">
