@@ -4,8 +4,9 @@ namespace App\Imports;
 
 use App\Models\User;
 use Maatwebsite\Excel\Concerns\ToModel;
+use Maatwebsite\Excel\Concerns\WithHeadingRow;
 
-class BasImport implements ToModel
+class BasImport implements ToModel,WithHeadingRow
 {
         // protected $sendSMSService;
 
