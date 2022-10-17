@@ -275,9 +275,9 @@ class UsersController extends Controller
         ]);
 
         if ($user) {
-            $email=$request->email;
+            $email=strval($request->email);
             $url_login = URL::to('/');
-            $message = 'Hello, You have been assigned an account at '.$url_login.' . Kindly Use the following details to login to your Account. Email:' .$email.' and Password: '.$password;
+            $message = 'Hello, You have been assigned an account at '.$url_login.' . Kindly Use the following details to login to your Account. Email: ' .$email.' and Password: '.$password;
                 $details = [
                     'title' => 'Mail from '.config('app.name'),
                     'body' => $message,
