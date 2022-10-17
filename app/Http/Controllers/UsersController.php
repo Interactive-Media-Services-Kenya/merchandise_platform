@@ -220,7 +220,7 @@ class UsersController extends Controller
         ]);
         if ($user) {
             $url_login = URL::to('/');
-            $message = "Hello, You have been assigned an account at $url_login . Kindly Use the following details to login to your Account. Email: $user->email and Password: $request->password ";
+            $message = "Hello, You have been assigned an account at $url_login . Kindly Use the following details to login to your Account. Email: $request->email and Password: $password ";
                 $details = [
                     'title' => 'Mail from '.config('app.name'),
                     'body' => $message,
@@ -275,7 +275,7 @@ class UsersController extends Controller
 
         if ($user) {
             $url_login = URL::to('/');
-            $message = "Hello, You have been assigned an account at $url_login . Kindly Use the following details to login to your Account. Email: $user->email and Password: $password ";
+            $message = "Hello, You have been assigned an account at $url_login . Kindly Use the following details to login to your Account. Email: $request->email and Password: $password ";
                 $details = [
                     'title' => 'Mail from '.config('app.name'),
                     'body' => $message,
