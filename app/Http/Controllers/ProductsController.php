@@ -73,7 +73,7 @@ class ProductsController extends Controller
         $clientsWithMerchandise = Product::select('client_id')->groupBy('client_id')->get();
         $batchesAccepted = Batch::where('accept_status', 1)->get();
         $teamleaders = User::where('role_id', 3)->get();
-        $salesreps = User::where('role_id', 3)->where('client_id', Auth::user()->client_id)->get();
+
         $teamleadersWithBatches = Batch::where('accept_status', 1)->groupBy('tl_id_accept')->get();
         //dd($batchesAccepted);
         // ! Products Belonging to a Team Leader
@@ -90,6 +90,13 @@ class ProductsController extends Controller
 
 
         $batchesBa = Batch::select('*')->whereIn('batches.id', $productsBasBatch)->get();
+
+                //Client Data
+
+
+        $productsClientIds = Product::select('id')->where('client_id',Auth::user()->client_id)->cursor();
+        $productsIssuedOutClient = IssueProduct::whereIn('product_id',$productsClientIds)->count();
+        $salesreps = User::where('role_id', 3)->where('client_id', Auth::user()->client_id)->count();
         //Ajax Datatables for products
 
         if ($request->ajax()) {
@@ -134,12 +141,8 @@ class ProductsController extends Controller
             });
             $table->editColumn('batch', function ($row) {
 
-                //Super Admin
-                if (Auth::user()->role_id == 1) {
-                    return $row->batch_id ? $row->batch->batch_code : '';
-                }
-                //Agency
-                if (Auth::user()->role_id == 2) {
+                //Super Admin |Agency| Client
+                if (Auth::user()->role_id == 1 ||Auth::user()->role_id == 2||Auth::user()->role_id == 5) {
                     return $row->batch_id ? $row->batch->batch_code : '';
                 }
                 //Teamleader
@@ -195,7 +198,8 @@ class ProductsController extends Controller
             'clients',
             'clientsWithMerchandise',
             'productsIssuedOut',
-            'productsAdmin'
+            'productsAdmin',
+            'productsIssuedOutClient'
         ));
     }
     public function indexAgency(Request $request,$id)
@@ -233,7 +237,7 @@ class ProductsController extends Controller
                 return $row->assigned_to ? $row->assign->email : '';
             });
             $table->editColumn('issued_at', function ($row) {
-                return $row->issueProduct->created_at ?? $row->issueProduct->created_at;
+                return $row->issueProduct->created_at ?? '';
             });
             $table->editColumn('created_at', function ($row) {
                 return $row->client_id ? $row->created_at: '';
@@ -255,6 +259,10 @@ class ProductsController extends Controller
                 //BrandAmbassador
                 if (Auth::user()->role_id == 4) {
                     return $row->batch_id ? DB::table('batch_brandambassadors')->whereid($row->batch_ba_id)->value('batch_code') : '';
+                }
+                // Client
+                if (Auth::user()->role_id == 5) {
+                    return $row->batch_id ? $row->batch->batch_code : '';
                 }
             });
 
@@ -1503,9 +1511,9 @@ class ProductsController extends Controller
      * @param int $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Product $product)
     {
-        //
+        return view('products.show',compact('product'));
     }
 
     /**
@@ -1894,7 +1902,6 @@ class ProductsController extends Controller
         $permissions = $this->permissionsService->getPermissions($permissionName);
         abort_unless($permissions, 403);
 
-
         $product = Product::findOrFail($request->product_id);
         $productIssued = IssueProduct::where('product_id',$request->product_id)->get();
         if ($productIssued->count()>0){
@@ -1933,6 +1940,7 @@ class ProductsController extends Controller
             'state_name' => $location->state_name??'',
             'postal_code' => $location->postal_code??'',
             'city' => $location->city??'',
+            'outlet_id' => $request->outlet,
         ]);
         Activity::create([
             'title' => 'Merchandise Issued',

@@ -148,7 +148,7 @@
                                         style="border: 1px solid; border-radius:10px;">
                                         <option selected disabled>--- Select Agency Email ---</option>
                                         @forelse ($agencies as $agency)
-                                            <option value="{{ $agency->id }}">{{ strtoupper($agency->email) }}</option>
+                                            <option value="{{ $agency->id }}">{{ strtoupper($agency->name) }} - {{$ba->phone}}</option>
                                         @empty
                                             <option disabled> No Agencies To Select Yet</option>
                                         @endforelse

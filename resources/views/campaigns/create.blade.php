@@ -12,7 +12,7 @@
     <div class="row">
         <div class="col-sm-8 offset-2">
             <div class="card">
-                <div class="card-header"><h4 class="text-center">Add Campaign</h4></div>
+                <div class="card-header"><h4 class="text-center">Create Campaign</h4></div>
 
                 <div class="card-body">
                     <form method="POST" action="{{ route('campaigns.store') }}">

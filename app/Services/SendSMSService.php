@@ -15,7 +15,7 @@ class SendSMSService
                 'Cookie: ci_session=ttdhpf95lap45hq8t3h255af90npbb3ql'
             ];
 
-            $encodeMessage = urlencode($message);
+            $encodeMessage = rawurlencode($message);
             //$encodMessage = $message;
 
             $url = 'https://3.229.54.57/expresssms/Api/send_bulk_api?action=send-sms&api_key=Snh2SGFQT0dIZmFtcRGU9ZXBlcEQ=&to=' . $receiverNumber . '&from=IMS&sms=' . $encodeMessage . '&response=json&unicode=0&bulkbalanceuser=voucher';

@@ -28,7 +28,7 @@ class TeamLeadersExport implements FromCollection, WithHeadings
             'name',
             'email',
             'phone',
-            'county_id',
+            'county',
             'client_id',
         ];
 

@@ -281,7 +281,7 @@
 
 
     @can('client_access')
-        {{-- Client Leader --}}
+        {{-- Client Access --}}
         <script>
             $(document).ready(function() {
                 $('.input-daterange').datepicker({

@@ -10,7 +10,7 @@
 <div style="margin-bottom: 10px;" class="row">
     <div class="col-lg-12">
         <a class="btn btn-success" href="{{ route('campaigns.create') }}">
-            Add Campaign
+            Create Campaign
         </a>
     </div>
 </div>
@@ -40,6 +40,7 @@
                         <th>
                             Brand
                         </th>
+                        <th>Code</th>
                         <th>
                             Start Date
                         </th>
@@ -71,6 +72,9 @@
                             </td>
                             <td>
                                 {{$campaign->brand->name?? 'No Brand'}}
+                            </td>
+                            <td>
+                                {{$campaign->code}}
                             </td>
                             <td>
                                 {{ $campaign->from_date ?? '' }}

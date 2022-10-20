@@ -1,6 +1,9 @@
 @extends('layouts.backend')
 @section('css')
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <link rel="stylesheet" href="https://cdn.datatables.net/1.11.4/css/jquery.dataTables.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
     <style>
         .input {
             border: 1px solid;
@@ -19,6 +22,18 @@
                         <div class="card-body">
                             <form method="POST" action="{{ route('products.issue.product') }}">
                                 @csrf
+                                <div class="row mb-3">
+                                    <label for="quantity" class="col-md-4 col-form-label text-md-end">Outlet Name</label>
+
+                                    <div class="col-md-6">
+                                        <select class="form-control outletsearch @error('outlet') is-invalid @enderror input" name="outlet" style="border: 1px solid; border-radius:10px;" required></select>
+                                        @error('outlet')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                        @enderror
+                                    </div>
+                                </div>
                                 <div class="row mb-3">
                                     <label for="quantity" class="col-md-4 col-form-label text-md-end">Customer Name</label>
                                     <input type="hidden" name="product_id" value="{{$product->id}}">
@@ -66,5 +81,26 @@
             </div>
     @endsection
     @section('scripts')
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" referrerpolicy="no-referrer"></script>
+
+        <script type="text/javascript">
+            $('.outletsearch').select2({
+                placeholder: 'Select Outlet',
+                ajax: {
+                    url: '/ajax-outlet-search',
+                    dataType: 'json',
+                    delay: 150,
+                    processResults: function (data) {
+                        return {
+                            results: $.map(data, function (item) {
+                                return {
+                                    text: item.name,
+                                    id: item.id
+                                }
+                            })
+                        };
+                    },
+                    cache: true
+                }
+            });
+        </script>
     @endsection

@@ -199,9 +199,9 @@
                                 <th>
                                     Serial Number
                                 </th>
-                                <th>
-                                    BarCode
-                                </th>
+{{--                                <th>--}}
+{{--                                    BarCode--}}
+{{--                                </th>--}}
                                 <th>
                                     Batch Code
                                 </th>
@@ -241,8 +241,8 @@
                     </div>
                     <hr class="dark horizontal my-0">
                     <div class="card-footer p-3">
-                        <p class="mb-0 text-default text-sm font-weight-bolder">{{ $productsIssuedOut }} Issued Out
-                            &nbsp;&nbsp;&nbsp;&nbsp; {{ $productsClient - $productsIssuedOut }} Remaining
+                        <p class="mb-0 text-default text-sm font-weight-bolder">{{ $productsIssuedOutClient }} Issued Out
+                            &nbsp;&nbsp;&nbsp;&nbsp; {{ $productsClient - $productsIssuedOutClient }} Remaining
                             Merchandise
                         </p>
                     </div>
@@ -257,7 +257,7 @@
                         </div>
                         <div class="text-end pt-1">
                             <p class="text-sm mb-0 text-capitalize">Registered Sales Representatives</p>
-                            <h4 class="mb-0">{{ count($salesreps) }}</h4>
+                            <h4 class="mb-0">{{ $salesreps }}</h4>
                         </div>
                     </div>
                     <hr class="dark horizontal my-0">
@@ -355,9 +355,9 @@
                                 <th>
                                     Serial Number
                                 </th>
-                                <th>
-                                    BarCode
-                                </th>
+{{--                                <th>--}}
+{{--                                    BarCode--}}
+{{--                                </th>--}}
                                 <th>
                                     Batch Code
                                 </th>
@@ -493,9 +493,9 @@
                                 <th>
                                     Serial Number
                                 </th>
-                                <th>
-                                    BarCode
-                                </th>
+{{--                                <th>--}}
+{{--                                    BarCode--}}
+{{--                                </th>--}}
                                 <th>
                                     Batch Code
                                 </th>
@@ -597,9 +597,9 @@
                                 <th>
                                     Serial Number
                                 </th>
-                                <th>
-                                    BarCode
-                                </th>
+{{--                                <th>--}}
+{{--                                    BarCode--}}
+{{--                                </th>--}}
                                 <th>
                                     Batch Code
                                 </th>
@@ -671,11 +671,11 @@
                         data: 'product_code',
                         name: 'product_code'
                     },
-                    {
-                        data: 'bar_code',
-                        name: 'bar_code',
-                        searchable: false
-                    },
+                    // {
+                    //     data: 'bar_code',
+                    //     name: 'bar_code',
+                    //     searchable: false
+                    // },
                     {
                         data: 'batch',
                         name: 'batch.batch_code'

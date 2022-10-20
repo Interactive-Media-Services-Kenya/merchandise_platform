@@ -83,4 +83,17 @@ class OutletController extends Controller
 
         return $code;
     }
+
+    public function selectSearch(Request $request)
+    {
+        $outlets = [];
+
+        if($request->has('q')){
+            $search = $request->q;
+            $outlets =Outlet::select("id", "name")
+                ->where('name', 'LIKE', "%$search%")
+                ->get();
+        }
+        return response()->json($outlets);
+    }
 }

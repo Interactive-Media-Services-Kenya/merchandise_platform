@@ -48,9 +48,12 @@ class HomeController extends Controller
             if (Gate::allows('admin_access')) {
 
                 $productsAdmin = Product::with(['category', 'assign', 'batch', 'client'])->select('products.*')->count();
-                $batches = Batch::join('storages', 'storages.id', 'batches.storage_id')->where('storages.client_id', null)->cursor();
+                $productsIssuedOut = IssueProduct::all();
+                $batches = Batch::all();
                 $activityAdmin = Activity::select('*')->latest()->take(9)->cursor();
-                $bas = User::where('role_id', 4)->count();
+                $tls = User::where('role_id', 3)->count(); // Team Leaders
+                $bas = User::where('role_id', 4)->count(); // BrandAmbassadors
+                $agencies = User::where('role_id', 2)->count(); // Agencies
                 $clients = Client::all();
                 // $tls = User::where('role_id', 3)->where('client_id', null)->cursor();
                 if ($request->ajax()) {
@@ -71,11 +74,13 @@ class HomeController extends Controller
                 return view('home', compact(
                     'productsAdmin',
                     'batches',
-                    //'tls',
+                    'tls',
                     'clients',
                     'batches',
                     'activityAdmin',
+                    'productsIssuedOut',
                     'bas',
+                    'agencies',
                 ));
             }
 

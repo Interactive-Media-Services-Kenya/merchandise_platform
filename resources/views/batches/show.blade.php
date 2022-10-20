@@ -218,13 +218,13 @@
                                                 <th>
                                                     Serial Number
                                                 </th>
-                                                <th>
-                                                    Barcode
-                                                </th>
+{{--                                                <th>--}}
+{{--                                                    Barcode--}}
+{{--                                                </th>--}}
                                                 <th>
                                                     Batch Code
                                                 </th>
-                                                {{-- <th>Status (Confirm)</th> --}}
+                                                 <th>Status (Confirm)</th>
                                                 <th>
                                                     Actions
                                                 </th>
@@ -245,22 +245,23 @@
                                                     <td>
                                                         {{ $product->product_code ?? '' }}
                                                     </td>
-                                                    <td>
-                                                        @php
-                                                        if ($product->product_code) {
-                                                            $generator = new \Picqer\Barcode\BarcodeGeneratorHTML();
-                                                            echo $generator->getBarcode($product->product_code, $generator::TYPE_CODE_128);
-                                                        }else{
-                                                            echo 'No Serial Code';
-                                                        }
-                                                        @endphp
-                                                    </td>
+{{--                                                    <td>--}}
+{{--                                                        @php--}}
+{{--                                                        if ($product->product_code) {--}}
+{{--                                                            $generator = new \Picqer\Barcode\BarcodeGeneratorHTML();--}}
+{{--                                                            echo $generator->getBarcode($product->product_code, $generator::TYPE_CODE_128);--}}
+{{--                                                        }else{--}}
+{{--                                                            echo 'No Serial Code';--}}
+{{--                                                        }--}}
+{{--                                                        @endphp--}}
+{{--                                                    </td>--}}
                                                     <td>
                                                         {{ \DB::table('batch_teamleaders')->where('id',$product->batch_tl_id)->value('batch_code') ?? 'Single Product' }}
                                                     </td>
                                                     <td> {{ $product->accept_status == 1 ? 'Confirmed' : 'Not Confirmed' }}
                                                     </td>
                                                     <td>
+                                                        @if($product->accept_status == 0)
                                                         <a href="{{ route('product.confirm', [$product->id]) }}"
                                                             class="btn btn-success btn-sm"
                                                             onclick="return confirm('Are you Sure?')">Confirm</a>
@@ -269,6 +270,7 @@
                                                             data-target="#staticBackdrop{{ $product->id }}">
                                                             Reject
                                                         </a>
+                                                        @endif
                                                     </td>
                                                 </tr>
                                                 <!-- Modal -->
@@ -416,7 +418,7 @@
                                                 <th>
                                                     Serial Number
                                                 </th>
-                                                <th>Barcode</th>
+{{--                                                <th>Barcode</th>--}}
                                                 <th>
                                                     Batch Code
                                                 </th>
@@ -442,16 +444,16 @@
                                                     <td>
                                                         {{ $product->product_code ?? '' }}
                                                     </td>
-                                                    <td>
-                                                        @php
-                                                        if ($product->product_code) {
-                                                            $generator = new \Picqer\Barcode\BarcodeGeneratorHTML();
-                                                            echo $generator->getBarcode($product->product_code, $generator::TYPE_CODE_128);
-                                                        }else{
-                                                            echo 'No Serial Code';
-                                                        }
-                                                        @endphp
-                                                    </td>
+{{--                                                    <td>--}}
+{{--                                                        @php--}}
+{{--                                                        if ($product->product_code) {--}}
+{{--                                                            $generator = new \Picqer\Barcode\BarcodeGeneratorHTML();--}}
+{{--                                                            echo $generator->getBarcode($product->product_code, $generator::TYPE_CODE_128);--}}
+{{--                                                        }else{--}}
+{{--                                                            echo 'No Serial Code';--}}
+{{--                                                        }--}}
+{{--                                                        @endphp--}}
+{{--                                                    </td>--}}
                                                     <td>
                                                         {{ $product->batchBA->batch_code ?? 'Single Product' }}
                                                     </td>

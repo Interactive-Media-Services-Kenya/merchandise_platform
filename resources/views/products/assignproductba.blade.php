@@ -164,7 +164,7 @@
                                         style="border: 1px solid; border-radius:10px;">
                                         <option selected disabled>--- Select BrandAmbassador Email ---</option>
                                         @forelse ($brandambassadors as $ba)
-                                            <option value="{{ $ba->id }}">{{ strtoupper($ba->email) }}</option>
+                                            <option value="{{ $ba->id }}">{{ strtoupper($ba->name) }} - {{$ba->phone}}</option>
                                         @empty
                                             <option disabled> No BrandAmbassadors Registered</option>
                                         @endforelse
@@ -397,7 +397,7 @@
                                         style="border: 1px solid; border-radius:10px;">
                                         <option selected disabled>--- Select BrandAmbassador Email ---</option>
                                         @forelse ($brandambassadors as $ba)
-                                            <option value="{{ $ba->id }}">{{ strtoupper($ba->email) }}</option>
+                                            <option value="{{ $ba->id }}">{{ strtoupper($ba->name) }} - {{$ba->phone}}</option>
                                         @empty
                                             <option disabled> No BrandAmbassadors Registered</option>
                                         @endforelse
@@ -518,7 +518,7 @@
                                             style="border: 1px solid; border-radius:10px;">
                                         <option selected disabled>--- Select BrandAmbassador Email ---</option>
                                         @forelse ($brandambassadors as $ba)
-                                            <option value="{{ $ba->id }}">{{ strtoupper($ba->email) }}</option>
+                                            <option value="{{ $ba->id }}">{{ strtoupper($ba->name) }} - {{$ba->phone}}</option>
                                         @empty
                                             <option disabled> No BrandAmbassadors Registered</option>
                                         @endforelse

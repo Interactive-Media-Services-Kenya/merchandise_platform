@@ -360,6 +360,10 @@
                                                 ID
                                             </th>
                                             <th>
+                                                Date Issued
+                                            </th>
+                                            </th>
+                                            <th>
                                                 Merchandise Type
                                             </th>
                                             <th>
@@ -368,7 +372,7 @@
                                             <th>
                                                 Serial Number
                                             </th>
-                                            <th>Barcode</th>
+{{--                                            <th>Barcode</th>--}}
                                             <th>
                                                 Batch Code
                                             </th>
@@ -376,9 +380,7 @@
                                                 Campaign
                                             </th>
                                             <th>Customer</th>
-                                            <th>
-                                                Date Issued
-                                            </th>
+
                                         </tr>
                                         </thead>
                                         <tbody>
@@ -388,24 +390,27 @@
                                                     {{ $product->id ?? '' }}
                                                 </td>
                                                 <td>
+                                                    {{ $product->issueProduct->product_id ? $product->issueProduct->created_at : '' }}
+                                                </td>
+                                                <td>
                                                     {{ $product->category->title ?? '' }}
                                                 </td>
                                                 <td>
                                                     {{ $product->client->name ?? '' }}
                                                 </td>
                                                 <td>
-                                                    {{ $product->product_code ?? '' }}
+                                                    <a href="{{route('products.show',[$product->id])}}">{{ $product->product_code ?? '' }}</a>
                                                 </td>
-                                                <td>
-                                                    @php
-                                                        if ($product->product_code) {
-                                                            $generator = new \Picqer\Barcode\BarcodeGeneratorHTML();
-                                                            echo $generator->getBarcode($product->product_code, $generator::TYPE_CODE_128);
-                                                        }else{
-                                                            echo 'No Serial Code';
-                                                        }
-                                                    @endphp
-                                                </td>
+{{--                                                <td>--}}
+{{--                                                    @php--}}
+{{--                                                        if ($product->product_code) {--}}
+{{--                                                            $generator = new \Picqer\Barcode\BarcodeGeneratorHTML();--}}
+{{--                                                            echo $generator->getBarcode($product->product_code, $generator::TYPE_CODE_128);--}}
+{{--                                                        }else{--}}
+{{--                                                            echo 'No Serial Code';--}}
+{{--                                                        }--}}
+{{--                                                    @endphp--}}
+{{--                                                </td>--}}
                                                 <td>
                                                     {{ $product->batchBA->batch_code ?? 'Single Product' }}
                                                 </td>
@@ -415,9 +420,7 @@
                                                 <td>
                                                     {{ $product->customer->phone ?? 'No Customer Details' }}
                                                 </td>
-                                                <td>
-                                                    {{ $product->issueProduct->product_id ? $product->issueProduct->created_at : '' }}
-                                                </td>
+
                                             </tr>
 
 

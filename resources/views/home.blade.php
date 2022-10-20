@@ -22,8 +22,7 @@
                     </div>
                     <hr class="dark horizontal my-0">
                     <div class="card-footer p-3">
-                        {{-- <p class="mb-0"><span class="text-success text-sm font-weight-bolder">+55% </span>than lask
-                        week</p> --}}
+                        <p class="mb-0"><span class="text-success text-sm font-weight-bolder">{{$productsIssuedOut->count()}} </span>Merchandise Issued Out</p>
                     </div>
                 </div>
             </div>
@@ -35,14 +34,13 @@
                             <i class="material-icons opacity-10">person</i>
                         </div>
                         <div class="text-end pt-1">
-                            <p class="text-sm mb-0 text-capitalize">Registered Brand Ambassadors</p>
-                            <h4 class="mb-0">{{ $bas }}</h4>
+                            <p class="text-sm mb-0 text-capitalize">Registered Brand TeamLeaders</p>
+                            <h4 class="mb-0">{{ $tls }}</h4>
                         </div>
                     </div>
                     <hr class="dark horizontal my-0">
                     <div class="card-footer p-3">
-                        {{-- <p class="mb-0"><span class="text-success text-sm font-weight-bolder">+3% </span>than lask
-                        month</p> --}}
+                         <p class="mb-0"><span class="text-success text-sm font-weight-bolder">{{$bas}} </span>BrandAmbassadors</p>
                     </div>
                 </div>
             </div>
@@ -60,8 +58,8 @@
                     </div>
                     <hr class="dark horizontal my-0">
                     <div class="card-footer p-3">
-                        {{-- <p class="mb-0"><span class="text-danger text-sm font-weight-bolder">-2%</span> than yesterday
-                    </p> --}}
+                        <p class="mb-0"><span class="text-danger text-sm font-weight-bolder">{{$agencies}}</span> Registered Agencies
+                    </p>
                     </div>
                 </div>
             </div>
@@ -1179,12 +1177,7 @@
     </script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
     <script>
-        @can('tb_access')
-            const url_productsPerMonth = `{{ route('api.products.issued-per-month') }}`;
-        @endcan
-        @can('client_access')
-            const url_productsPerMonth = `{{ route('api.products.issued-per-month.client',[Auth::user()->client_id]) }}`;
-        @endcan
+        const url_productsPerMonth = `{{ route('api.products.issued-per-month') }}`;
         const setBg = () => {
             const randomColor = "#" + Math.floor(Math.random() * 16777215).toString(16);
             return randomColor
@@ -1243,11 +1236,9 @@
                 config_bar
             );
             // Pie Chart
-            @can('tb_access')
             const url_pie = `{{ route('api.products.issued-per-type') }}`;
-            @endcan
             @can('client_access')
-            const url_pie = `{{ route('api.products.issued-per-type.client',[Auth::user()->client_id]) }}`;
+                const url_pie = `{{ route('api.products.issued-per-type.client',[Auth::user()->client_id]) }}`;
             @endcan
 
             let response_pie = await fetch(url_pie);

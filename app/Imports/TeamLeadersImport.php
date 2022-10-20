@@ -2,6 +2,7 @@
 
 namespace App\Imports;
 
+use App\Models\County;
 use App\Models\User;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
@@ -24,12 +25,13 @@ class TeamLeadersImport implements ToModel, WithHeadingRow
     public function model(array $row)
     {
         $password = rand(1000,9999);
+       $county  = County::where('name', 'like', '%'.$row['county'].'%')->first();;
 
         return new User([
             "name" => $row['name'] ,
             "email" => $row['email']??$row['name'].'@merchandise.com',
             "phone" => $row['phone'],
-            "county_id" => $row['county_id'],
+            "county_id" => $county->id??1,
             "role_id" => 3,  // User Type User : Teamleader
             "client_id"=>$row['client_id'],
             "password" => bcrypt($password)

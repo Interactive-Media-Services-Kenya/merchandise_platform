@@ -116,6 +116,7 @@
                     <th>Email</th>
                     <th>Role</th>
                     <th>Created At</th>
+                      <th>Action</th>
                   </tr>
                   </thead>
                   <tbody>
@@ -128,11 +129,15 @@
                             <td>{{$user->email}}</td>
                             <td>{{strtoupper($user->roles->title)??'No Assigned Roles'}}</td>
                             <td>{{$user->created_at}}</td>
+                              <td>
+                                  <a href="{{route('users.edit', [$user->id])}}" class="btn btn-primary btn-sm">Edit</a>
+                                  @if(Auth::id() != $user->id)<a href="{{route('users.destroyUser',[$user->id])}}" class="btn btn-danger btn-sm" onclick="return confirm('Are you Sure?')">Delete</a>@endif
+                              </td>
                           </tr>
                           @empty
                           <tr>
 
-                            <td colspan="6" class="text-center">No Users Imported Today</td>
+                            <td colspan="7" class="text-center">No Users Imported Today</td>
                           </tr>
                         @endforelse
                   </tbody>

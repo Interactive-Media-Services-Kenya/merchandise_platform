@@ -53,7 +53,7 @@ class CampaignController extends Controller
             'from_date'=> 'required',
             'to_date'=> 'required',
         ]);
-
+        $code = $this->generateCode();
         //Save the campaign details
         $campaign = Campaign::create([
             'name' => $request->name,
@@ -61,7 +61,8 @@ class CampaignController extends Controller
             'brand_id' => $request->brand_id,
             'to_date' => $request->to_date,
             'from_date' => $request->from_date,
-            'user_id' => Auth::id()
+            'user_id' => Auth::id(),
+            'code' => $code,
         ]);
 
         //Return response feedback to user
@@ -135,5 +136,13 @@ class CampaignController extends Controller
             return back();
         }
 
+    }
+    public function generateCode()
+    {
+        $permitted_chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
+        $batchcode = 'CAMP-' . mt_rand(100, 999) . substr(str_shuffle($permitted_chars), 0, 3);
+
+        return $batchcode;
     }
 }

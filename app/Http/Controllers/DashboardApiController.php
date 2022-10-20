@@ -7,18 +7,21 @@ use App\Models\Activity;
 use App\Models\Batch;
 use App\Models\Category;
 use App\Models\IssueProduct;
+use App\Models\Product;
 use Illuminate\Http\Request;
 use DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 
 class DashboardApiController extends Controller
 {
     // True Blaq Api Functions
-
+    public $count;
 
     // Products Issued Out Per Month
     public function productsPerMonth()
     {
+        global $count;
         $products = [];
         $months = [];
         for ($m = 1; $m <= 12; $m++) {
@@ -31,7 +34,26 @@ class DashboardApiController extends Controller
                 $date = \Carbon\Carbon::parse($monthDates->created_at)->format('F');
 
                 if ($date == $months[$i]) {
-                    $count = count(IssueProduct::whereMonth('created_at', $i + 1)->get());
+                   // $count = IssueProduct::whereMonth('created_at', $i + 1)->count();
+                    if (Gate::allows('admin_access')){
+                        $count = IssueProduct::whereMonth('created_at', $i + 1)->count();
+                    }
+                    if (Gate::allows('tb_access')){
+                        $productIDs = Product::select('id')->where('owner_id',Auth::id())->get();
+                        $count = IssueProduct::whereIn('product_id',$productIDs)->whereMonth('created_at', $i + 1)->count();
+                    }
+                    if (Gate::allows('tl_access')){
+                        $productIDs = Product::select('id')->where('assigned_to',Auth::id())->get();
+                        $count = IssueProduct::whereIn('product_id',$productIDs)->whereMonth('created_at', $i + 1)->count();
+                    }
+                    if (Gate::allows('ba_access')){
+                        $productIDs = Product::select('id')->where('ba_id',Auth::id())->get();
+                        $count = IssueProduct::whereIn('product_id',$productIDs)->whereMonth('created_at', $i + 1)->count();
+                    }
+                    if (Gate::allows('client_access')){
+                        $productIDs = Product::select('id')->where('client_id',Auth::user()->client_id)->get();
+                        $count = IssueProduct::whereIn('product_id',$productIDs)->whereMonth('created_at', $i + 1)->count();
+                    }
                     $data = [
                         'month' => \Carbon\Carbon::parse($monthDates->created_at)->format('F'),
                         'count' => $count,
@@ -59,7 +81,23 @@ class DashboardApiController extends Controller
 
     public function productsPerType()
     {
-        $categories = IssueProduct::select('*')->join('products', 'products.id', 'issue_products.product_id')->groupBy('products.category_id')->get();
+        if (Gate::allows('admin_access')){
+            $categories = IssueProduct::select('*')->join('products', 'products.id', 'issue_products.product_id')->groupBy('products.category_id')->get();
+        }
+        if (Gate::allows('tb_access')){
+            $productIDs = Product::select('id')->where('owner_id',Auth::id())->get();
+            $categories = IssueProduct::select('*')->whereIn('issue_products.product_id',$productIDs)->join('products', 'products.id', 'issue_products.product_id')->groupBy('products.category_id')->get();
+        }
+        if (Gate::allows('tl_access')){
+            $productIDs = Product::select('id')->where('assigned_to',Auth::id())->get();
+            $categories = IssueProduct::select('*')->whereIn('issue_products.product_id',$productIDs)->join('products', 'products.id', 'issue_products.product_id')->groupBy('products.category_id')->get();
+        }
+        if (Gate::allows('ba_access')){
+            $productIDs = Product::select('id')->where('ba_id',Auth::id())->get();
+            $categories = IssueProduct::select('*')->whereIn('issue_products.product_id',$productIDs)->join('products', 'products.id', 'issue_products.product_id')->groupBy('products.category_id')->get();
+        }
+
+
         $types = [];
         foreach ($categories as $category) {
             array_push($types, $category->category_id);
@@ -67,11 +105,30 @@ class DashboardApiController extends Controller
 
         $products = [];
         for ($i = 0; $i < count($types); $i++) {
-            $product = IssueProduct::select('*')->join('products', 'products.id', 'issue_products.product_id')->where('products.category_id', $types[$i])->get();
+            if (Gate::allows('admin_access')){
+                $product = IssueProduct::select('*')->join('products', 'products.id', 'issue_products.product_id')->where('products.category_id', $types[$i])->get();
+            }
+            if (Gate::allows('tb_access')){
+                $productIDs = Product::select('id')->where('owner_id',Auth::id())->get();
+                $product = IssueProduct::select('*')->whereIn('issue_products.product_id',$productIDs)->join('products', 'products.id', 'issue_products.product_id')->where('products.category_id', $types[$i])->get();
+            }
+            if (Gate::allows('tl_access')){
+                $productIDs = Product::select('id')->where('assigned_to',Auth::id())->get();
+                $product = IssueProduct::select('*')->whereIn('issue_products.product_id',$productIDs)->join('products', 'products.id', 'issue_products.product_id')->where('products.category_id', $types[$i])->get();
+            }
+            if (Gate::allows('ba_access')){
+                $productIDs = Product::select('id')->where('ba_id',Auth::id())->get();
+                $product = IssueProduct::select('*')->whereIn('issue_products.product_id',$productIDs)->join('products', 'products.id', 'issue_products.product_id')->where('products.category_id', $types[$i])->get();
+            }
+            if (Gate::allows('client_access')){
+                $productIDs = Product::select('id')->where('client_id',Auth::user()->client_id)->get();
+                $product = IssueProduct::select('*')->whereIn('issue_products.product_id',$productIDs)->join('products', 'products.id', 'issue_products.product_id')->where('products.category_id', $types[$i])->get();
+            }
+
 
             $data = [
                 'name' => Category::where('id', $types[$i])->value('title'),
-                'count' => count($product),
+                'count' => $product->count(),
             ];
             array_push($products, $data);
         }

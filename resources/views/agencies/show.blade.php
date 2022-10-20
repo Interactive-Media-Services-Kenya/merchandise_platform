@@ -131,9 +131,9 @@
                                         <th>
                                             Serial Number
                                         </th>
-                                        <th>
-                                            BarCode
-                                        </th>
+{{--                                        <th>--}}
+{{--                                            BarCode--}}
+{{--                                        </th>--}}
                                         <th>
                                             Date Added
                                         </th>
@@ -202,11 +202,11 @@
                         data: 'product_code',
                         name: 'product_code'
                     },
-                    {
-                        data: 'bar_code',
-                        name: 'bar_code',
-                        searchable: false
-                    },
+                    // {
+                    //     data: 'bar_code',
+                    //     name: 'bar_code',
+                    //     searchable: false
+                    // },
                     {
                         data: 'created_at',
                         name: 'created_at'
