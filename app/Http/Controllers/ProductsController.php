@@ -1920,7 +1920,7 @@ class ProductsController extends Controller
 
         $distanceDifference = $this->getLocationDistance->vincentyGreatCircleDistance(
             $outlet->address_latitude, $outlet->address_longitude, $request->latitude, $request->longitude, $earthRadius = 6371000);
-        dd($request->latitude);
+        dd($distanceDifference);
         if($distanceDifference > 1){ //If location distance is greater than 1 km
             Alert::error('Failed', 'Issue Merchandise Out of Outlet Area');
             return back();
