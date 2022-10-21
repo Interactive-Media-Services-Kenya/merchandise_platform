@@ -43,9 +43,9 @@
                                 <th>
                                     Serial Number
                                 </th>
-                                <th>
-                                    BarCode
-                                </th>
+{{--                                <th>--}}
+{{--                                    BarCode--}}
+{{--                                </th>--}}
                                 <th>
                                     Batch Code
                                 </th>
