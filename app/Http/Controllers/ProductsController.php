@@ -1913,6 +1913,20 @@ class ProductsController extends Controller
             return redirect()->route('products.index');
         }
         $batch = BatchBrandambassador::findOrFail($request->batch_id);
+
+
+        //Check outlet Radius and reject if greater
+        $location = geoip($request->ip());
+        $outlet = Outlet::whereid($request->outlet)->first();
+
+        $distanceDifference = $this->getLocationDistance->vincentyGreatCircleDistance(
+            $outlet->address_latitude, $outlet->address_longitude, $location->lat, $location->lon, $earthRadius = 6371000);
+        dd($distanceDifference);
+        if($distanceDifference > 1){ //If location distance is greater than 1 km
+            Alert::error('Failed', 'Issue Merchandise Out of Outlet Area');
+            return back();
+        }
+
         //Check if customer phone exist in DB and Reject
         if (!empty($request->customer_phone)){
             $customerPhone = $request->customer_phone;
@@ -1922,17 +1936,7 @@ class ProductsController extends Controller
                 Alert::error('Failed','Customer Has Been Issued Merchandise');
                 return back();
             }
-            //Check outlet Radius and reject if greater
-            $location = geoip($request->ip());
-            $outlet = Outlet::whereid($request->outlet)->first();
 
-            $distanceDifference = $this->getLocationDistance->vincentyGreatCircleDistance(
-                $outlet->address_latitude, $outlet->address_longitude, $location->lat, $location->lon, $earthRadius = 6371000);
-            dd($distanceDifference);
-            if($distanceDifference > 1){ //If location distance is greater than 1 km
-                Alert::error('Failed', 'Issue Merchandise Out of Outlet Area');
-                return back();
-            }
 
             Customer::create([
                 'name' => $request->customer_name,
