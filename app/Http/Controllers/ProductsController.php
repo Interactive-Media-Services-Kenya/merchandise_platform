@@ -1921,7 +1921,7 @@ class ProductsController extends Controller
         $distanceDifference = $this->getLocationDistance->vincentyGreatCircleDistance(
             $outlet->address_latitude, $outlet->address_longitude, $request->latitude, $request->longitude, $earthRadius = 6371000);
         //dd($distanceDifference);
-        if($distanceDifference > 0.2){ //If location distance is greater than 500 meters || Set this value depending on the Application outlet radius
+        if($distanceDifference > 0.2){ //If location distance is greater than 200 meters || Set this value depending on the Application outlet radius
             Alert::error('Failed', 'Issue Merchandise Out of Outlet Area Range. Distance From Outlet: '.$distanceDifference.' kms');
             return redirect()->route('products.index');
         }
