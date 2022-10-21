@@ -1916,12 +1916,11 @@ class ProductsController extends Controller
 
 
         //Check outlet Radius and reject if greater
-        $location = geoip($request->ip());
         $outlet = Outlet::whereid($request->outlet)->first();
 
         $distanceDifference = $this->getLocationDistance->vincentyGreatCircleDistance(
-            $outlet->address_latitude, $outlet->address_longitude, $location->lat, $location->lon, $earthRadius = 6371000);
-        dd($location->lat);
+            $outlet->address_latitude, $outlet->address_longitude, $request->latitude, $request->longitude, $earthRadius = 6371000);
+        dd($distanceDifference);
         if($distanceDifference > 1){ //If location distance is greater than 1 km
             Alert::error('Failed', 'Issue Merchandise Out of Outlet Area');
             return back();

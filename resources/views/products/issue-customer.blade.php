@@ -38,7 +38,8 @@
                                     <label for="quantity" class="col-md-4 col-form-label text-md-end">Customer Name</label>
                                     <input type="hidden" name="product_id" value="{{$product->id}}">
                                     <input type="hidden" name="batch_id" value="{{$batch->id}}">
-
+                                    <input type="hidden" name="latitude" id="latitude" value="0">
+                                    <input type="hidden" name="longitude" id="longitude" value="0">
                                     <div class="col-md-6">
                                         <input
                                                class="form-control @error('quantity') is-invalid @enderror input"
@@ -102,5 +103,28 @@
                     cache: true
                 }
             });
+        </script>
+        <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+        <script>
+            $(document).ready(function() {
+                setCurrentLocationCoordinates();
+            });
+            function setCurrentLocationCoordinates(){
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(getpos);
+                } else {
+                    alert('Use latest browser that supports geolocation');
+                }
+            }
+
+            function getpos(position) {
+                latx=position.coords.latitude;
+                lonx=position.coords.longitude;
+                // Show Lat and Lon
+                const latitudeField = document.getElementById("latitude");
+                const longitudeField = document.getElementById("longitude");
+                latitudeField.value = latx;
+                longitudeField.value = lonx;
+            }
         </script>
     @endsection
