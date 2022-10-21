@@ -270,7 +270,7 @@
                                         style="border: 1px solid; border-radius:10px;">
                                         <option selected disabled>--- Select Team Leader ---</option>
                                         @forelse ($teamleaders as  $leader)
-                                            <option value="{{ $leader->id }}">{{ strtoupper($leader->name) }}</option>
+                                            <option value="{{ $leader->id }}">{{ strtoupper($leader->name) }} - {{$leader->phone}}</option>
                                         @empty
                                             <option disabled> No Ambassadors Added Yet</option>
                                         @endforelse
@@ -377,7 +377,7 @@
                                         style="border: 1px solid; border-radius:10px;">
                                         <option selected disabled>--- Select Sales Representative ---</option>
                                         @forelse ($salesreps as  $leader)
-                                            <option value="{{ $leader->id }}">{{ strtoupper($leader->name) }}</option>
+                                            <option value="{{ $leader->id }}">{{ strtoupper($leader->name) }} - {{$leader->phone}}</option>
                                         @empty
                                             <option disabled> No Sales Representative Added Yet</option>
                                         @endforelse
