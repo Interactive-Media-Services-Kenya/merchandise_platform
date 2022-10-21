@@ -34,6 +34,9 @@ class OutletController extends Controller
             'county_id' => $request->county_id,
             'name' => $request->name,
             'code' => $outlet_code,
+            'address_address' => $request->address_address,
+            'address_latitude'=>$request->address_latitude,
+            'address_longitude'=>$request->address_longitude,
         ]);
 
         if ($outlet) {
@@ -66,6 +69,9 @@ class OutletController extends Controller
 
         $outlet->update([
             'code' => $outlet_code,
+            'address_address' => $request->address_address,
+            'address_latitude'=>$request->address_latitude,
+            'address_longitude'=>$request->address_longitude,
         ]);
 
         Alert::success('Success','Updated Successfully');

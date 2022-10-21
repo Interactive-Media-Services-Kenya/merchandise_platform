@@ -40,6 +40,7 @@
                         <th>
                             County
                         </th>
+                        <th>Address</th>
                         <th>
                             Actions
                         </th>
@@ -63,6 +64,7 @@
                             <td>
                                 {{ $outlet->county->name ?? '' }}
                             </td>
+                            <td>{{$outlet->address_address?? 'Not Updated'}}</td>
                             <td>
                                 @can('admin_access')<a href="{{route('outlets.edit', [$outlet->id])}}" class="btn btn-primary btn-sm">Edit</a>@endcan
                                 @can('admin_access')<a href="{{route('outlets.destroyOutlet',[$outlet->id])}}" class="btn btn-danger btn-sm" onclick="return confirm('Are you Sure?')">Delete</a>@endcan

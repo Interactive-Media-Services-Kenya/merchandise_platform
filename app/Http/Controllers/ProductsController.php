@@ -12,6 +12,7 @@ use App\Models\Client;
 use App\Models\Color;
 use App\Models\Customer;
 use App\Models\IssueProduct;
+use App\Models\Outlet;
 use App\Models\Product;
 use App\Models\Productbas;
 use App\Models\ProductCode;
@@ -38,17 +39,20 @@ use Yajra\DataTables\Facades\DataTables;
 use App\Services\SendSMSService;
 use App\Services\PermissionsService;
 use Adrianorosa\GeoLocation\GeoLocation;
+use App\Services\GetLocationDistance;
 
 class ProductsController extends Controller
 {
     protected $permissionsService;
 
     protected $sendSMSService;
+    protected $getLocationDistance;
 
-    public function __construct(SendSMSService $sendSMSService,PermissionsService $permissionsService)
+    public function __construct(SendSMSService $sendSMSService,PermissionsService $permissionsService,GetLocationDistance $getLocationDistance)
     {
         $this->sendSMSService = $sendSMSService;
         $this->permissionsService = $permissionsService;
+        $this->getLocationDistance = $getLocationDistance;
     }
     /**
      * Display a listing of the resource.
@@ -1916,6 +1920,17 @@ class ProductsController extends Controller
             //Check Campaign Associated with the customer.
             if ($customer->count()>0){
                 Alert::error('Failed','Customer Has Been Issued Merchandise');
+                return back();
+            }
+            //Check outlet Radius and reject if greater
+            $location = geoip($request->ip());
+            $outlet = Outlet::whereid($request->outlet)->first();
+
+            $distanceDifference = $this->getLocationDistance->vincentyGreatCircleDistance(
+                $outlet->address_latitude, $outlet->address_longitude, $location->lat, $location->lon, $earthRadius = 6371000);
+            //dd($distanceDifference);
+            if($distanceDifference > 1){ //If location distance is greater than 1 km
+                Alert::error('Failed', 'Issue Merchandise Out of Outlet Area');
                 return back();
             }
 
