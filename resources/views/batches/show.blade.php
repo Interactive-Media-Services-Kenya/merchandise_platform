@@ -470,9 +470,11 @@
                                                            data-target="#staticBackdrop{{ $product->id }}">
                                                             Reject
                                                         </a>
-                                                        @endif
+                                                        @elseif($product->batchBA->accept_status == 1)
+                                                           <a href="products/issue/product/{{$product->id }}/{{$batch->id}}"
+                                                              class="btn btn-sm btn-warning">Issue Out</a>
                                                         <!-- Button trigger modal -->
-
+                                                        @endif
 
 
 

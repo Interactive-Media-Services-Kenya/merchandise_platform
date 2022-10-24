@@ -1908,7 +1908,7 @@ class ProductsController extends Controller
 
         $product = Product::findOrFail($request->product_id);
         $productIssued = IssueProduct::where('product_id',$request->product_id)->get();
-        if ($productIssued->count()>0){
+        if ($productIssued->count() > 0){
             Alert::error('Failed','Merchandise Has already been issued out');
             return redirect()->route('products.index');
         }
