@@ -406,13 +406,13 @@ class UsersController extends Controller
 
     //Get Download Import sample file
     public function getImportAgency(){
-        return Excel::download(new UsersExport, 'sampleAgencyUsers.xlsx');
+        return Excel::download(new UsersExport, 'sampleAgency.xlsx');
     }
     public function getImportTeamleader(){
-        return Excel::download(new TeamLeadersExport, 'sampleTeamLeaderUsers.xlsx');
+        return Excel::download(new TeamLeadersExport, 'sampleTeamLeader.xlsx');
     }
     public function getImportBas(){
-        return Excel::download(new BasExport, 'sampleBasUsers.xlsx');
+        return Excel::download(new BasExport, 'sampleBrandAmbassadors.xlsx');
     }
 
     public function importUsers(){
@@ -503,6 +503,29 @@ class UsersController extends Controller
                     //     'password' => bcrypt($password),
                     //     ]);
                     $user = User::where('phone',$record->phone)->first();
+                    //Sync Permissions for all users
+                    $userRole = $user->role_id;
+                    //Agency
+                    if ($userRole == 2){
+                        $permissionIDs = [1,2,4,5,7];
+                        foreach ($permissionIDs as $permission) {
+                            $user->permission_users()->attach($permission);
+                        }
+                    }
+                    //TeamLeader
+                    if ($userRole == 3){
+                        $permissionIDs = [1,2,7];
+                        foreach ($permissionIDs as $permission) {
+                            $user->permission_users()->attach($permission);
+                        }
+                    }
+                    //BrandAmbassador
+                    if ($userRole == 4){
+                        $permissionIDs = [10];
+                        foreach ($permissionIDs as $permission) {
+                            $user->permission_users()->attach($permission);
+                        }
+                    }
                     $user->update([
                         'password'=>bcrypt($password),
                     ]);

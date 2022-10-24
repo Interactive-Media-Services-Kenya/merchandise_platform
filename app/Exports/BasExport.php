@@ -28,7 +28,7 @@ class BasExport implements FromCollection,WithHeadings
             'name',
             'email',
             'phone',
-            'county_id',
+            'county',
             'teamleader_id',
         ];
 

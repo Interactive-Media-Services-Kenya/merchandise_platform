@@ -25,7 +25,7 @@ class TeamLeadersImport implements ToModel, WithHeadingRow
     public function model(array $row)
     {
         $password = rand(1000,9999);
-       $county  = County::where('name', 'like', '%'.$row['county'].'%')->first();;
+       $county  = County::where('name', 'like', '%'.$row['county'].'%')->first();
 
         return new User([
             "name" => $row['name'] ,
