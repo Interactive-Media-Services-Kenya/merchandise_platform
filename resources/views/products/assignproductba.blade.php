@@ -479,7 +479,7 @@
 {{--    Assign Merchandise to BrandAmbassadors by Teamleaders--}}
     @can('team_leader_access')
         <div class="row">
-            <div class="col-sm-8 offset-2">
+            <div class="col-sm-10 offset-1">
                 <div class="card">
                     <div class="card-header">
                         <h4 class="text-center">Assign Merchandise To BrandAmbassador</h4>
@@ -496,7 +496,20 @@
                                             style="border: 1px solid; border-radius:10px;">
                                         <option selected disabled>--- Select Batch ---</option>
                                         @forelse ($batchTLs as $batch)
-                                            <option value="{{ $batch->batch_tl_id }}">{{ strtoupper($batch->batch_code) }}</option>
+{{--                                            <option value="{{ $batch->batch_tl_id }}">{{ strtoupper($batch->batch_code) }} -- <b>Type:</b> {{$batch->category->title??'No Type'}}  <b>Client:</b> {{$batch->client->name??'No Client'}} <b>Color:</b> {{$batch->colorProduct->name?? 'No Color'}} <b>Size:</b> {{$batch->sizeProduct->name?? 'No Size'}}--}}
+{{--                                                Quantity Remaining: @php--}}
+{{--                                                                        $productIssued = \App\Models\Product::wherebatch_tl_id($batch->batchTL->id)->whereassigned_to(Auth::id())->whereba_id(null)->count();--}}
+{{--                                                                    @endphp--}}
+{{--                                                                    {{$productIssued??'0'}}--}}
+{{--                                            </option>--}}
+                                            <option value="{{ $batch->batch_tl_id }}">{{ strtoupper($batch->batch_code) }} -- <b>Type:</b> {{$batch->category->title??'No Type'}}  <b>Client:</b> {{$batch->client->name??'No Client'}} <b>Color:</b> {{$batch->colorProduct->name?? 'No Color'}} <b>Size:</b> {{$batch->sizeProduct->name?? 'No Size'}}
+                                                Quantity Remaining: @php
+                                                    $productIssued = \App\Models\Product::where('batch_tl_id', $batch->batch_tl_id)
+                                                                        ->whereassigned_to(Auth::id())
+                                                                        ->whereba_id(null)->count();
+                                                @endphp
+                                                {{$productIssued??'0'}}
+                                            </option>
                                         @empty
                                             <option disabled> No Batch To Select Yet</option>
                                         @endforelse

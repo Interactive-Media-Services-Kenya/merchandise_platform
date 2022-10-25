@@ -350,9 +350,9 @@ class ProductsController extends Controller
         $brandAmbassadors = User::where('role_id', 4)->where('teamleader_id', $user_id)->get();
         $batches = Product::select('batch_id', 'batch_code')->where('assigned_to', Auth::id())->join('batches', 'batches.id', 'products.batch_id')->groupBy('batch_id')->get();
         //Get Batches for a specific Team Leader
-        $batchTLs = Product::select('products.batch_tl_id', 'batch_teamleaders.batch_code')->where('products.assigned_to', Auth::id())->join('batch_teamleaders', 'batch_teamleaders.id', 'products.batch_tl_id')->groupBy('batch_tl_id')->get();
+        $batchTLs = Product::where('products.assigned_to', Auth::id())->join('batch_teamleaders', 'batch_teamleaders.id', 'products.batch_tl_id')->groupBy('batch_tl_id')->get();
 
-
+//dd($batchTLs);
         $batchesAll = Batch::select('batches.*')->join('storages', 'batches.storage_id', 'storages.id')->where('storages.client_id', null)->get();
         $batchesClient = Batch::select('batches.*')->join('storages', 'batches.storage_id', 'storages.id')->where('storages.client_id', Auth::user()->client_id)->get();
 
@@ -842,7 +842,7 @@ class ProductsController extends Controller
         }
         // ? Team Leader Assigns to Brand Ambassador
         if (FacadesGate::allows('team_leader_access')) {
-            //Store Products on count Not Assigned to any Agency.
+            //Store Products on count Not Assigned to any Brand Ambassador.
             $url_login = URL::to('/login');
             //if quantity is  0ne
             if ($request->quantity == 1) {
@@ -852,23 +852,21 @@ class ProductsController extends Controller
                                         ->whereassigned_to(Auth::id())
                                         ->whereba_id(null)->first();
 
-
                     if ($product == null) {
                         Alert::error('Failed', 'No Merchandise Found! Kindly Add the Merchandise Before Assigning');
                         return back();
                     }
                     $product->update([
                         'ba_id' => $request->ba_id,
-                        'campaign_id' => $request->campaign_id,
                     ]);
                 }
 
-                //! Sending to the Assignee (Super Admin)
+                //! Sending to the Assignee (Team Leader)
                 $assigneePhone = Auth::user()->phone;
                 $assigneeMessage = 'Merchandise ' . $product->product_code . ' assigned to ' . User::whereid($request->ba_id)->value('name') . ' Phone: ' . User::whereid($request->ba_id)->value('phone');
                 $this->sendSMS($assigneePhone, $assigneeMessage);
 
-                //! Sending to the Assigned User (Agency)
+                //! Sending to the Assigned User (Brand Ambassador)
                 $assignedPhone = User::whereid($request->ba_id)->value('phone');
                 $assignedMessage = 'You have been assigned Merchandise (' . DB::table('categories')->whereid($request->category_id)->value('title') . '): ' . $product->product_code . ' by ' . Auth::user()->name . ' Kindly Login to the App by clicking the link : ' . $url_login;
                 $this->sendSMS($assignedPhone, $assignedMessage);
@@ -894,10 +892,8 @@ class ProductsController extends Controller
                 ]);
 
                 for ($i = 0; $i < $request->quantity; $i++) {
-                    //when Both size & brand is set
-                    if ($request->size != null && $request->brand_id != null) {
                         $product =Product::where('batch_tl_id', $request->batch_tl_id)
-                            ->whereowner_id(Auth::id())
+                            ->whereassigned_to(Auth::id())
                             ->whereba_id(null)->first();
 
                         if ($product == null) {
@@ -908,9 +904,7 @@ class ProductsController extends Controller
                         $product->update([
                             'ba_id' => $request->ba_id,
                             'batch_ba_id' => DB::table('batch_brandambassadors')->where('batch_code', $batch_code)->value('id'),
-                            'campaign_id' => $request->campaign_id,
                         ]);
-                    }
                 }
                 //! Sending SMS to the Assignee (Agency)
                 $assigneePhone = Auth::user()->phone;
@@ -1712,6 +1706,7 @@ class ProductsController extends Controller
                     ]);
                     $batchTL = DB::table('batch_teamleaders')->whereid($id)->update([
                        'accept_status' => 1,
+                        'updated_at' => \Carbon\Carbon::now(),
                     ]);
                     Activity::create([
                         'title' => 'Merchandise Comfirmed',
@@ -1746,9 +1741,10 @@ class ProductsController extends Controller
                     ->whereid($id)->first();
                 $batchCode = $batchBA->batch_code;
                     DB::table('batch_brandambassadors')
-                        ->whereid($id)->update([
-                        'accept_status' => 1,
-                        'reject_status' => 0,
+                            ->whereid($id)->update([
+                            'accept_status' => 1,
+                            'reject_status' => 0,
+                            'updated_at' => \Carbon\Carbon::now(),
                         ]);
                     Activity::create([
                         'title' => 'Batch Comfirmed',
@@ -1779,12 +1775,14 @@ class ProductsController extends Controller
             if ( $productsCount > 0) {
                 $rejectBatch = DB::table('batch_teamleaders')->whereid($id)->update([
                     'reject_status' => 1,
+                    'updated_at' => '',
                 ]);
                 $batchCode = \DB::table('batch_teamleaders')->whereid($id)->value('batch_code');
                 foreach ($products as $product) {
                     $product = Product::findOrFail($product->id);
                     $product->update([
                         'accept_status' => 0,
+
                     ]);
                     $reason = Reject::create([
                         'reason_id' => $request->reason_id,

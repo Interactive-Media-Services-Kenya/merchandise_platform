@@ -52,6 +52,9 @@ class Product extends Model
     public function batchBA(){
         return $this->belongsTo(BatchBrandambassador::class,'batch_ba_id');
     }
+    public function batchTL(){
+        return $this->belongsTo(BatchTeamleader::class,'batch_tl_id');
+    }
     protected function serializeDate(DateTimeInterface $date)
     {
         return $date->format('Y-m-d H:i:s');
@@ -66,4 +69,5 @@ class Product extends Model
     public function campaign(){
         return $this->belongsTo(Campaign::class);
     }
+
 }

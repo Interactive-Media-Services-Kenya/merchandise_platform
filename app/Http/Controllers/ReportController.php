@@ -21,11 +21,16 @@ class ReportController extends Controller
     }
     public function products(Request $request)
     {
-        if (Gate::allows('admin_access')){
             if ($request->ajax()) {
                 if (!empty($request->from_date)) {
-                    $model = IssueProduct::whereBetween('issue_products.created_at', [$request->from_date, $request->to_date])
-                        ->with(['brandambassador', 'product', 'batch', 'category'])->select('issue_products.*');
+                    if (Gate::allows('admin_access')){
+                        $model = IssueProduct::whereBetween('issue_products.created_at', [$request->from_date, $request->to_date])
+                            ->with(['brandambassador', 'product', 'batch', 'category'])->select('issue_products.*');
+                    }
+                    if (Gate::allows('tb_access')){
+                        $model = IssueProduct::join('products','products.id','issue_products.product_id')->where('products.owner_id',Auth::id())->whereBetween('issue_products.created_at', [$request->from_date, $request->to_date])
+                            ->with(['brandambassador', 'product', 'batch', 'category'])->select('issue_products.*');
+                    }
                     return DataTables::eloquent($model)
 
                         ->addColumn('ba', function (IssueProduct $product) {
@@ -50,7 +55,13 @@ class ReportController extends Controller
                         })
                         ->toJson();
                 } else {
-                    $model = IssueProduct::with(['brandambassador', 'product', 'batch', 'category'])->select('issue_products.*');
+                    if (Gate::allows('admin_access')){
+                        $model = IssueProduct::with(['brandambassador', 'product', 'batch', 'category'])->select('issue_products.*');
+                    }
+                    if (Gate::allows('tb_access')){
+                        $model = IssueProduct::join('products','products.id','issue_products.product_id')->where('products.owner_id',Auth::id())
+                            ->with(['brandambassador', 'product', 'batch', 'category'])->select('issue_products.*');
+                    }
 
                     return DataTables::eloquent($model)
 
@@ -76,7 +87,7 @@ class ReportController extends Controller
             }
 
             return view('reports.products-report');
-        }
+
 
     }
 
