@@ -254,7 +254,7 @@ class SPAApiController extends Controller
             }
 
             $batch->update([
-                'accept_status' => 2,
+                'accept_status' => 0,
             ]);
 
             //Add the reject + Reason
@@ -377,10 +377,10 @@ class SPAApiController extends Controller
                 foreach ($batch as $bch) {
                     $item = [
                         'batch' => $bch->batch_code,
-                        'confirm_status' => $bch->accept_status != 1 ? false : true,
-                        'reject_status' => $bch->accept_status == 0 ? true : false,
-                        'product_count' => DB::table('products')->wherebatch_id($pb->id)->count(),
-                        'merchandise_type' => DB::table('categories')->whereid(Product::wherebatch_id($pb->id)->value('category_id'))->value('title'),
+                        'confirm_status' => $bch->accept_status == 1 ? true : false,
+                        'reject_status' => $bch->accept_status == 2 ? true : false,
+                        'product_count' => DB::table('products')->wherebatch_id($bch->id)->count(),
+                        'merchandise_type' => DB::table('categories')->whereid(Product::wherebatch_id($bch->id)->value('category_id'))->value('title'),
                     ];
                     array_push($data, $item);
                 }
