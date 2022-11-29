@@ -800,7 +800,7 @@ class SPAApiController extends Controller
 
     public function uploadMerchandise(Request $request)
     {
-        if (!(Gate::allows('admin_access')||Gate::allows('admin_access'))) {
+        if (!(Gate::allows('admin_access')||Gate::allows('tb_access'))) {
             return response()->json([
                 'message' => 'User is Not Authorized',
                 'status' => 0,
