@@ -379,8 +379,8 @@ class SPAApiController extends Controller
                         'batch' => $bch->batch_code,
                         'confirm_status' => $pb->accept_status == 1 ? true : false,
                         'reject_status' => $pb->reject_status == 1 ? true : false,
-                        'product_count' => DB::table('products')->wherebatch_tl_id($pb->id)->count(),
-                        'merchandise_type' => DB::table('categories')->whereid(Product::wherebatch_ba_id($pb->id)->value('category_id'))->value('title'),
+                        'product_count' => DB::table('products')->wherebatch_id($pb->id)->count(),
+                        'merchandise_type' => DB::table('categories')->whereid(Product::wherebatch_id($pb->id)->value('category_id'))->value('title'),
                     ];
                     array_push($data, $item);
                 }
@@ -403,7 +403,7 @@ class SPAApiController extends Controller
                     'confirm_status' => $pb->accept_status == 1 ? true : false,
                     'reject_status' => $pb->reject_status == 1 ? true : false,
                     'product_count' => DB::table('products')->wherebatch_tl_id($pb->id)->count(),
-                    'merchandise_type' => DB::table('categories')->whereid(Product::wherebatch_ba_id($pb->id)->value('category_id'))->value('title'),
+                    'merchandise_type' => DB::table('categories')->whereid(Product::wherebatch_tl_id($pb->id)->value('category_id'))->value('title'),
                 ];
                 array_push($data, $item);
             }
@@ -800,7 +800,7 @@ class SPAApiController extends Controller
 
     public function uploadMerchandise(Request $request)
     {
-        if (!Gate::allows('admin_access')) {
+        if (!(Gate::allows('admin_access')||Gate::allows('admin_access'))) {
             return response()->json([
                 'message' => 'User is Not Authorized',
                 'status' => 0,
