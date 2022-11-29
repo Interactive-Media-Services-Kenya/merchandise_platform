@@ -377,7 +377,7 @@ class SPAApiController extends Controller
                 foreach ($batch as $bch) {
                     $item = [
                         'batch' => $bch->batch_code,
-                        'confirm_status' => $pb->accept_status == 1 ? true : false,
+                        'confirm_status' => !($pb->accept_status == 1) ? false : true,
                         'reject_status' => $pb->reject_status == 1 ? true : false,
                         'product_count' => DB::table('products')->wherebatch_id($pb->id)->count(),
                         'merchandise_type' => DB::table('categories')->whereid(Product::wherebatch_id($pb->id)->value('category_id'))->value('title'),
