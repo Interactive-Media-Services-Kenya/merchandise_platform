@@ -139,7 +139,7 @@ class SPAApiController extends Controller
             if ($batch == null) {
                 return response()->json([
                     'status' => 0,
-                    'message' => 'No Batches Found',
+                    'message' => 'Batch is Already Rejected',
                 ]);
             }
 
