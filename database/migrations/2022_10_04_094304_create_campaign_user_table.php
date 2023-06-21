@@ -14,6 +14,7 @@ class CreateCampaignUserTable extends Migration
     public function up()
     {
         Schema::create('campaign_user', function (Blueprint $table) {
+            $table->id();
             $table->foreignId('user_id')->nullable()->constrained();
             $table->foreignId('campaign_id')->nullable()->constrained();
         });
