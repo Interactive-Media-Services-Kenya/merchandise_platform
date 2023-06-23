@@ -19,12 +19,12 @@ class DatabaseSeeder extends Seeder
             RolesTableSeeder::class,
             CategoriesTableSeeder::class,
             StoragesTableSeeder::class,
-            UsersTableSeeder::class,
             ClientsTableSeeder::class,
             ReasonsTableSeeder::class,
             OutletsTableSeeder::class,
             SizeTableSeeder::class,
             ColorTableSeeder::class,
+            UsersTableSeeder::class,
             PermissionsTableSeeder::class,
         ]);
     }
