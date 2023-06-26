@@ -58,26 +58,9 @@ class ProductCodeController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'quantity' => 'required|integer|max:1000',
+            'quantity' => 'required|integer|max:10000',
         ]);
-        // $time = \Carbon\Carbon::now();
-        // $data = [];
-        // for ($i=0; $i = $request->quantity; $i++) {
-        //    $product_code = $this->generateProductsCode();
 
-        //    $data[] = [
-        //     'product_code'=>$product_code,
-        //     'created_at'=>$time
-        //    ];
-
-        // //    $product = \DB::table('product_codes')->insert([
-        // //        'product_code' => $product_code,
-        // //        'created_at' => \Carbon\Carbon::now(),
-        // //    ]);
-        // //    array_push($data,$product);
-        // }
-        // //Insert data into database
-        // \DB::table('product_codes')->insert($data);
         $time = \Carbon\Carbon::now();
         $data = [];
         for ($i = 0; $i < $request->quantity; $i++) {
