@@ -17,11 +17,12 @@ class ProductCodeController extends Controller
     {
         $this->permissionsService = $permissionsService;
     }
-    public function index(Request $request){
+    public function index(Request $request)
+    {
 
         if ($request->ajax()) {
-            $productCodesUsed = Product::select('product_code')->where('product_code', '!=' ,null);
-            $query = ProductCode::select('*')->orderBy('id','DESC')->whereNotIn('product_code',$productCodesUsed);
+            $productCodesUsed = Product::select('product_code')->where('product_code', '!=', null);
+            $query = ProductCode::select('*')->orderBy('id', 'DESC')->whereNotIn('product_code', $productCodesUsed);
             $table = Datatables::of($query);
             $table->addColumn('placeholder', '&nbsp;');
             $table->editColumn('id', function ($row) {
@@ -45,7 +46,8 @@ class ProductCodeController extends Controller
         return view('products.product_codes');
     }
 
-    public function create(){
+    public function create()
+    {
         $permissionName = 'Generate MerchandiseCodes';
         $permissions = $this->permissionsService->getPermissions($permissionName);
 
@@ -53,30 +55,48 @@ class ProductCodeController extends Controller
         return view('products.create_product_codes');
     }
 
-    public function store(Request $request){
+    public function store(Request $request)
+    {
         $request->validate([
             'quantity' => 'required|integer|max:1000',
         ]);
-        $data = [];
-        for ($i=0; $i = $request->quantity; $i++) {
-           $product_code = $this->generateProductsCode();
+        // $time = \Carbon\Carbon::now();
+        // $data = [];
+        // for ($i=0; $i = $request->quantity; $i++) {
+        //    $product_code = $this->generateProductsCode();
 
-           $product = \DB::table('product_codes')->insert([
-               'product_code' => $product_code,
-               'created_at' => \Carbon\Carbon::now(),
-           ]);
-           array_push($data,$product);
+        //    $data[] = [
+        //     'product_code'=>$product_code,
+        //     'created_at'=>$time
+        //    ];
+
+        // //    $product = \DB::table('product_codes')->insert([
+        // //        'product_code' => $product_code,
+        // //        'created_at' => \Carbon\Carbon::now(),
+        // //    ]);
+        // //    array_push($data,$product);
+        // }
+        // //Insert data into database
+        // \DB::table('product_codes')->insert($data);
+        $time = \Carbon\Carbon::now();
+        $data = [];
+        for ($i = 0; $i < $request->quantity; $i++) {
+            $product_code = $this->generateProductsCode();
+            $data[] = [
+                'product_code' => $product_code,
+                'created_at' => $time
+            ];
         }
+        //Insert data into database
+        \DB::table('product_codes')->insert($data);
 
         if (count($data) == $request->quantity) {
             Alert::success('Success', 'Merchandise Code Generation was Not Successful');
             return back();
-        }else{
+        } else {
             Alert::error('Failed', 'Merchandise Code Generation was Not Successful');
             return back();
         }
-
-
     }
     public function generateProductsCode()
     {
