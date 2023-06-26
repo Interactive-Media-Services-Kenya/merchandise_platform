@@ -18,7 +18,7 @@ class UsersTableSeeder extends Seeder
         $users = [
             [
                 'name'=> 'Super Admin',
-                'phone' =>245713218312,
+                'phone' =>254713218312,
                 'email'=> 'stephen@ims.co.ke',
                 'role_id'=>1,
                 'county_id' => mt_rand(1,47),
@@ -67,25 +67,27 @@ class UsersTableSeeder extends Seeder
         ];
 
         User::insert($users);
-        DB::table('users')->insert(
-            [
-                'name'=> 'Client One',
-                'phone' =>  254713218312,
-                'email'=> 'clientone@ims.co.ke',
-                'role_id'=>5,
-                'county_id' => mt_rand(1,47),
-                'password'=>  bcrypt('password'),
-                'client_id'=>1,
-            ],
-            [
-                'name'=> 'Sales Rep 1',
-                'phone' =>  254713218312,
-                'email'=> 'salesrepone@ims.co.ke',
-                'role_id'=>3,
-                'county_id' => mt_rand(1,47),
-                'password'=>  bcrypt('password'),
-                'client_id'=>1,
-            ],
-        );
+
+        //! Uncomment the below code block to Insert Client and Sales Agents as need be
+        // DB::table('users')->insert(
+        //     [
+        //         'name'=> 'Client One',
+        //         'phone' =>  254713218312,
+        //         'email'=> 'clientone@ims.co.ke',
+        //         'role_id'=>5,
+        //         'county_id' => mt_rand(1,47),
+        //         'password'=>  bcrypt('password'),
+        //         'client_id'=>1,
+        //     ],
+        //     [
+        //         'name'=> 'Sales Rep 1',
+        //         'phone' =>  254713218312,
+        //         'email'=> 'salesrepone@ims.co.ke',
+        //         'role_id'=>3,
+        //         'county_id' => mt_rand(1,47),
+        //         'password'=>  bcrypt('password'),
+        //         'client_id'=>1,
+        //     ],
+        // );
     }
 }
